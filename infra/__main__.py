@@ -155,7 +155,8 @@ app_service_plan = azure_native.web.AppServicePlan(
     reserved=True, # Required for Linux
     sku=azure_native.web.SkuDescriptionArgs(
         tier="Standard",
-        name="S1"  # Using a higher tier for running both apps
+        name="S1",  # Using a higher tier for running both apps
+        capacity=2  # Setting 2 instances for high availability
     )
 )
 
@@ -188,11 +189,17 @@ func_app = azure_native.web.WebApp(
     server_farm_id=app_service_plan.id,
     site_config=azure_native.web.SiteConfigArgs(
         app_settings=[
+            # Essential Function App settings
+            azure_native.web.NameValuePairArgs(name="FUNCTIONS_EXTENSION_VERSION", value="~4"),
+            azure_native.web.NameValuePairArgs(name="WEBSITE_RUN_FROM_PACKAGE", value="1"),
             azure_native.web.NameValuePairArgs(name="AzureWebJobsStorage", value=func_storage_connection_string),
             azure_native.web.NameValuePairArgs(name="FUNCTIONS_WORKER_RUNTIME", value="python"),
+            
+            # Cosmos DB connection
             azure_native.web.NameValuePairArgs(name="COSMOS_ENDPOINT", value=cosmosdb_account.document_endpoint),
             azure_native.web.NameValuePairArgs(name="COSMOS_KEY", value=cosmosdb_primary_key),
             azure_native.web.NameValuePairArgs(name="COSMOSDB_DATABASE_NAME", value=database_name),
+            
             # Docker settings
             azure_native.web.NameValuePairArgs(name="DOCKER_REGISTRY_SERVER_URL", value=registry_login_server.apply(lambda url: f"https://{url}")),
             azure_native.web.NameValuePairArgs(name="DOCKER_REGISTRY_SERVER_USERNAME", value=registry_username),
@@ -200,7 +207,32 @@ func_app = azure_native.web.WebApp(
             azure_native.web.NameValuePairArgs(name="WEBSITES_ENABLE_APP_SERVICE_STORAGE", value="false"),
         ],
         linux_fx_version=registry_login_server.apply(lambda url: f"DOCKER|{url}/shortenme-functions:latest"),
-        always_on=True
+        always_on=True,
+        
+        # Configure health check
+        health_check_path="/api/health",
+        
+        # Configure Auto-Heal
+        auto_heal_enabled=True,
+        auto_heal_rules=azure_native.web.AutoHealRulesArgs(
+            triggers=azure_native.web.AutoHealTriggersArgs(
+                requests=azure_native.web.RequestsBasedTriggerArgs(
+                    count=10,
+                    time_interval="00:02:00"
+                ),
+                status_codes=[
+                    azure_native.web.StatusCodesRangeBasedTriggerArgs(
+                        status_code_range="500",
+                        count=5,
+                        time_interval="00:01:00"
+                    )
+                ]
+            ),
+            actions=azure_native.web.AutoHealActionsArgs(
+                action_type="Recycle",
+                min_process_execution_time="00:01:00"
+            )
+        )
     ),
     kind="functionapp,linux,container",
     https_only=True,
@@ -222,9 +254,35 @@ frontend_app = azure_native.web.WebApp(
             azure_native.web.NameValuePairArgs(name="WEBSITES_ENABLE_APP_SERVICE_STORAGE", value="false"),
             # API URL for the frontend to connect to
             azure_native.web.NameValuePairArgs(name="API_URL", value=func_app.default_host_name.apply(lambda host: f"https://{host}")),
+            azure_native.web.NameValuePairArgs(name="WEBSITES_PORT", value="80"),
         ],
         linux_fx_version=registry_login_server.apply(lambda url: f"DOCKER|{url}/shortenme-frontend:latest"),
-        always_on=True
+        always_on=True,
+        
+        # Configure health check
+        health_check_path="/",
+        
+        # Configure Auto-Heal
+        auto_heal_enabled=True,
+        auto_heal_rules=azure_native.web.AutoHealRulesArgs(
+            triggers=azure_native.web.AutoHealTriggersArgs(
+                requests=azure_native.web.RequestsBasedTriggerArgs(
+                    count=10,
+                    time_interval="00:02:00"
+                ),
+                status_codes=[
+                    azure_native.web.StatusCodesRangeBasedTriggerArgs(
+                        status_code_range="500",
+                        count=5,
+                        time_interval="00:01:00"
+                    )
+                ]
+            ),
+            actions=azure_native.web.AutoHealActionsArgs(
+                action_type="Recycle",
+                min_process_execution_time="00:01:00"
+            )
+        )
     ),
     kind="app,linux,container",
     https_only=True,
