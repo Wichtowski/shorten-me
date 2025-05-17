@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { isMockMode, generateMockShortUrl, canShortenMore, incrementShortenCount } from '../../utils/urlUtils';
+import { isMockMode, generateMockShortUrl, canShortenMore, incrementShortenCount, BACKEND_API_BASE_URL } from '../../utils/urlUtils';
 import { useNotification } from '../../context/NotificationContext';
 import UrlDetails from './UrlDetails';
 import UrlParameters from './UrlParameters';
@@ -21,13 +21,7 @@ const UrlShortener = () => {
                 throw new Error('Only HTTPS URLs are allowed');
             }
 
-            // Skip HEAD request in mock mode
-            if (!isMockMode()) {
-                const response = await fetch(urlString, { method: 'HEAD' });
-                if (response.redirected) {
-                    throw new Error('URLs that redirect are not allowed');
-                }
-            }
+            // Removed HEAD request validation
 
             return true;
         } catch (error) {
@@ -65,7 +59,7 @@ const UrlShortener = () => {
                 incrementShortenCount();
                 showNotification('URL shortened successfully!', 'success');
             } else {
-                const response = await fetch('http://localhost:3001/shorten', {
+                const response = await fetch(`${BACKEND_API_BASE_URL}/shorten`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

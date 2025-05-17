@@ -1,0 +1,29 @@
+# Git
+.git
+.gitignore
+
+# Node.js modules for frontend
+node_modules
+**/node_modules
+
+# Python virtual environments
+venv/
+*/venv/
+.env
+**/__pycache__/
+*.py[cod]
+
+# Pulumi
+infra/.pulumi/
+infra/Pulumi.*.yaml
+
+# Build artifacts
+frontend/build
+frontend/dist
+
+# Misc
+.DS_Store
+.idea/
+.vscode/
+*.zip
+*.tar.gz 

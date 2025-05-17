@@ -1,91 +1,99 @@
-# URL Shortener with Azure Integration
+# Shorten-Me URL Shortening Service
 
-A FastAPI-based URL shortener service that uses Azure Table Storage for data persistence and includes user authentication.
+A full-stack URL shortening service deployed on Azure.
 
-## Features
+## Project Structure
 
-- User registration and authentication
-- URL shortening with custom slugs
-- Click tracking
-- Azure Table Storage integration
-- JWT-based authentication
+- **backend-api/**: FastAPI backend with Azure Functions
+- **frontend/**: React frontend application
+- **infra/**: Pulumi infrastructure as code
 
-## Prerequisites
+## Setup from Fresh Machine
 
-- Python 3.8+
-- Azure account with Table Storage
-- Azure Storage connection string
+### Prerequisites
 
-## Setup
+- Node.js 20+
+- Python 3.12+
+- Docker
+- Azure CLI
+- Pulumi CLI
 
-1. Clone the repository:
+### Initial Setup
 
+1. Clone the repository
+   ```bash
+   git clone <repository-url>
+   cd shorten-me
+   ```
+
+2. Install dependencies for backend
+   ```bash
+   cd backend-api
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   pip install -r ../requirements.txt
+   cd ..
+   ```
+
+3. Install dependencies for frontend
+   ```bash
+   cd frontend
+   npm install
+   cd ..
+   ```
+
+4. Set up Pulumi
+   ```bash
+   cd infra
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   pulumi stack select oskar  # Or create a new stack with: pulumi stack init <name>
+   cd ..
+   ```
+
+## Deployment Workflow
+
+1. Deploy infrastructure and backend:
+   ```bash
+   python deploy.py
+   ```
+
+2. Deploy frontend:
+   ```bash
+   python deploy_frontend.py
+   ```
+
+## Local Development
+
+### Backend
 ```bash
-git clone <repository-url>
-cd shorten-me
-```
-
-2. Create and activate a virtual environment:
-
-```bash
-python -m venv venv
+cd backend-api
 source venv/bin/activate  # On Windows: venv\Scripts\activate
+python -m uvicorn main:app --reload
 ```
 
-3. Install dependencies:
-
+### Frontend
 ```bash
-pip install -r requirements.txt
+cd frontend
+npm run dev
 ```
 
-4. Create a `.env` file with your configuration:
+## Docker Builds
 
-```env
-AZURE_STORAGE_CONNECTION_STRING=your_storage_connection_string
-AZURE_STORAGE_ACCOUNT_NAME=your_storage_account_name
-AZURE_STORAGE_ACCOUNT_KEY=your_storage_account_key
-SECRET_KEY=your_secret_key_here
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-BASE_URL=http://localhost:8000
-```
-
-## Running the Application
-
-Start the development server:
-
+Build backend:
 ```bash
-uvicorn app.main:app --reload
+docker build -t shortenme-functions -f Dockerfile.functions .
 ```
 
-The API will be available at `http://localhost:8000`
+Build frontend:
+```bash
+docker build -t shortenme-frontend -f Dockerfile.frontend .
+```
 
-## API Documentation
+## Additional Documentation
 
-Once the server is running, you can access:
-
-- Swagger UI documentation: `http://localhost:8000/docs`
-- ReDoc documentation: `http://localhost:8000/redoc`
-
-## API Endpoints
-
-### Authentication
-
-- `POST /auth/register` - Register a new user
-- `POST /auth/token` - Login and get access token
-
-### URLs
-
-- `POST /urls/` - Create a new shortened URL
-- `GET /urls/{slug}` - Redirect to original URL
-- `GET /urls/` - Get all URLs for current user
-
-## Security
-
-- Passwords are hashed using bcrypt
-- JWT tokens are used for authentication
-- Azure Table Storage provides secure data persistence
-
-## License
-
-MIT
+For more detailed information, see README files in each component directory:
+- [Backend API Documentation](./backend-api/README.md)
+- [Frontend Documentation](./frontend/README.md)
+- [Infrastructure Documentation](./infra/README.md)

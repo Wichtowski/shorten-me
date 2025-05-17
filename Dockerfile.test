@@ -1,0 +1,9 @@
+FROM nginx:alpine
+
+# Create a simple index file
+RUN echo '<html><body><h1>App Service Container Test</h1><p>If you see this, your container is working!</p></body></html>' > /usr/share/nginx/html/index.html
+
+# Expose port 80
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"] 

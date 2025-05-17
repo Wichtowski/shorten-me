@@ -21,4 +21,6 @@ export const incrementShortenCount = () => {
 
 export const canShortenMore = () => {
     return getShortenCount() < 3;
-}; 
+};
+
+export const BACKEND_API_BASE_URL = 'http://localhost:3001'; 
