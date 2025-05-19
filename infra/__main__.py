@@ -219,14 +219,7 @@ func_app = azure_native.web.WebApp(
                 requests=azure_native.web.RequestsBasedTriggerArgs(
                     count=10,
                     time_interval="00:02:00"
-                ),
-                status_codes=[
-                    azure_native.web.StatusCodesRangeBasedTriggerArgs(
-                        status_code_range="500",
-                        count=5,
-                        time_interval="00:01:00"
-                    )
-                ]
+                )
             ),
             actions=azure_native.web.AutoHealActionsArgs(
                 action_type="Recycle",
@@ -253,7 +246,7 @@ frontend_app = azure_native.web.WebApp(
             azure_native.web.NameValuePairArgs(name="DOCKER_REGISTRY_SERVER_PASSWORD", value=registry_password),
             azure_native.web.NameValuePairArgs(name="WEBSITES_ENABLE_APP_SERVICE_STORAGE", value="false"),
             # API URL for the frontend to connect to
-            azure_native.web.NameValuePairArgs(name="API_URL", value=func_app.default_host_name.apply(lambda host: f"https://{host}")),
+            azure_native.web.NameValuePairArgs(name="BACKEND_API_BASE_URL", value=func_app.default_host_name.apply(lambda host: f"https://{host}")),
             azure_native.web.NameValuePairArgs(name="WEBSITES_PORT", value="80"),
         ],
         linux_fx_version=registry_login_server.apply(lambda url: f"DOCKER|{url}/shortenme-frontend:latest"),
@@ -269,14 +262,7 @@ frontend_app = azure_native.web.WebApp(
                 requests=azure_native.web.RequestsBasedTriggerArgs(
                     count=10,
                     time_interval="00:02:00"
-                ),
-                status_codes=[
-                    azure_native.web.StatusCodesRangeBasedTriggerArgs(
-                        status_code_range="500",
-                        count=5,
-                        time_interval="00:01:00"
-                    )
-                ]
+                )
             ),
             actions=azure_native.web.AutoHealActionsArgs(
                 action_type="Recycle",

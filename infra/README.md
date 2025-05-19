@@ -10,7 +10,7 @@ Pulumi-based infrastructure setup for deploying the URL shortening service to Az
 - `requirements.txt` - Python dependencies for Pulumi
 - `auto_deploy.py` - Helper script for automated deployments
 
-## Prerequisites
+ ## Prerequisites
 
 - Azure CLI installed and configured
 - Pulumi CLI installed
@@ -20,14 +20,14 @@ Pulumi-based infrastructure setup for deploying the URL shortening service to Az
 ## Setup
 
 1. Create and activate a virtual environment
-   ```bash
+    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    pip install -r requirements.txt
-   ```
+    ```
 
 2. Login to Pulumi and Azure
-   ```bash
+    ```bash
    pulumi login
    az login
    ```
@@ -35,17 +35,17 @@ Pulumi-based infrastructure setup for deploying the URL shortening service to Az
 3. Select or create a Pulumi stack
    ```bash
    pulumi stack select oskar  # Or create new: pulumi stack init <name>
-   ```
+ ```
 
-## Configuration
+ ## Configuration
 
 Configure Pulumi with necessary settings:
 
-```bash
+ ```bash
 pulumi config set azure-native:location westeurope
 pulumi config set project:resource_group_name shortenme-rg
 # Add other configuration values as needed
-```
+ ```
 
 ## Deploying Infrastructure
 
@@ -62,7 +62,7 @@ pulumi up
 ## Getting Outputs
 
 To get specific output values:
-```bash
+ ```bash
 pulumi stack output container_registry_login_server
 pulumi stack output function_app_url
 ```

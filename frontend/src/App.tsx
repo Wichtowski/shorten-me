@@ -5,6 +5,9 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import { NotificationProvider, useNotification } from './context/NotificationContext';
+import { getApiUrl } from './utils/urlUtils';
+
+export const ApiUrlContext = React.createContext<string>(getApiUrl());
 
 const CatchAllRoute = () => {
   const location = useLocation();

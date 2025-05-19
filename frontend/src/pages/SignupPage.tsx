@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import bcrypt from 'bcryptjs';
+import { ApiUrlContext } from '../App';
 
 const SignupPage = () => {
     const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
+    const apiUrl = useContext(ApiUrlContext);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -15,7 +20,35 @@ const SignupPage = () => {
             setError('Passwords do not match');
             return;
         }
-        // TODO: Implement signup logic
+        if (!username) {
+            setError('Username is required');
+            return;
+        }
+
+        try {
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            const response = await fetch(`${apiUrl}/api/create_user`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email,
+                    username,
+                    password: hashedPassword,
+                }),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || result.error) {
+                setError(result.error || 'Signup failed');
+                return;
+            }
+
+            navigate('/login');
+        } catch (err) {
+            setError('Signup failed. Please try again.');
+        }
     };
 
     return (
@@ -33,6 +66,19 @@ const SignupPage = () => {
                                 id="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                className="w-full px-4 py-3 rounded-lg bg-primary-darkest/50 border border-primary-light/30 text-white focus:outline-none focus:border-primary-lightest focus:ring-2 focus:ring-primary-lightest/20"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="username" className="block text-primary-lightest mb-2">
+                                Username
+                            </label>
+                            <input
+                                type="text"
+                                id="username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                                 className="w-full px-4 py-3 rounded-lg bg-primary-darkest/50 border border-primary-light/30 text-white focus:outline-none focus:border-primary-lightest focus:ring-2 focus:ring-primary-lightest/20"
                                 required
                             />

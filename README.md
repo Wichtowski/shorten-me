@@ -21,10 +21,10 @@ A full-stack URL shortening service deployed on Azure.
 ### Initial Setup
 
 1. Clone the repository
-   ```bash
-   git clone <repository-url>
-   cd shorten-me
-   ```
+```bash
+git clone <repository-url>
+cd shorten-me
+```
 
 2. Install dependencies for backend
    ```bash

@@ -23,4 +23,10 @@ export const canShortenMore = () => {
     return getShortenCount() < 3;
 };
 
-export const BACKEND_API_BASE_URL = 'http://localhost:3001'; 
+export const getApiUrl = (): string => {
+    if (process.env.NODE_ENV === 'development') {
+        return 'http://localhost:8000';
+    } else {
+        return process.env.BACKEND_API_BASE_URL!;
+    }
+};

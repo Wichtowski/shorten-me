@@ -21,7 +21,7 @@ React-based frontend for the URL shortening service.
    npm install
    ```
 
-2. Create `.env` file with configuration
+2. Create `.env` file with configuration (for local development only)
    ```
    REACT_APP_API_URL=http://localhost:8000
    ```
@@ -39,20 +39,31 @@ React-based frontend for the URL shortening service.
 npm run build
 ```
 
-This creates a production build in the `build/` directory.
+This creates a production build in the `build/` directory. (This is handled automatically during container build for production deployment.)
 
 ## Deployment
 
-The frontend is automatically deployed through the deployment script:
+**Production deployment is fully automated and handled by the root-level scripts.**
+
+To deploy the frontend to Azure, run from the project root:
 
 ```bash
-python ../deploy_frontend.py
+python deploy_frontend.py
 ```
 
-This script:
-1. Builds a Docker container using `Dockerfile.frontend`
-2. Pushes it to the Azure Container Registry
-3. Updates the Azure App Service to use the new container image
+or as part of the full stack deployment:
+
+```bash
+python deploy.py
+```
+
+These scripts:
+1. Build a Docker container using `Dockerfile.frontend`
+2. Push it to the Azure Container Registry
+3. Update the Azure App Service to use the new container image
+4. Set all required environment variables for production
+
+**Do not manually build or push Docker images, or set Azure App Service settings for production.**
 
 ## Testing
 

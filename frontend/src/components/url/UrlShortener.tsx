@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { isMockMode, generateMockShortUrl, canShortenMore, incrementShortenCount, BACKEND_API_BASE_URL } from '../../utils/urlUtils';
+import React, { useState, useContext } from 'react';
+import { isMockMode, generateMockShortUrl, canShortenMore, incrementShortenCount } from '../../utils/urlUtils';
 import { useNotification } from '../../context/NotificationContext';
 import UrlDetails from './UrlDetails';
 import UrlParameters from './UrlParameters';
+import { ApiUrlContext } from '../../App';
 
 const UrlShortener = () => {
     const [url, setUrl] = useState('');
@@ -10,6 +11,7 @@ const UrlShortener = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { showNotification } = useNotification();
+    const apiUrl = useContext(ApiUrlContext);
 
     // Mock isLoggedIn state - replace with actual auth logic
     const isLoggedIn = false;
@@ -59,7 +61,7 @@ const UrlShortener = () => {
                 incrementShortenCount();
                 showNotification('URL shortened successfully!', 'success');
             } else {
-                const response = await fetch(`${BACKEND_API_BASE_URL}/shorten`, {
+                const response = await fetch(`${apiUrl}/shorten`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
