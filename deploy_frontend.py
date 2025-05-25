@@ -3,11 +3,10 @@ import sys
 import subprocess
 import pathlib
 import argparse
-import json
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description="Deploy frontend container")
-parser.add_argument("--app-name", default="shortenme-frontendfa84cbe3", help="The frontend App Service name")
+parser.add_argument("--app-name", default="shortenme-frontendf41d91fb", help="The frontend App Service name")
 parser.add_argument("--resource-group", default="shortenme-rg", help="The resource group name")
 args = parser.parse_args()
 
@@ -15,8 +14,8 @@ args = parser.parse_args()
 PROJECT_ROOT = pathlib.Path(__file__).parent.absolute()
 INFRA_DIR = os.path.join(PROJECT_ROOT, "infra")
 
+# Helper to get pulumi output
 def get_pulumi_output(output_name):
-    """Get a specific output from Pulumi stack"""
     try:
         result = subprocess.run(
             ["pulumi", "stack", "output", output_name, "--show-secrets"],
@@ -26,6 +25,7 @@ def get_pulumi_output(output_name):
         )
         if result.returncode == 0 and result.stdout:
             return result.stdout.strip()
+        print(f"Pulumi output for {output_name} not found or empty.")
         return None
     except Exception as e:
         print(f"Error getting Pulumi output {output_name}: {e}")
@@ -38,7 +38,10 @@ registry_username = get_pulumi_output("container_registry_username")
 registry_password = get_pulumi_output("container_registry_password")
 
 if not all([registry_login_server, registry_username, registry_password]):
-    print("Failed to get container registry info")
+    print("Failed to get container registry info.\nPulumi outputs:")
+    print(f"  container_registry_login_server: {registry_login_server}")
+    print(f"  container_registry_username: {registry_username}")
+    print(f"  container_registry_password: {registry_password}")
     sys.exit(1)
 
 # Login to ACR
@@ -92,6 +95,7 @@ try:
     ], check=True, cwd=PROJECT_ROOT)
     
     # Set app settings
+    api_url = get_pulumi_output('function_app_url')
     subprocess.run([
         "az", "webapp", "config", "appsettings", "set",
         "--resource-group", args.resource_group,
@@ -99,8 +103,7 @@ try:
         "--settings",
         "WEBSITES_PORT=80",
         "WEBSITES_ENABLE_APP_SERVICE_STORAGE=false",
-        # Add additional frontend settings here if needed
-        f"API_URL=https://{get_pulumi_output('function_app_url')}"
+        f"API_URL=https://{api_url}"
     ], check=True, cwd=PROJECT_ROOT)
     
     # Restart the app
