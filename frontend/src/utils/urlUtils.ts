@@ -1,10 +1,11 @@
 export const isMockMode = () => {
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams();
     return params.has('applyMocks');
 };
 
 export const generateMockShortUrl = (originalUrl: string) => {
-    const mockId = Math.random().toString(36).substring(2, 8);
+    const rand = Math.random();
+    const mockId = rand !== undefined ? rand.toString(36).substring(2, 8) : '';
     return `http://localhost:3000/${mockId}`;
 };
 
@@ -15,11 +16,14 @@ export const getShortenCount = () => {
 
 export const incrementShortenCount = () => {
     const currentCount = getShortenCount();
-    localStorage.setItem('shortenCount', (currentCount + 1).toString());
+    localStorage.setItem('shortenCount', currentCount !== undefined ? (currentCount + 1).toString() : '1');
     return currentCount + 1;
 };
 
 export const canShortenMore = () => {
+    if (process.env.NODE_ENV === 'development') {
+        return true;
+    }
     return getShortenCount() < 3;
 };
 

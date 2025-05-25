@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNotification } from '../../context/NotificationContext';
+import { useNotification } from '@/components/context/NotificationContext';
 
 interface UrlParametersProps {
     shortUrl: string;
@@ -29,6 +29,7 @@ const UrlParameters = ({ shortUrl }: UrlParametersProps) => {
     };
 
     const generateUrlWithParams = () => {
+        console.log('generateUrlWithParams called', parameters);
         const validParams = parameters.filter(p => p.key && p.value);
         if (validParams.length === 0) return shortUrl;
 
@@ -36,8 +37,8 @@ const UrlParameters = ({ shortUrl }: UrlParametersProps) => {
         validParams.forEach(param => {
             searchParams.append(param.key, param.value);
         });
-
-        return `${shortUrl}?${searchParams.toString()}`;
+        console.log("generateUrlWithParams", searchParams, `${shortUrl}?${searchParams.toString()}`, shortUrl);
+        return searchParams ? `${shortUrl}?${searchParams.toString()}` : shortUrl;
     };
 
     const copyUrlWithParams = () => {

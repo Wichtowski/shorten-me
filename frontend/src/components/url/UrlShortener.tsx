@@ -1,9 +1,10 @@
-import React, { useState, useContext } from 'react';
-import { isMockMode, generateMockShortUrl, canShortenMore, incrementShortenCount } from '../../utils/urlUtils';
-import { useNotification } from '../../context/NotificationContext';
+'use client';
+
+import React, { useState } from 'react';
+import { isMockMode, generateMockShortUrl, canShortenMore, incrementShortenCount } from '@/utils/urlUtils';
+import { useNotification } from '@/components/context/NotificationContext';
 import UrlDetails from './UrlDetails';
 import UrlParameters from './UrlParameters';
-import { ApiUrlContext } from '../../App';
 
 const UrlShortener = () => {
     const [url, setUrl] = useState('');
@@ -11,7 +12,7 @@ const UrlShortener = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { showNotification } = useNotification();
-    const apiUrl = useContext(ApiUrlContext);
+    const [mockShortUrl, setMockShortUrl] = useState('');
 
     // Mock isLoggedIn state - replace with actual auth logic
     const isLoggedIn = false;
@@ -22,9 +23,6 @@ const UrlShortener = () => {
             if (url.protocol !== 'https:') {
                 throw new Error('Only HTTPS URLs are allowed');
             }
-
-            // Removed HEAD request validation
-
             return true;
         } catch (error) {
             if (error instanceof Error) {
@@ -54,14 +52,17 @@ const UrlShortener = () => {
 
         try {
             if (isMockMode()) {
-                // Simulate API delay
                 await new Promise(resolve => setTimeout(resolve, 500));
-                const mockShortUrl = generateMockShortUrl(url);
-                setShortUrl(mockShortUrl);
+                // Only call generateMockShortUrl on the client
+                if (typeof window !== 'undefined') {
+                    const generated = generateMockShortUrl(url);
+                    setShortUrl(generated);
+                    setMockShortUrl(generated);
+                }
                 incrementShortenCount();
                 showNotification('URL shortened successfully!', 'success');
             } else {
-                const response = await fetch(`${apiUrl}/shorten`, {
+                const response = await fetch(`/api/shorten/me`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

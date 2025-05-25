@@ -1,83 +1,36 @@
-# Frontend for Shorten-Me
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-React-based frontend for the URL shortening service.
+## Getting Started
 
-## Structure
-
-- `src/`
-  - `components/` - Reusable UI components
-  - `context/` - React context providers
-  - `pages/` - Page components
-  - `utils/` - Utility functions
-- `public/` - Static assets
-- `build/` - Production build output
-
-## Local Development
-
-### Setup
-
-1. Install dependencies
-   ```bash
-   npm install
-   ```
-
-2. Create `.env` file with configuration (for local development only)
-   ```
-   REACT_APP_API_URL=http://localhost:8000
-   ```
-
-3. Start development server
-   ```bash
-   npm run dev
-   ```
-
-4. Access the application at `http://localhost:3000`
-
-## Building for Production
+First, run the development server:
 
 ```bash
-npm run build
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-This creates a production build in the `build/` directory. (This is handled automatically during container build for production deployment.)
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Deployment
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-**Production deployment is fully automated and handled by the root-level scripts.**
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-To deploy the frontend to Azure, run from the project root:
+## Learn More
 
-```bash
-python deploy_frontend.py
-```
+To learn more about Next.js, take a look at the following resources:
 
-or as part of the full stack deployment:
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-```bash
-python deploy.py
-```
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-These scripts:
-1. Build a Docker container using `Dockerfile.frontend`
-2. Push it to the Azure Container Registry
-3. Update the Azure App Service to use the new container image
-4. Set all required environment variables for production
+## Deploy on Vercel
 
-**Do not manually build or push Docker images, or set Azure App Service settings for production.**
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-## Testing
-
-Run tests with:
-```bash
-npm test
-```
-
-## Styling
-
-The project uses Tailwind CSS for styling. Configuration is in `tailwind.config.js`.
-
-## Adding New Features
-
-1. Create components in the appropriate subdirectory of `src/components/`
-2. For new pages, add components in `src/pages/`
-3. Update routes as needed
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

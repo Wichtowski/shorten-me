@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNotification } from '../../context/NotificationContext';
+import { useNotification } from '@/components/context/NotificationContext';
 
 interface UrlDetailsProps {
     shortUrl: string;
