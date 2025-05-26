@@ -4,7 +4,7 @@ from datetime import datetime
 import uuid
 from typing import Optional, List, Dict
 from fastapi import Request
-from .container import container
+from container import container
 
 # Cosmos DB configuration
 COSMOS_ENDPOINT = os.getenv("COSMOS_ENDPOINT")

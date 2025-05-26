@@ -5,8 +5,8 @@ from passlib.context import CryptContext
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 import os
-from .models import TokenData, User
-from .exceptions import CredentialsException
+from models import TokenData, User
+from exceptions import CredentialsException
 
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
