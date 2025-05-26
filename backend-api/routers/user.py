@@ -1,9 +1,10 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, EmailStr
 import uuid
 from datetime import datetime, timedelta
 import jwt
 from container import container
+from responses import APIResponse
 
 JWT_SECRET = container.get_config("secret_key") or "default-secret-key"
 JWT_ALGORITHM = container.get_config("algorithm") or "HS256"

@@ -12,11 +12,11 @@ async def api_exception_handler(request: Request, exc: APIException):
 async def validation_exception_handler(request: Request, exc: Exception):
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content=APIResponse.response(message=str(exc))
+        content=APIResponse.success_response(message=str(exc))
     )
 
 async def http_exception_handler(request: Request, exc: Exception):
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content=APIResponse.response(message="Internal server error")
+        content=APIResponse.error_response(message="Internal server error")
     ) 

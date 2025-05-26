@@ -2,8 +2,7 @@ from azure.cosmos import CosmosClient, PartitionKey
 import os
 from datetime import datetime
 import uuid
-from typing import Optional, List, Dict
-from fastapi import Request
+from typing import Optional, List
 from container import container
 
 # Cosmos DB configuration

@@ -5,7 +5,6 @@ import os
 from dotenv import load_dotenv
 import logging
 from datetime import datetime
-import json
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
