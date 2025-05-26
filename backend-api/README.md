@@ -77,11 +77,4 @@ This uses the provided `Dockerfile` to build the backend container.
 1. Add a route in `routers/`
 2. Add models in `models.py` if needed
 
-## Tips
-
-- Use SSH for git to avoid repeated username/password prompts:
-  ```bash
-  git remote set-url origin git@github.com:yourusername/yourrepo.git
-  ```
-
 ---
