@@ -1,9 +1,0 @@
-fastapi
-uvicorn
-python-dotenv
-azure-cosmos
-pyjwt
-passlib[bcrypt]
-pydantic 
-python-jose
-pydantic[email]

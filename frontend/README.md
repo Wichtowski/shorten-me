@@ -1,4 +1,4 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a [Next.js](https://nextjs.org) fullstack project (API + UI) bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
@@ -19,6 +19,20 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## API & Backend Logic
+
+All backend logic (authentication, URL shortening, etc.) is implemented in Next.js API routes under `src/app/api/`.
+
+### Environment Variables
+
+You must set the following environment variables (in `.env.local` or via Azure App Settings):
+
+- `COSMOS_ENDPOINT` (CosmosDB endpoint)
+- `COSMOS_KEY` (CosmosDB key)
+- `COSMOSDB_DATABASE_NAME` (CosmosDB database name)
+- `SECRET_KEY` (JWT secret)
+- `ALGORITHM` (JWT algorithm, e.g. HS256)
 
 ## Learn More
 

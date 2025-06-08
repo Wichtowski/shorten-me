@@ -2,27 +2,20 @@ FROM node:20-alpine as build
 
 WORKDIR /app
 
-# Copy package files and install dependencies
-COPY frontend/package*.json ./
+COPY package*.json ./
 RUN npm install
 
-# Copy the rest of the frontend code
-COPY frontend/ ./
+COPY . ./
 
-# Build the frontend - check if you need to use 'build' or 'dist' based on your framework
 RUN npm run build
 
-# Production stage with minimal Nginx - match test container
 FROM nginx:alpine
 
-# Set environment variable for Azure App Service
 ENV PORT=80
 ENV WEBSITES_PORT=80
 
-# Copy the built files from the build stage
 COPY --from=build /app/build /usr/share/nginx/html
 
-# Create a simple matching nginx configuration
 RUN echo 'server { \
     listen 80; \
     server_name _; \
@@ -32,11 +25,9 @@ RUN echo 'server { \
     } \
     }' > /etc/nginx/conf.d/default.conf
 
-# Add simple health check
 HEALTHCHECK --interval=5s --timeout=3s --start-period=5s --retries=3 \
     CMD wget -q --spider http://localhost/ || exit 1
 
-# Expose port 80
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"] 

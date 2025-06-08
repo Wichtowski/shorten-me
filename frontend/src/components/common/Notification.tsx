@@ -2,56 +2,66 @@
 import React, { useEffect, useState } from 'react';
 
 interface NotificationProps {
-    message: string;
-    type?: 'error' | 'success' | 'info';
-    onClose: () => void;
-    duration?: number;
+  message: string;
+  type?: 'error' | 'success' | 'info';
+  onClose: () => void;
+  duration?: number;
 }
 
 const ANIMATION_DURATION = 400;
-const NOTIFICATION_HEIGHT = 64; // px, adjust as needed
-const NAVBAR_HEIGHT = 64; // px, adjust to match your navbar
+const NOTIFICATION_HEIGHT = 64; // px
 
 const Notification = ({ message, type = 'info', onClose, duration = 3000 }: NotificationProps) => {
-    const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(true);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setVisible(false);
-        }, duration);
-        return () => clearTimeout(timer);
-    }, [duration]);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setVisible(false);
+    }, duration);
+    return () => clearTimeout(timer);
+  }, [duration]);
 
-    useEffect(() => {
-        if (!visible) {
-            const timeout = setTimeout(() => {
-                onClose();
-            }, ANIMATION_DURATION);
-            return () => clearTimeout(timeout);
+  useEffect(() => {
+    if (!visible) {
+      const timeout = setTimeout(() => {
+        onClose();
+      }, ANIMATION_DURATION);
+      return () => clearTimeout(timeout);
+    }
+  }, [visible, onClose]);
+
+  const bgColor = {
+    error: 'bg-red-500',
+    success: 'bg-green-500',
+    info: 'bg-primary-light',
+  }[type];
+
+  return (
+    <div
+      className="fixed left-0 right-0 z-40 flex justify-center pointer-events-none"
+      style={{ top: 64, height: NOTIFICATION_HEIGHT }}
+    >
+      <div
+        className={
+          ` ${bgColor} text-white px-8 py-4 rounded-b-lg shadow-lg flex items-center space-x-3 relative pointer-events-auto transition-all duration-400 ease-in-out ` +
+          (visible ? 'notification-in' : 'notification-out')
         }
-    }, [visible, onClose]);
-
-    const bgColor = {
-        error: 'bg-red-500',
-        success: 'bg-green-500',
-        info: 'bg-primary-light'
-    }[type];
-
-    return (
-        <div className="fixed left-0 right-0 z-50 flex justify-center pointer-events-none" style={{ top: NAVBAR_HEIGHT, height: NOTIFICATION_HEIGHT }}>
-            <div
-                className={` ${bgColor} text-white px-8 py-4 rounded-b-lg shadow-lg flex items-center space-x-3 relative pointer-events-auto transition-all duration-400 ease-in-out ` + (visible ? 'notification-in' : 'notification-out')}
-                style={{ minWidth: 320, maxWidth: 480, height: NOTIFICATION_HEIGHT, opacity: visible ? 1 : 0 }}
-            >
-                <span className="text-lg flex-1">{message}</span>
-                <button
-                    onClick={() => setVisible(false)}
-                    className="ml-2 hover:text-white/80 transition-colors text-xl"
-                >
-                    ×
-                </button>
-            </div>
-            <style>{`
+        style={{
+          minWidth: 320,
+          maxWidth: 480,
+          height: NOTIFICATION_HEIGHT,
+          opacity: visible ? 1 : 0,
+        }}
+      >
+        <span className="text-lg flex-1">{message}</span>
+        <button
+          onClick={() => setVisible(false)}
+          className="ml-2 hover:text-white/80 transition-colors text-xl"
+        >
+          ×
+        </button>
+      </div>
+      <style>{`
                 .notification-in {
                     transform: translateY(-32px);
                     opacity: 0;
@@ -71,8 +81,8 @@ const Notification = ({ message, type = 'info', onClose, duration = 3000 }: Noti
                     100% { transform: translateY(-32px); opacity: 0; }
                 }
             `}</style>
-        </div>
-    );
+    </div>
+  );
 };
 
-export default Notification; 
+export default Notification;

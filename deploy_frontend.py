@@ -2,14 +2,19 @@ import os
 import sys
 import subprocess
 import pathlib
+import dotenv
+
+dotenv.load_dotenv()
 
 PROJECT_ROOT = pathlib.Path(__file__).parent.absolute()
 INFRA_DIR = os.path.join(PROJECT_ROOT, "infra")
 
+PULUMI_CONFIG_PASSPHRASE = os.getenv("PULUMI_CONFIG_PASSPHRASE")
+
 def get_pulumi_output(output_name):
     try:
         result = subprocess.run(
-            ["pulumi", "stack", "output", output_name, "--show-secrets"],
+            ["pulumi", "stack", "output", output_name, "--show-secrets", "--passphrase", PULUMI_CONFIG_PASSPHRASE],
             capture_output=True,
             text=True,
             cwd=INFRA_DIR
@@ -54,7 +59,7 @@ frontend_image_name = f"{registry_login_server}/shortenme-frontend:latest"
 print(f"Building frontend container...")
 try:
     subprocess.run(
-        ["docker", "build", "-t", frontend_image_name, "-f", "Dockerfile.frontend", "."],
+        ["docker", "build", "-t", frontend_image_name, "-f", "frontend/Dockerfile", "./frontend"],
         check=True,
         cwd=PROJECT_ROOT
     )
@@ -80,7 +85,9 @@ try:
         "--container-registry-user", registry_username,
         "--container-registry-password", registry_password
     ], check=True, cwd=PROJECT_ROOT)
-    api_url = get_pulumi_output('function_app_url')
+    cosmos_endpoint = get_pulumi_output('cosmosdb_endpoint')
+    cosmos_key = get_pulumi_output('cosmosdb_key')
+    cosmosdb_database_name = get_pulumi_output('cosmosdb_account_name')
     subprocess.run([
         "az", "webapp", "config", "appsettings", "set",
         "--resource-group", resource_group,
@@ -88,7 +95,9 @@ try:
         "--settings",
         "WEBSITES_PORT=80",
         "WEBSITES_ENABLE_APP_SERVICE_STORAGE=false",
-        f"API_URL=https://{api_url}"
+        f"COSMOS_ENDPOINT={cosmos_endpoint}",
+        f"COSMOS_KEY={cosmos_key}",
+        f"COSMOSDB_DATABASE_NAME={cosmosdb_database_name}"
     ], check=True, cwd=PROJECT_ROOT)
     print(f"Restarting {app_name}...")
     subprocess.run([
