@@ -67,7 +67,7 @@ const UrlShortener = () => {
         incrementShortenCount();
         showNotification('URL shortened successfully!', 'success');
       } else {
-        const response = await fetch(`/api/shorten`, {
+        const response = await fetch(`/api/v1/shorten`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ const UrlShortener = () => {
           body: JSON.stringify({ original_url: url }),
         });
         const data = await response.json();
-        setShortUrl(data.shortUrl);
+        setShortUrl(data.url.short_url);
         incrementShortenCount();
         showNotification('URL shortened successfully!', 'success');
       }

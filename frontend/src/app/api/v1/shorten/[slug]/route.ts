@@ -1,7 +1,7 @@
 'use server';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getUrlsContainer, getAnonymousContainer } from '@/app/api/utils/cosmos';
+import { getUrlsContainer, getAnonymousContainer } from '@/app/api/v1/utils/cosmos';
 
 export async function GET(req: NextRequest, { params }: { params: { slug: string } }) {
   const { slug } = params;

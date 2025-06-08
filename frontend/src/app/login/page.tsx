@@ -13,7 +13,7 @@ const LoginPage = () => {
     setError('');
     setLoading(true);
     try {
-      const response = await fetch('/api/login', {
+      const response = await fetch('/api/v1/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -25,7 +25,6 @@ const LoginPage = () => {
         if (typeof window !== 'undefined') {
           localStorage.setItem('token', data.user.token);
         }
-        // Optionally redirect or show success
         window.location.href = '/';
       }
     } catch (err) {
