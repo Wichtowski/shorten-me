@@ -20,8 +20,8 @@ type HealthStatus = {
 type ErrorType = { message: string };
 
 export async function GET() {
-  const endpoint = process.env.COSMOS_ENDPOINT;
-  const key = process.env.COSMOS_KEY;
+  const endpoint = process.env.COSMOSDB_ENDPOINT;
+  const key = process.env.COSMOSDB_KEY;
   const databaseName = process.env.COSMOSDB_DATABASE_NAME || 'urlshortener';
 
   const health_status: HealthStatus = {

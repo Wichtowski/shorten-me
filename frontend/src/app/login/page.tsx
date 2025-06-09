@@ -1,8 +1,10 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
+import { useUser } from '@/components/context/UserContext';
 
 const LoginPage = () => {
+  const { setUser } = useUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -18,17 +20,29 @@ const LoginPage = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
+      
       const data = await response.json();
+      
       if (!response.ok) {
         setError(data.error || 'Login failed');
       } else {
         if (typeof window !== 'undefined') {
-          localStorage.setItem('token', data.user.token);
+          localStorage.setItem('token', String(data.user.token));
+          localStorage.setItem('user', JSON.stringify({
+            id: data.user.id,
+            email: data.user.email,
+            username: data.user.username
+          }));
+          setUser({
+            id: data.user.id,
+            email: data.user.email,
+            username: data.user.username
+          });
         }
-        // Optionally redirect or show success
         window.location.href = '/';
       }
     } catch (err) {
+      console.error('Login error:', err);
       setError('Login failed');
     }
     setLoading(false);
