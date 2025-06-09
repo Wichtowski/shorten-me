@@ -20,19 +20,14 @@ const LoginPage = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         setError(data.error || 'Login failed');
       } else {
         if (typeof window !== 'undefined') {
           localStorage.setItem('token', String(data.user.token));
-          localStorage.setItem('user', JSON.stringify({
-            id: data.user.id,
-            email: data.user.email,
-            username: data.user.username
-          }));
           setUser({
             id: data.user.id,
             email: data.user.email,

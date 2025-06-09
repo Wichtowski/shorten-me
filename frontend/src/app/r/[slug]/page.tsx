@@ -1,57 +1,66 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Spinner from '@/components/common/Spinner';
+import { use } from 'react';
 
-export default function RedirectPage({ params }: { params: { slug: string } }) {
+interface PageParams {
+  slug: string;
+}
+
+export default function RedirectPage({ params }: { params: Promise<PageParams> }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { slug } = use(params);
 
   useEffect(() => {
     const fetchUrl = async () => {
-      if (!params?.slug) return;
+      if (!slug) {
+        setError('Invalid URL');
+        setIsLoading(false);
+        return;
+      }
 
       try {
-        const response = await fetch(`/api/v1/urls/${params.slug}`);
+        const response = await fetch(`/api/v1/urls/${slug}`);
+        const data = await response.json();
+
         if (!response.ok) {
-          throw new Error('URL not found');
+          throw new Error(data.error || 'URL not found');
         }
 
-        const data = await response.json();
-        if (data.original_url) {
-          // Increment clicks before redirecting
-          await fetch(`/api/v1/urls/${params.slug}/clicks`, {
-            method: 'POST',
-          });
-
-          window.location.href = data.original_url;
-        } else {
+        if (!data.original_url) {
           throw new Error('Invalid URL data');
         }
+
+        window.location.href = data.original_url;
       } catch (error) {
         console.error('Error fetching URL:', error);
-        setError('URL not found or invalid');
-        setTimeout(() => router.push('/'), 2000);
+        setError(error instanceof Error ? error.message : 'URL not found or invalid');
+        setTimeout(() => router.push('/'), 3000);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchUrl();
-  }, [params?.slug, router]);
+  }, [slug, router]);
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-red-500">{error}</div>
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+        <div className="text-red-500 text-xl font-medium">{error}</div>
+        <div className="text-gray-500">Redirecting to home page...</div>
       </div>
     );
   }
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-light"></div>
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+        <Spinner />
+        <div className="text-primary-light">Redirecting...</div>
       </div>
     );
   }

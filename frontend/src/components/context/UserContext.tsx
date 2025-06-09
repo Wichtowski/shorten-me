@@ -1,17 +1,8 @@
 'use client';
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { verifyJwt } from '@/app/api/v1/utils/jwt';
+import { User, UserContextType } from '@/common/interfaces/User';
 
-interface User {
-  id: string;
-  email: string;
-  username: string;
-}
-
-interface UserContextType {
-  user: User | null;
-  setUser: (user: User | null) => void;
-  logout: () => void;
-}
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
@@ -19,17 +10,18 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    // Check for token and user data in localStorage on mount
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
-    if (token && userData) {
-      setUser(JSON.parse(userData));
-    }
+    const checkToken = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const decoded = await verifyJwt(token);
+        setUser(decoded);
+      }
+    };
+    checkToken();
   }, []);
 
   const logout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
     setUser(null);
   };
 

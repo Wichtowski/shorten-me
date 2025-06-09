@@ -29,12 +29,11 @@ export async function GET(req: NextRequest) {
 
           const query = {
             query: 'SELECT * FROM c WHERE c.user_id = @user_id',
-            parameters: [{ name: '@user_id', value: user_id }],
-            partitionKey: user_id
+            parameters: [{ name: '@user_id', value: user_id as string }]
           };
           console.log('Query:', query);
 
-          const { resources } = await container.items.query(query).fetchAll();
+          const { resources } = await container.items.query(query, { partitionKey: [user_id as string] }).fetchAll();
           console.log('Query results:', resources);
 
           if (!resources || resources.length === 0) {
