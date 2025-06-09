@@ -8,6 +8,7 @@ import {
   incrementShortenCount,
 } from '@/utils/urlUtils';
 import { useNotification } from '@/components/context/NotificationContext';
+import { useUser } from '@/components/context/UserContext';
 import UrlDetails from './UrlDetails';
 import UrlParameters from './UrlParameters';
 
@@ -17,9 +18,7 @@ const UrlShortener = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { showNotification } = useNotification();
-
-  // Mock isLoggedIn state - replace with actual auth logic
-  const isLoggedIn = false;
+  const { user } = useUser();
 
   const validateUrl = async (urlString: string) => {
     try {
@@ -67,20 +66,34 @@ const UrlShortener = () => {
         incrementShortenCount();
         showNotification('URL shortened successfully!', 'success');
       } else {
+        const token = localStorage.getItem('token');
+        console.log('Token from localStorage:', token);
+        
+        const headers = {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` }),
+        };
+        console.log('Request headers:', headers);
+
         const response = await fetch(`/api/v1/shorten`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers,
           body: JSON.stringify({ original_url: url }),
         });
+        
         const data = await response.json();
+        console.log('Response data:', data);
+        
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to shorten URL');
+        }
         setShortUrl(data.url.short_url);
         incrementShortenCount();
         showNotification('URL shortened successfully!', 'success');
       }
-    } catch {
-      setError('Failed to shorten URL');
+    } catch (error) {
+      console.error('Error shortening URL:', error);
+      setError(error instanceof Error ? error.message : 'Failed to shorten URL');
       showNotification('Failed to shorten URL', 'error');
     }
     setLoading(false);
@@ -121,7 +134,7 @@ const UrlShortener = () => {
         {shortUrl && (
           <>
             <UrlDetails shortUrl={shortUrl} originalUrl={url} />
-            {isLoggedIn && <UrlParameters shortUrl={shortUrl} />}
+            {user && <UrlParameters shortUrl={shortUrl} />}
           </>
         )}
       </div>

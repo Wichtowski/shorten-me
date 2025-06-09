@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { NotificationProvider } from '@/components/context/NotificationContext';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
+import { UserProvider } from '@/components/context/UserContext';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -30,8 +31,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-gradient-to-b from-primary-darkest to-primary-dark pt-16`}
       >
-        <Navbar />
-        <NotificationProvider>{children}</NotificationProvider>
+        <UserProvider>
+          <Navbar />
+          <NotificationProvider>{children}</NotificationProvider>
+        </UserProvider>
       </body>
     </html>
   );

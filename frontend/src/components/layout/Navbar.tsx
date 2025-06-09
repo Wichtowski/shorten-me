@@ -1,8 +1,11 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
+import { useUser } from '../context/UserContext';
 
 const Navbar = () => {
+  const { user } = useUser();
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-primary-dark/50 backdrop-blur-sm border-b border-primary-light/20">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -10,15 +13,26 @@ const Navbar = () => {
           ShortenMe
         </Link>
         <div className="space-x-4">
-          <Link href="/login" className="text-primary-lightest hover:text-white transition-colors">
-            Login
-          </Link>
-          <Link
-            href="/signup"
-            className="bg-primary-light hover:bg-primary-lightest text-white px-4 py-2 rounded-lg transition-colors"
-          >
-            Sign Up
-          </Link>
+          {user ? (
+            <Link
+              href="/account"
+              className="bg-primary-light hover:bg-primary-lightest text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              My Account
+            </Link>
+          ) : (
+            <>
+              <Link href="/login" className="text-primary-lightest hover:text-white transition-colors">
+                Login
+              </Link>
+              <Link
+                href="/signup"
+                className="bg-primary-light hover:bg-primary-lightest text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>

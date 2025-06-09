@@ -4,10 +4,10 @@ import { getUrlsContainer, getAnonymousContainer } from '../../utils/cosmos';
 
 export async function GET(
   req: NextRequest,
-  context: { params: { slug: string } }
+  { params }: { params: { slug: string } }
 ) {
   try {
-    const { slug } = context.params;
+    const slug = await params.slug;
     if (!slug) {
       return NextResponse.json({ error: 'Missing slug parameter' }, { status: 400 });
     }
@@ -22,7 +22,10 @@ export async function GET(
 
       const { resources } = await container.items.query(query).fetchAll();
       if (resources.length > 0) {
-        return NextResponse.json({ original_url: resources[0].original_url });
+        const urlDoc = resources[0];
+        urlDoc.clicks = (urlDoc.clicks || 0) + 1;
+        await container.item(urlDoc.id).replace(urlDoc);
+        return NextResponse.json({ original_url: urlDoc.original_url });
       }
     }
 
