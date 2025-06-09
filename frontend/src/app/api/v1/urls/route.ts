@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUrlsContainer } from '../../utils/cosmos';
-import { verifyJwt } from '../../utils/jwt';
+import { getUrlsContainer } from '@/app/api/v1/utils/cosmos';
+import { verifyJwt } from '@/app/api/v1/utils/jwt';
 
 export async function GET(req: NextRequest) {
   try {
