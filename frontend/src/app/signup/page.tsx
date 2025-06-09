@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import bcrypt from 'bcryptjs';
 
 const SignupPage = () => {
   const [email, setEmail] = useState('');

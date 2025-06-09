@@ -1,7 +1,9 @@
+'use server';
+
 import { NextRequest, NextResponse } from 'next/server';
-import { getUsersContainer } from '../../utils/cosmos';
-import { verifyPassword } from '../../utils/hash';
-import { signJwt } from '../../utils/jwt';
+import { getUsersContainer } from '@/app/api/v1/utils/cosmos';
+import { verifyPassword } from '@/app/api/v1/utils/hash';
+import { signJwt } from '@/app/api/v1/utils/jwt';
 
 export async function POST(req: NextRequest) {
   try {
@@ -46,4 +48,24 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+export async function GET() {
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+}
+
+export async function PUT() {
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+}
+
+export async function PATCH() {
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+}
+
+export async function OPTIONS() {
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+}
+
+export async function DELETE() {
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
 }

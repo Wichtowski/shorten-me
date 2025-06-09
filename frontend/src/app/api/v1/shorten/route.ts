@@ -1,9 +1,9 @@
 'use server';
 import { NextRequest, NextResponse } from 'next/server';
-import { getUrlsContainer, getAnonymousContainer } from '@/app/api/utils/cosmos';
+import { getUrlsContainer, getAnonymousContainer } from '@/app/api/v1/utils/cosmos';
 import { v4 as uuidv4 } from 'uuid';
-import { verifyJwt } from '@/app/api/utils/jwt';
-import { randomSlug } from '@/app/api/utils/url';
+import { verifyJwt } from '@/app/api/v1/utils/jwt';
+import { randomSlug } from '@/app/api/v1/utils/url';
 
 export async function POST(req: NextRequest) {
   try {
