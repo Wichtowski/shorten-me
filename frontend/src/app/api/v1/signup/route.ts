@@ -1,9 +1,9 @@
 'use server';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getUsersContainer } from '../utils/cosmos';
-import { hashPassword } from '../utils/hash';
-import { signJwt } from '../utils/jwt';
+import { getUsersContainer } from '../../utils/cosmos';
+import { hashPassword } from '../../utils/hash';
+import { signJwt } from '../../utils/jwt';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(req: NextRequest) {

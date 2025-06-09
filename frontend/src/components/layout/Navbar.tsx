@@ -20,7 +20,7 @@ const Navbar = () => {
         <div className="space-x-4">
           {user ? (
             <>
-              <Link href="/my-urls" className="text-primary-lightest hover:text-white transition-colors">
+              <Link href="/account" className="text-primary-lightest hover:text-white transition-colors">
                 Welcome, {user.username}
               </Link>
               <button

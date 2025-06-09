@@ -26,15 +26,13 @@ const SignupPage = () => {
     }
 
     try {
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      const response = await fetch('/api/create/me', {
+      const response = await fetch('/api/v1/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email,
           username,
-          password: hashedPassword,
+          password,
         }),
       });
 

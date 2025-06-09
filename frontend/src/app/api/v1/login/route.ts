@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUsersContainer } from '../utils/cosmos';
-import { verifyPassword } from '../utils/hash';
-import { signJwt } from '../utils/jwt';
+import { getUsersContainer } from '../../utils/cosmos';
+import { verifyPassword } from '../../utils/hash';
+import { signJwt } from '../../utils/jwt';
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,14 +18,11 @@ export async function POST(req: NextRequest) {
 
     const { resources } = await users.items.query(query).fetchAll();
     if (resources.length === 0) {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+      return NextResponse.json({ error: 'User not found' }, { status: 401 });
     }
 
     const user = resources[0];
-    console.log('Found user:', user.email);
-
     const valid = await verifyPassword(password, user.password);
-    console.log('Password verification result:', valid);
 
     if (!valid) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
@@ -35,10 +32,10 @@ export async function POST(req: NextRequest) {
     console.log('Generated token:', token); // Debug log
 
     return NextResponse.json({
-      user: { 
-        id: user.id, 
-        email: user.email, 
-        username: user.username, 
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
         token: token // Make sure token is a string
       },
     });

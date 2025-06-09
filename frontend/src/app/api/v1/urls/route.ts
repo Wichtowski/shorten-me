@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUrlsContainer } from '../utils/cosmos';
-import { verifyJwt } from '../utils/jwt';
+import { getUrlsContainer } from '../../utils/cosmos';
+import { verifyJwt } from '../../utils/jwt';
 
 export async function GET(req: NextRequest) {
   try {
     const authHeader = req.headers.get('authorization');
     console.log('Auth header:', authHeader);
-    
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       console.log('No valid auth header found');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -14,19 +14,19 @@ export async function GET(req: NextRequest) {
 
     const token = authHeader.split(' ')[1];
     console.log('Token:', token);
-    
+
     try {
       const decoded = await verifyJwt(token);
       console.log('Decoded token:', decoded);
-      
+
       if (typeof decoded === 'object' && 'user_id' in decoded) {
         const user_id = decoded.user_id;
         console.log('User ID:', user_id);
-        
+
         try {
           const container = await getUrlsContainer();
           console.log('Got container');
-          
+
           const query = {
             query: 'SELECT * FROM c WHERE c.user_id = @user_id',
             parameters: [{ name: '@user_id', value: user_id }],
@@ -36,16 +36,16 @@ export async function GET(req: NextRequest) {
 
           const { resources } = await container.items.query(query).fetchAll();
           console.log('Query results:', resources);
-          
+
           if (!resources || resources.length === 0) {
             console.log('No URLs found for user');
             return NextResponse.json({ urls: [] });
           }
-          
-          const sortedUrls = resources.sort((a, b) => 
+
+          const sortedUrls = resources.sort((a, b) =>
             new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
           );
-          
+
           console.log('Returning sorted URLs:', sortedUrls);
           return NextResponse.json({ urls: sortedUrls });
         } catch (dbError) {

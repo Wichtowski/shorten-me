@@ -24,13 +24,13 @@ export default function MyUrlsPage() {
     try {
       const token = localStorage.getItem('token');
       console.log('Token from localStorage:', token);
-      
+
       if (!token) {
         throw new Error('No token found');
       }
 
-      console.log('Making API request to /api/my-urls');
-      const response = await fetch('/api/my-urls', {
+      console.log('Making API request to /api/v1/urls');
+      const response = await fetch('/api/v1/urls', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -71,7 +71,7 @@ export default function MyUrlsPage() {
         throw new Error('No token found');
       }
 
-      const response = await fetch('/api/delete-url', {
+      const response = await fetch('/api/v1/shorten', {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -153,9 +153,9 @@ export default function MyUrlsPage() {
               {urls.map((url) => (
                 <tr key={url.id} className="border-b border-primary-light/20 last:border-0">
                   <td className="px-6 py-4 text-primary-lightest">
-                    <a 
-                      href={url.original_url} 
-                      target="_blank" 
+                    <a
+                      href={url.original_url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="hover:text-primary-light transition-colors"
                     >
@@ -163,9 +163,8 @@ export default function MyUrlsPage() {
                     </a>
                   </td>
                   <td className="px-6 py-4 text-primary-lightest">
-                    <a 
-                      href={`/${url.short_url}`} 
-                      target="_blank" 
+                    <a
+                      href={`/${url.short_url}`}
                       rel="noopener noreferrer"
                       className="hover:text-primary-light transition-colors"
                     >
@@ -184,11 +183,10 @@ export default function MyUrlsPage() {
                     <button
                       onClick={() => handleDelete(url.id)}
                       disabled={deleteLoading === url.id}
-                      className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
-                        deleteLoading === url.id
+                      className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${deleteLoading === url.id
                           ? 'bg-red-500/50 cursor-not-allowed'
                           : 'bg-red-500 hover:bg-red-600'
-                      }`}
+                        }`}
                     >
                       {deleteLoading === url.id ? 'Deleting...' : 'Delete'}
                     </button>
