@@ -3,8 +3,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUrlsContainer, getAnonymousContainer } from '@/app/api/v1/utils/cosmos';
 
-export async function GET(req: NextRequest, { params }: { params: { slug: string } }) {
-  const { slug } = params;
+export async function GET(
+  request: NextRequest
+): Promise<NextResponse> {
+  const slug = request.nextUrl.pathname.split('/').pop();
+
   if (!slug) {
     return NextResponse.json({ error: 'Missing slug' }, { status: 400 });
   }
@@ -31,37 +34,22 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
   return NextResponse.json({ error: 'slug not found' }, { status: 404 });
 }
 
-async function getOriginalUrl(slug: string) {
-  // Try to find the URL in both containers
-  const containers = [await getUrlsContainer(), await getAnonymousContainer()];
-
-  for (const container of containers) {
-    const query = {
-      query: 'SELECT * FROM c WHERE c.short_url = @short_url',
-      parameters: [{ name: '@short_url', value: slug }],
-    };
-    const { resources } = await container.items.query(query).fetchAll();
-
-    if (resources.length > 0) {
-      const urlDoc = resources[0];
-
-      // Update click count
-      urlDoc.clicks += 1;
-      await container.item(urlDoc.id).replace(urlDoc);
-
-      return urlDoc.original_url;
-    }
-  }
-
-  return null;
+export async function POST() {
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
 }
 
-export default async function RedirectPage({ params }: { params: { slug: string } }) {
-  const originalUrl = await getOriginalUrl(params.slug);
+export async function PUT() {
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+}
 
-  if (!originalUrl) {
-    return NextResponse.redirect('/404?slug=' + params.slug + '&error=URL not found');
-  }
+export async function PATCH() {
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+}
 
-  return NextResponse.redirect(originalUrl);
+export async function OPTIONS() {
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+}
+
+export async function DELETE() {
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
 }

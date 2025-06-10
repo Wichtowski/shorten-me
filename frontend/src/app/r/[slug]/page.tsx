@@ -23,8 +23,10 @@ export default function RedirectPage({ params }: { params: Promise<PageParams> }
       }
 
       try {
+        console.log('slug', slug);
         const response = await fetch(`/api/v1/urls/${slug}`);
         const data = await response.json();
+        console.log('data', data);
 
         if (!response.ok) {
           throw new Error(data.error || 'URL not found');
@@ -66,4 +68,4 @@ export default function RedirectPage({ params }: { params: Promise<PageParams> }
   }
 
   return null;
-} 
+}

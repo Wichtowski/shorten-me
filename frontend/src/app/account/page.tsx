@@ -11,19 +11,29 @@ import { useUrls } from '@/hooks/useUrls';
 import { useDeleteUrl } from '@/hooks/useDeleteUrl';
 import { UrlTable } from '@/components/account/UrlTable';
 import { useDeleteAccount } from '@/hooks/useDeleteAccount';
+import { Url } from '@/types/url';
 
 export default function MyUrlsPage() {
   const { user, logout } = useUser();
   const router = useRouter();
-  const { urls = [], loading, error } = useUrls();
+  const { urls: localUrls = [], error } = useUrls();
   const { deleteUrl, deleteLoading } = useDeleteUrl();
-  const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
-  const [deleteConfirmation, setDeleteConfirmation] = useState<{ isOpen: boolean; urlId: string | null }>({
+  const [notification, setNotification] = useState<{
+    message: string;
+    type: 'success' | 'error' | 'info';
+  } | null>(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+    isOpen: boolean;
+    urlId: string | null;
+  }>({
     isOpen: false,
-    urlId: null
+    urlId: null,
   });
   const [deleteAccountConfirmation, setDeleteAccountConfirmation] = useState<boolean>(false);
   const { deleteAccount } = useDeleteAccount();
+  const [syncedUrls, setSyncedUrls] = useState<Url[]>([]);
+  const [shouldUseLocal, setShouldUseLocal] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -43,8 +53,54 @@ export default function MyUrlsPage() {
     checkAuth();
   }, [user, router]);
 
+  useEffect(() => {
+    const syncData = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const storedUrls = JSON.parse(localStorage.getItem('urls') || '[]');
+
+      try {
+        const response = await fetch('/api/v1/urls', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          setNotification({ message: 'Failed to fetch URLs', type: 'error' });
+          return;
+        }
+
+        const data = await response.json();
+        const serverUrls = data.urls;
+
+        // Only update if there's a real difference in data
+        const isDataMatching = storedUrls.length === serverUrls.length &&
+          storedUrls.every((storedUrl: Url, index: number) => {
+            const serverUrl = serverUrls[index];
+            return storedUrl.clicks === serverUrl.clicks &&
+              storedUrl.original_url === serverUrl.original_url &&
+              storedUrl.short_url === serverUrl.short_url;
+          });
+
+        if (!isDataMatching) {
+          localStorage.setItem('urls', JSON.stringify(serverUrls));
+          setSyncedUrls(serverUrls);
+          setShouldUseLocal(false);
+        }
+      } catch (error) {
+        setNotification({ message: 'Failed to fetch URLs', type: 'error' });
+      } finally {
+        setIsInitialLoad(false);
+      }
+    };
+
+    syncData();
+  }, []);
+
   const handleCopyUrl = (url: string) => {
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(`${window.location.origin}/r/${url}`);
     setNotification({ message: 'URL copied to clipboard!', type: 'success' });
   };
 
@@ -61,7 +117,7 @@ export default function MyUrlsPage() {
     } catch (err) {
       setNotification({
         message: err instanceof Error ? err.message : 'Failed to delete URL',
-        type: 'error'
+        type: 'error',
       });
     } finally {
       setDeleteConfirmation({ isOpen: false, urlId: null });
@@ -75,7 +131,10 @@ export default function MyUrlsPage() {
       await deleteAccount();
       setNotification({ message: 'Account deleted successfully', type: 'success' });
     } catch (err) {
-      setNotification({ message: err instanceof Error ? err.message : 'Failed to delete account', type: 'error' });
+      setNotification({
+        message: err instanceof Error ? err.message : 'Failed to delete account',
+        type: 'error',
+      });
     }
   };
 
@@ -85,6 +144,9 @@ export default function MyUrlsPage() {
   };
 
   if (!user) return null;
+
+  // Use local URLs by default, only switch to server data if they don't match
+  const displayUrls = shouldUseLocal ? localUrls : syncedUrls;
 
   return (
     <div className="container mx-auto px-4 py-16 mt-16 relative min-h-screen">
@@ -119,12 +181,12 @@ export default function MyUrlsPage() {
               <th className="px-6 py-4 text-left text-primary-lightest">Original URL</th>
               <th className="px-6 py-4 text-left text-primary-lightest">Short URL</th>
               <th className="px-6 py-4 text-left text-primary-lightest">Clicks</th>
-              <th className="px-6 py-4 text-left text-primary-lightest">Created At</th>
+              <th className="px-6 py-4 text-primary-lightest">Created At</th>
               <th className="px-6 py-4 text-left text-primary-lightest">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {loading ? (
+            {isInitialLoad && !localStorage.getItem('urls') ? (
               <tr>
                 <td colSpan={5} className="px-6 py-8">
                   <div className="flex justify-center">
@@ -138,7 +200,7 @@ export default function MyUrlsPage() {
                   <div className="text-center text-red-400">{error}</div>
                 </td>
               </tr>
-            ) : urls.length === 0 ? (
+            ) : displayUrls.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-4">
                   <div className="text-center text-primary-lightest">
@@ -148,7 +210,7 @@ export default function MyUrlsPage() {
               </tr>
             ) : (
               <UrlTable
-                urls={urls}
+                urls={displayUrls}
                 onCopyUrl={handleCopyUrl}
                 onDeleteUrl={handleDeleteClick}
                 deleteLoading={!!deleteLoading}
@@ -182,4 +244,4 @@ export default function MyUrlsPage() {
       </div>
     </div>
   );
-} 
+}

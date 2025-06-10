@@ -6,15 +6,10 @@ import dotenv
 
 dotenv.load_dotenv()
 
-PROJECT_ROOT = pathlib.Path(__file__).parent.absolute()
-INFRA_DIR = os.path.join(PROJECT_ROOT, "infra")
-
-PULUMI_CONFIG_PASSPHRASE = os.getenv("PULUMI_CONFIG_PASSPHRASE")
-
 def get_pulumi_output(output_name):
     try:
         result = subprocess.run(
-            ["pulumi", "stack", "output", output_name, "--show-secrets", "--passphrase", PULUMI_CONFIG_PASSPHRASE],
+            ["pulumi", "stack", "output", output_name, "--show-secrets"],
             capture_output=True,
             text=True,
             cwd=INFRA_DIR
@@ -26,6 +21,20 @@ def get_pulumi_output(output_name):
     except Exception as e:
         print(f"Error getting Pulumi output {output_name}: {e}")
         return None
+
+PROJECT_ROOT = pathlib.Path(__file__).parent.absolute()
+INFRA_DIR = os.path.join(PROJECT_ROOT, "infra")
+
+PULUMI_CONFIG_PASSPHRASE = os.getenv("PULUMI_CONFIG_PASSPHRASE")
+cosmosdb_endpoint = get_pulumi_output('cosmosdb_endpoint')
+cosmosdb_key = os.getenv('COSMOSDB_KEY')
+cosmosdb_database_name = 'urlshortener'
+if not all([cosmosdb_endpoint, cosmosdb_key, cosmosdb_database_name]):
+    print("Error: Missing required CosmosDB configuration")
+    print(f"  cosmosdb_endpoint: {cosmosdb_endpoint}")
+    print(f"  cosmosdb_key: {cosmosdb_key}")
+    print(f"  cosmosdb_database_name: {cosmosdb_database_name}")
+    sys.exit(1)
 
 print("Getting container registry information...")
 registry_login_server = get_pulumi_output("container_registry_login_server")
@@ -85,9 +94,8 @@ try:
         "--container-registry-user", registry_username,
         "--container-registry-password", registry_password
     ], check=True, cwd=PROJECT_ROOT)
-    cosmos_endpoint = get_pulumi_output('cosmosdb_endpoint')
-    cosmos_key = get_pulumi_output('cosmosdb_key')
-    cosmosdb_database_name = get_pulumi_output('cosmosdb_account_name')
+
+    print("Setting app configuration...")
     subprocess.run([
         "az", "webapp", "config", "appsettings", "set",
         "--resource-group", resource_group,
@@ -95,9 +103,10 @@ try:
         "--settings",
         "WEBSITES_PORT=80",
         "WEBSITES_ENABLE_APP_SERVICE_STORAGE=false",
-        f"COSMOS_ENDPOINT={cosmos_endpoint}",
-        f"COSMOS_KEY={cosmos_key}",
-        f"COSMOSDB_DATABASE_NAME={cosmosdb_database_name}"
+        f"COSMOSDB_ENDPOINT={cosmosdb_endpoint}",
+        f"COSMOSDB_KEY={cosmosdb_key}",
+        f"COSMOSDB_DATABASE_NAME={cosmosdb_database_name}",
+        "NODE_ENV=production"
     ], check=True, cwd=PROJECT_ROOT)
     print(f"Restarting {app_name}...")
     subprocess.run([

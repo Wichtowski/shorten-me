@@ -42,3 +42,5 @@ env/
 .docker/ 
 
 .zip
+
+azure-credentials.json
