@@ -1,39 +1,26 @@
-export const isMockMode = () => {
-  const params = new URLSearchParams();
-  return params.has('applyMocks');
-};
+const MOCK_MODE = process.env.NEXT_PUBLIC_MOCK_MODE === 'true';
+const MAX_FREE_SHORTENS = 3;
+
+export const isMockMode = () => MOCK_MODE;
 
 export const generateMockShortUrl = () => {
-  const rand = Math.random();
-  const mockId = rand !== undefined ? rand.toString(36).substring(2, 8) : '';
-  return `http://localhost:3000/${mockId}`;
-};
-
-export const getShortenCount = () => {
-  const count = localStorage.getItem('shortenCount');
-  return count ? parseInt(count, 10) : 0;
-};
-
-export const incrementShortenCount = () => {
-  const currentCount = getShortenCount();
-  localStorage.setItem(
-    'shortenCount',
-    currentCount !== undefined ? (currentCount + 1).toString() : '1'
-  );
-  return currentCount + 1;
+  const mockId = Math.random().toString(36).substring(2, 8);
+  return `${window.location.origin}/s/${mockId}`;
 };
 
 export const canShortenMore = () => {
-  if (process.env.NODE_ENV === 'development') {
-    return true;
+  const token = localStorage.getItem('token');
+  if (token) {
+    return true; // Authenticated users have no limit
   }
-  return getShortenCount() < 3;
+  const count = parseInt(localStorage.getItem('shortenCount') || '0');
+  return count < MAX_FREE_SHORTENS;
 };
 
-export const getApiUrl = (): string => {
-  if (process.env.NODE_ENV === 'development') {
-    return 'http://localhost:8000';
-  } else {
-    return process.env.BACKEND_API_BASE_URL!;
+export const incrementShortenCount = () => {
+  const token = localStorage.getItem('token');
+  if (!token) { // Only increment count for non-authenticated users
+    const count = parseInt(localStorage.getItem('shortenCount') || '0');
+    localStorage.setItem('shortenCount', (count + 1).toString());
   }
 };

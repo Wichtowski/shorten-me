@@ -13,7 +13,7 @@ if (!endpoint || !key) {
 const client = new CosmosClient({
   endpoint,
   key,
-  userAgentSuffix: 'shorten-me-app'
+  userAgentSuffix: 'shorten-me-app',
 });
 
 const db = client.database(databaseName);

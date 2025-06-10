@@ -1,0 +1,28 @@
+name: Deploy to Azure
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: shorten-me-app
+  AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+  DOCKER_REGISTRY: shortenme.azurecr.io
+  DOCKER_IMAGE_NAME: urlshortener
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Deploy Infra to Azure
+        working-directory: ./infra
+        run:
+          pulumi login azure
+          pulumi up --yes

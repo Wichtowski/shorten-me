@@ -22,7 +22,10 @@ const Navbar = () => {
             </Link>
           ) : (
             <>
-              <Link href="/login" className="text-primary-lightest hover:text-white transition-colors">
+              <Link
+                href="/login"
+                className="text-primary-lightest hover:text-white transition-colors"
+              >
                 Login
               </Link>
               <Link

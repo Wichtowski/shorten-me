@@ -31,7 +31,7 @@ const LoginPage = () => {
           setUser({
             id: data.user.id,
             email: data.user.email,
-            username: data.user.username
+            username: data.user.username,
           });
         }
         window.location.href = '/';
@@ -78,9 +78,10 @@ const LoginPage = () => {
             {error && <p className="text-red-400 text-sm">{error}</p>}
             <button
               type="submit"
-              className="w-full bg-primary-light hover:bg-primary-lightest text-white font-bold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+              disabled={loading}
+              className="w-full bg-primary-light hover:bg-primary-lightest text-white font-bold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Login
+              {loading ? 'Logging in...' : 'Login'}
             </button>
           </form>
           <p className="mt-6 text-center text-primary-light">

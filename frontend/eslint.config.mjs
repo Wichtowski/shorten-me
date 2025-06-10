@@ -17,11 +17,6 @@ const eslintConfig = [
       'prefer-const': 'warn',
       '@typescript-eslint/no-unused-vars': 'error',
       '@typescript-eslint/no-unused-expressions': 'error',
-      '@typescript-eslint/no-unused-labels': 'error',
-      '@typescript-eslint/no-unused-imports': 'error',
-      '@typescript-eslint/no-unused-parameters': 'error',
-      '@typescript-eslint/no-unused-private-class-members': 'error',
-      '@typescript-eslint/no-unused-private-class-members': 'error',
     },
   },
 ];

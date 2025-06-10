@@ -9,8 +9,10 @@ import {
 } from '@/utils/urlUtils';
 import { useNotification } from '@/components/context/NotificationContext';
 import { useUser } from '@/components/context/UserContext';
+import { useRecentShortens } from '@/hooks/useRecentShortens';
 import UrlDetails from './UrlDetails';
 import UrlParameters from './UrlParameters';
+import RecentShortens from './RecentShortens';
 
 const UrlShortener = () => {
   const [url, setUrl] = useState('');
@@ -19,6 +21,7 @@ const UrlShortener = () => {
   const [error, setError] = useState('');
   const { showNotification } = useNotification();
   const { user } = useUser();
+  const { addShorten } = useRecentShortens();
 
   const validateUrl = async (urlString: string) => {
     try {
@@ -57,21 +60,23 @@ const UrlShortener = () => {
     }
 
     try {
+      let generatedShortUrl = '';
+
       if (isMockMode()) {
         await new Promise((resolve) => setTimeout(resolve, 500));
         if (typeof window !== 'undefined') {
-          const generated = generateMockShortUrl();
-          setShortUrl(generated);
+          generatedShortUrl = generateMockShortUrl();
+          setShortUrl(generatedShortUrl);
         }
         incrementShortenCount();
         showNotification('URL shortened successfully!', 'success');
       } else {
         const token = localStorage.getItem('token');
         console.log('Token from localStorage:', token);
-        
+
         const headers = {
           'Content-Type': 'application/json',
-          ...(token && { 'Authorization': `Bearer ${token}` }),
+          ...(token && { Authorization: `Bearer ${token}` }),
         };
         console.log('Request headers:', headers);
 
@@ -80,17 +85,21 @@ const UrlShortener = () => {
           headers,
           body: JSON.stringify({ original_url: url }),
         });
-        
+
         const data = await response.json();
         console.log('Response data:', data);
-        
+
         if (!response.ok) {
           throw new Error(data.error || 'Failed to shorten URL');
         }
-        setShortUrl(data.url.short_url);
+        generatedShortUrl = data.url.short_url;
+        setShortUrl(generatedShortUrl);
         incrementShortenCount();
         showNotification('URL shortened successfully!', 'success');
       }
+
+      // Add to recent shortenings
+      addShorten(url, generatedShortUrl);
     } catch (error) {
       console.error('Error shortening URL:', error);
       setError(error instanceof Error ? error.message : 'Failed to shorten URL');
@@ -138,6 +147,7 @@ const UrlShortener = () => {
           </>
         )}
       </div>
+      <RecentShortens />
     </div>
   );
 };

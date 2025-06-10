@@ -15,7 +15,7 @@ export default function ConfirmationOverlay({
   title,
   message,
   confirmText = 'Confirm',
-  cancelText = 'Cancel'
+  cancelText = 'Cancel',
 }: ConfirmationOverlayProps) {
   if (!isOpen) return null;
 
@@ -44,4 +44,4 @@ export default function ConfirmationOverlay({
       </div>
     </div>
   );
-} 
+}

@@ -28,8 +28,8 @@ All backend logic (authentication, URL shortening, etc.) is implemented in Next.
 
 You must set the following environment variables (in `.env.local` or via Azure App Settings):
 
-- `COSMOS_ENDPOINT` (CosmosDB endpoint)
-- `COSMOS_KEY` (CosmosDB key)
+- `COSMOSDB_ENDPOINT` (CosmosDB endpoint)
+- `COSMOSDB_KEY` (CosmosDB key)
 - `COSMOSDB_DATABASE_NAME` (CosmosDB database name)
 - `SECRET_KEY` (JWT secret)
 - `ALGORITHM` (JWT algorithm, e.g. HS256)

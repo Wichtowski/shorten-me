@@ -1,18 +1,27 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useUser } from '@/components/context/UserContext';
-import { useUrlStore } from '@/store/urlStore';
+import { useAccountStore } from '@/store/accountStore';
 
 export function useUrls() {
-    const { user } = useUser();
-    const { urls, loading, error, fetchUrls, updateUrls } = useUrlStore();
+  const { user } = useUser();
+  const { urls, loading, error, syncUrls } = useAccountStore();
 
-    useEffect(() => {
-        if (user) {
-            console.log('Fetching URLs for user:', user);
-            fetchUrls();
-        }
-    }, [user, fetchUrls]);
+  // Force sync when user explicitly requests it
+  const forceSync = useCallback(() => {
+    syncUrls();
+  }, [syncUrls]);
 
-    console.log('Current URLs state:', { urls, loading, error });
-    return { urls: Array.isArray(urls) ? urls : [], loading, error, updateUrls };
-} 
+  useEffect(() => {
+    if (user) {
+      // Initial fetch
+      syncUrls();
+
+      // Set up periodic sync
+      const syncInterval = setInterval(() => syncUrls(), 30000);
+
+      return () => clearInterval(syncInterval);
+    }
+  }, [user, syncUrls]);
+
+  return { urls, loading, error, forceSync };
+}

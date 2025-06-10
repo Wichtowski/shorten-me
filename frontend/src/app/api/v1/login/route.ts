@@ -38,15 +38,12 @@ export async function POST(req: NextRequest) {
         id: user.id,
         email: user.email,
         username: user.username,
-        token: token // Make sure token is a string
+        token: token, // Make sure token is a string
       },
     });
   } catch (error) {
     console.error('Login error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
