@@ -89,7 +89,8 @@ export default function MyUrlsPage() {
           setSyncedUrls(serverUrls);
           setShouldUseLocal(false);
         }
-      } catch (error) {
+      } catch (err) {
+        console.error('Error syncing URLs:', err);
         setNotification({ message: 'Failed to fetch URLs', type: 'error' });
       } finally {
         setIsInitialLoad(false);
@@ -131,6 +132,7 @@ export default function MyUrlsPage() {
       await deleteAccount();
       setNotification({ message: 'Account deleted successfully', type: 'success' });
     } catch (err) {
+      console.error('Error deleting account:', err);
       setNotification({
         message: err instanceof Error ? err.message : 'Failed to delete account',
         type: 'error',
