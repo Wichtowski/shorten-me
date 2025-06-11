@@ -1,9 +1,6 @@
 name: Deploy on Environment
 
 on:
-  push:
-    branches: [main]
-
   workflow_call:
     inputs:
       source-name:

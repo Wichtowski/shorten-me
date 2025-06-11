@@ -35,19 +35,19 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-    release-new-version:
-        name: 'Release new version'
-        uses: ./.github/workflows/release-new-version.yml
-        with:
-          bump-version: ${{ inputs.bump-version || 'yes' }}
-          branch-name: ${{ inputs.branch-name || 'main' }}
-          semantic-version: ${{ inputs.semantic-version || 'minor' }}
-        secrets: inherit
+  release-new-version:
+    name: 'Release new version'
+    uses: ./.github/workflows/release-new-version.yml
+    with:
+      bump-version: ${{ inputs.bump-version || 'yes' }}
+      branch-name: ${{ inputs.branch-name || 'main' }}
+      semantic-version: ${{ inputs.semantic-version || 'minor' }}
+    secrets: inherit
 
-    deploy-on-dev:
-        name: Deploy on Dev
-        uses: ./.github/workflows/deploy-on-env.yaml
-        with:
-            environment: 'development'
-            source-name: ${{ needs.release-new-version.outputs.new-tag || inputs.branch-name || 'main' }}
-        secrets: inherit
+  deploy-on-dev:
+    name: Deploy on Dev
+    uses: ./.github/workflows/deploy-on-env.yaml
+    with:
+        environment: 'development'
+        source-name: ${{ needs.release-new-version.outputs.new-tag || inputs.branch-name || 'main' }}
+    secrets: inherit
