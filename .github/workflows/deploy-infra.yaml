@@ -1,4 +1,4 @@
-name: Deploy Frontend to Azure
+name: Deploy Infrastructure
 
 on:
   workflow_dispatch:

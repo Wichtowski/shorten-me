@@ -1,9 +1,16 @@
 name: Deploy All to Azure
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        type: choice
+        options:
+          - production
+          - staging
+          - development
 
 jobs:
   deploy-frontend:
