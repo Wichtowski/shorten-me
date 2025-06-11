@@ -7,7 +7,7 @@ on:
         description: "Environment to deploy to"
         required: true
         type: string
-        default: "production"
+        default: "development"
 
   workflow_dispatch:
     inputs:
@@ -25,22 +25,11 @@ env:
   infra_dir: ./infra
 
 jobs:
-  deploy-frontend:
+  build-frontend:
     runs-on: ubuntu-latest
-
+    environment: ${{ inputs.environment }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Bump version and push tag
-        id: bump-tag
-        uses: anothrNick/github-tag-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.DEPLOYMENT_TOKEN }}
-          TAG_PREFIX: "fs-"
-      
-      - name: Output version
-        run: |
-          echo "Version: ${{ steps.bump-tag.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -66,4 +55,4 @@ jobs:
         env:
           PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }}
           COSMOSDB_KEY: ${{ secrets.COSMOSDB_KEY }}
-        run: python deploy_frontend.py
+        run: python deploy_frontend.py ${{ inputs.environment }}

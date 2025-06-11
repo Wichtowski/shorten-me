@@ -1,0 +1,53 @@
+name: Release New Version
+
+on:
+  workflow_call:
+    inputs:
+      bump-version:
+        type: string
+        description: 'Do you want to bump the version?'
+        required: true
+      branch-name:
+        type: string
+        description: 'Name of GitHub source branch'
+        required: true
+      semantic-version:
+        type: string
+        description: 'Semantic version'
+        default: 'minor'
+    outputs:
+      new-tag:
+        description: 'Used tag either new bumped tag or passed as parameter'
+        value: ${{ jobs.new-release.outputs.tag }}
+
+permissions: write-all
+jobs:
+  new-release:
+    name: 'Release new receipt analyser and push tag'
+    runs-on: ubuntu-22.04
+    outputs:
+      tag: ${{ steps.tag-version.outputs.new_tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch-name }}
+          fetch-depth: 0
+
+      - name: Bump version and push tag
+        if: ${{ inputs.bump-version == 'yes' }}
+        uses: anothrNick/github-tag-action@1.71.0
+        id: tag-version
+        env:
+          SOURCE: ''
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: false
+          DEFAULT_BUMP: ${{ inputs.semantic-version }}
+
+      - name: 'Add version number to workflow summary'
+        if: ${{ !cancelled() }}
+        run: |
+          if [[ -n "${{ steps.tag-version.outputs.new_tag }}" ]]; then
+            echo ":rocket: Created Tag: ${{ steps.tag-version.outputs.new_tag }}" >> $GITHUB_STEP_SUMMARY
+          else
+            echo ":rocket: Using Tag: ${{ inputs.branch-name }}" >> $GITHUB_STEP_SUMMARY
+          fi
