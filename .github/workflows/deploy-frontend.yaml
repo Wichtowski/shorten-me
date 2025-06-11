@@ -24,6 +24,9 @@ on:
 env:
   infra_dir: ./infra
 
+permissions:
+  contents: write
+
 jobs:
   deploy-frontend:
     runs-on: ubuntu-latest
@@ -35,7 +38,7 @@ jobs:
         id: bump-tag
         uses: anothrNick/github-tag-action@v1
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.DEPLOYMENT_TOKEN }}
           TAG_PREFIX: "fs-"
       
       - name: Output version
