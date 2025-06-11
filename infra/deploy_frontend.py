@@ -22,13 +22,14 @@ def get_pulumi_output(output_name):
         print(f"Error getting Pulumi output {output_name}: {e}")
         return None
 
-PROJECT_ROOT = pathlib.Path(__file__).parent.absolute()
-INFRA_DIR = os.path.join(PROJECT_ROOT, "infra")
+INFRA_DIR = pathlib.Path(__file__).parent.absolute()
+PROJECT_ROOT = INFRA_DIR.parent
 
 PULUMI_CONFIG_PASSPHRASE = os.getenv("PULUMI_CONFIG_PASSPHRASE")
 cosmosdb_endpoint = get_pulumi_output('cosmosdb_endpoint')
 cosmosdb_key = os.getenv('COSMOSDB_KEY')
 cosmosdb_database_name = 'urlshortener'
+
 if not all([cosmosdb_endpoint, cosmosdb_key, cosmosdb_database_name]):
     print("Error: Missing required CosmosDB configuration")
     print(f"  cosmosdb_endpoint: {cosmosdb_endpoint}")
@@ -68,15 +69,15 @@ frontend_image_name = f"{registry_login_server}/shortenme-frontend:latest"
 print(f"Building frontend container...")
 try:
     subprocess.run(
-        ["docker", "build", "-t", frontend_image_name, "-f", "frontend/Dockerfile", "./frontend"],
+        ["docker", "build", "-t", frontend_image_name, "-f", "../frontend/Dockerfile", "../frontend"],
         check=True,
-        cwd=PROJECT_ROOT
+        cwd=INFRA_DIR
     )
     print(f"Pushing frontend container...")
     subprocess.run(
         ["docker", "push", frontend_image_name],
         check=True,
-        cwd=PROJECT_ROOT
+        cwd=INFRA_DIR
     )
     print("Frontend container pushed successfully")
 except subprocess.CalledProcessError as e:

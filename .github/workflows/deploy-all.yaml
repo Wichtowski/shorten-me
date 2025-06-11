@@ -1,6 +1,9 @@
 name: Deploy All to Azure
 
 on:
+  push:
+    branches: [main]
+
   workflow_dispatch:
     inputs:
       environment:
@@ -12,27 +15,24 @@ on:
           - staging
           - development
 
+env: 
+  environment: ${{ inputs.environment || 'production' }}
+
 jobs:
   deploy-frontend:
     name: Deploy Frontend
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Trigger Frontend Deployment
-        uses: peter-evans/repository-dispatch@v2
+      - uses: ./.github/workflows/deploy-frontend.yaml
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          event-type: deploy-frontend
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+          environment: ${{ env.environment }}
 
   deploy-infra:
     name: Deploy Infrastructure
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Trigger Infrastructure Deployment
-        uses: peter-evans/repository-dispatch@v2
+      - uses: ./.github/workflows/deploy-infra.yaml
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          event-type: deploy-infra
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}' 
+          environment: ${{ env.environment }}

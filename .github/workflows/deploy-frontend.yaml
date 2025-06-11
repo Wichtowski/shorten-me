@@ -1,9 +1,28 @@
 name: Deploy Frontend to Azure
 
 on:
-  push:
-    branches: [main]
+  workflow_call:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        type: string
+        default: "production"
+
   workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        type: choice
+        options:
+          - production
+          - staging
+          - development
+        default: "production"
+
+env:
+  infra_dir: ./infra
 
 jobs:
   build-and-deploy:
@@ -15,14 +34,22 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.12'
 
       - name: Install dependencies
+        working-directory: ${{ env.infra_dir }}
         run: |
           python -m pip install --upgrade pip
-          pip install python-dotenv
+          pip install -r requirements.txt
+      
+      - name: Set up Azure CLI
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Run deployment script
+        working-directory: ${{ env.infra_dir }}
         env:
           PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }}
           COSMOSDB_KEY: ${{ secrets.COSMOSDB_KEY }}

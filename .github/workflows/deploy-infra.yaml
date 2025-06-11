@@ -1,6 +1,14 @@
 name: Deploy Infrastructure
 
 on:
+  workflow_call:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        type: string
+        default: "production"
+
   workflow_dispatch:
     inputs:
       environment:
@@ -12,6 +20,9 @@ on:
           - staging
           - development
         default: "production"
+
+env:
+  infra_dir: ./infra
 
 jobs:
   deploy-infrastructure:
@@ -29,8 +40,8 @@ jobs:
         uses: pulumi/setup-pulumi@v2
 
       - name: Install dependencies
+        working-directory: ${{ env.infra_dir }}
         run: |
-          cd infra
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
@@ -40,8 +51,8 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy Infrastructure
+        working-directory: ${{ env.infra_dir }}
         run: |
-          cd infra
           pulumi login
           pulumi stack select ${{ inputs.environment }}
           pulumi up --yes

@@ -19,6 +19,9 @@ export const metadata: Metadata = {
   title: 'Shoten Me!',
   description:
     'Shoten Me! is a URL shortener that allows you to shorten your URLs and track your clicks.',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
