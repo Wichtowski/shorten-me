@@ -1,38 +1,33 @@
-name: Deploy All to Azure
+name: Deploy on Environment
 
 on:
   push:
     branches: [main]
 
-  workflow_dispatch:
+  workflow_call:
     inputs:
+      source-name:
+        description: "Source name to deploy from"
+        required: true
+        type: string
+        default: "main"
       environment:
         description: "Environment to deploy to"
         required: true
-        type: choice
-        options:
-          - production
-          - staging
-          - development
+        type: string
+        default: "production"
 
 jobs:
-  release-new-version:
-    name: Release new version
-    uses: ./.github/workflows/release-new-version.yml
-    with:
-      branch-name: ${{ inputs.environment || 'production' }}
-      semantic-version: ${{ inputs.environment || 'production' }}
-
   deploy-frontend:
     name: Deploy Frontend
-    needs: release-new-version
     uses: ./.github/workflows/deploy-frontend.yaml
     with:
       environment: ${{ inputs.environment || 'production' }}
+      source-name: ${{ inputs.source-name || 'main' }}
 
   deploy-infra:
     name: Deploy Infrastructure
-    needs: release-new-version
     uses: ./.github/workflows/deploy-infra.yaml
     with:
       environment: ${{ inputs.environment || 'production' }}
+      source-name: ${{ inputs.source-name || 'main' }}

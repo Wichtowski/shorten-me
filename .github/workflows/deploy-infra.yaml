@@ -8,6 +8,11 @@ on:
         required: true
         type: string
         default: "production"
+      source-name:
+        description: "Source name to deploy from"
+        required: true
+        type: string
+        default: "main"
 
   workflow_dispatch:
     inputs:
@@ -20,8 +25,8 @@ on:
           - staging
           - development
         default: "production"
-      source-branch:
-        description: "Source branch to deploy from"
+      source-name:
+        description: "Source name to deploy from"
         required: true
         type: string
         default: "main"

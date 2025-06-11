@@ -8,6 +8,11 @@ on:
         required: true
         type: string
         default: "development"
+      source-name:
+        description: "Source name to deploy from"
+        required: true
+        type: string
+        default: "main"
 
   workflow_dispatch:
     inputs:
@@ -20,6 +25,11 @@ on:
           - staging
           - development
         default: "production"
+      source-name:
+        description: "Source name to deploy from"
+        required: true
+        type: string
+        default: "main"
 
 env:
   infra_dir: ./infra
@@ -30,6 +40,7 @@ jobs:
     environment: ${{ inputs.environment }}
     steps:
       - uses: actions/checkout@v4
+        
 
       - name: Set up Python
         uses: actions/setup-python@v5

@@ -1,0 +1,33 @@
+name: Deploy on Production
+
+on:
+  workflow_dispatch:
+
+permissions: write-all
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+jobs:
+  print-tag:
+    name: 'Print tag'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print tag
+        run: |
+          echo ":rocket: Deploying Tag: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Verify if workflow is triggered from release tag
+        run: |
+          if [[ ! ${{ github.ref_name }} =~ ^[2-9][0-9]*\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Incorrect version format. Please provide a valid semantic version (e.g. 2.1.2) to deploy to stage/prod. Version must be >= 2.0.0!"
+            exit 1
+          fi
+
+  deploy-on-prod:
+    name: Deploy on Production
+    uses: ./.github/workflows/deploy-on-env.yaml
+    with:
+      environment: 'production'
+      source-name: ${{ github.ref_name }}
