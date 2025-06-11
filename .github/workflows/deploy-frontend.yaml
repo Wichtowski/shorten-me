@@ -25,11 +25,22 @@ env:
   infra_dir: ./infra
 
 jobs:
-  build-and-deploy:
+  deploy-frontend:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Bump version and push tag
+        id: bump-tag
+        uses: anothrNick/github-tag-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_PREFIX: "fs-"
+      
+      - name: Output version
+        run: |
+          echo "Version: ${{ steps.bump-tag.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -47,6 +58,8 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
 
       - name: Run deployment script
         working-directory: ${{ env.infra_dir }}

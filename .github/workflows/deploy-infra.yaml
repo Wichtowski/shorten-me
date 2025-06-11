@@ -31,6 +31,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Bump version and push tag
+        id: bump-tag
+        uses: anothrNick/github-tag-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_PREFIX: "infra-"
+      
+      - name: Output version
+        run: |
+          echo "Version: ${{ steps.bump-tag.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -45,10 +56,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Install azure cli
+      - name: Set up Azure CLI
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
 
       - name: Deploy Infrastructure
         working-directory: ${{ env.infra_dir }}
