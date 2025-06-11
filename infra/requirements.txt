@@ -6,3 +6,4 @@ python-dotenv
 azure-identity
 azure-cosmos
 ruff
+dotenv

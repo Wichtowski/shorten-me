@@ -20,12 +20,19 @@ on:
           - staging
           - development
         default: "production"
+      source-branch:
+        description: "Source branch to deploy from"
+        required: true
+        type: string
+        default: "main"
 
 env:
   infra_dir: ./infra
 
+permissions: write-all
+
 jobs:
-  deploy-infrastructure:
+  build-infrastructure:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
@@ -45,10 +52,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Install azure cli
+      - name: Set up Azure CLI
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
 
       - name: Deploy Infrastructure
         working-directory: ${{ env.infra_dir }}
@@ -57,8 +67,9 @@ jobs:
           pulumi stack select ${{ inputs.environment }}
           pulumi up --yes
         env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }}
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

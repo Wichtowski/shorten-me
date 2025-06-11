@@ -3,12 +3,16 @@
 import pulumi
 import pulumi_azure_native as azure_native
 import random
+import subprocess
+
+# Get current stack name
+current_stack = subprocess.run(["pulumi", "stack", "--show-name"], capture_output=True, text=True).stdout.strip()
 
 # Configurable values
-location = "northeurope"
-resource_group_name = "shortenme-rg"
-cosmosdb_account_name = "shortenme-cosmosdb"
-database_name = "urlshortener"
+location = "northeurope" 
+resource_group_name = "shortenme-rg" + "-" + current_stack
+cosmosdb_account_name = "shortenme-cosmosdb" + "-" + current_stack
+database_name = "urlshortener" + "-" + current_stack
 
 # Resource Group
 resource_group = azure_native.resources.ResourceGroup(

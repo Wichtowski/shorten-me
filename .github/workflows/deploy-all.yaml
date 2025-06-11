@@ -16,14 +16,23 @@ on:
           - development
 
 jobs:
+  release-new-version:
+    name: Release new version
+    uses: ./.github/workflows/release-new-version.yml
+    with:
+      branch-name: ${{ inputs.environment || 'production' }}
+      semantic-version: ${{ inputs.environment || 'production' }}
+
   deploy-frontend:
     name: Deploy Frontend
+    needs: release-new-version
     uses: ./.github/workflows/deploy-frontend.yaml
     with:
       environment: ${{ inputs.environment || 'production' }}
 
   deploy-infra:
     name: Deploy Infrastructure
+    needs: release-new-version
     uses: ./.github/workflows/deploy-infra.yaml
     with:
       environment: ${{ inputs.environment || 'production' }}

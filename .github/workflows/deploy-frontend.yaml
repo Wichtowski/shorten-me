@@ -7,7 +7,7 @@ on:
         description: "Environment to deploy to"
         required: true
         type: string
-        default: "production"
+        default: "development"
 
   workflow_dispatch:
     inputs:
@@ -25,9 +25,9 @@ env:
   infra_dir: ./infra
 
 jobs:
-  build-and-deploy:
+  build-frontend:
     runs-on: ubuntu-latest
-
+    environment: ${{ inputs.environment }}
     steps:
       - uses: actions/checkout@v4
 
@@ -47,10 +47,12 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
 
       - name: Run deployment script
         working-directory: ${{ env.infra_dir }}
         env:
           PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }}
           COSMOSDB_KEY: ${{ secrets.COSMOSDB_KEY }}
-        run: python deploy_frontend.py
+        run: python deploy_frontend.py ${{ inputs.environment }}

@@ -3,20 +3,30 @@ import sys
 import subprocess
 import pathlib
 import dotenv
+# Get environment from command line argument or default to development
+ENVIRONMENT = sys.argv[1] if len(sys.argv) > 1 else "development"
+print(f"Deploying to {ENVIRONMENT} environment")
 
 dotenv.load_dotenv()
 
+PULUMI_CONFIG_PASSPHRASE = os.getenv(f"PULUMI_CONFIG_PASSPHRASE_{ENVIRONMENT.upper()}")
+cosmosdb_key = os.getenv(f"COSMOSDB_KEY_{ENVIRONMENT.upper()}")
+
 def get_pulumi_output(output_name):
     try:
+        env = os.environ.copy()
+        env["PULUMI_CONFIG_PASSPHRASE"] = PULUMI_CONFIG_PASSPHRASE
         result = subprocess.run(
             ["pulumi", "stack", "output", output_name, "--show-secrets"],
             capture_output=True,
             text=True,
-            cwd=INFRA_DIR
+            cwd=INFRA_DIR,
+            env=env
         )
         if result.returncode == 0 and result.stdout:
             return result.stdout.strip()
         print(f"Pulumi output for {output_name} not found or empty.")
+        print(result.stdout)
         return None
     except Exception as e:
         print(f"Error getting Pulumi output {output_name}: {e}")
@@ -25,13 +35,12 @@ def get_pulumi_output(output_name):
 INFRA_DIR = pathlib.Path(__file__).parent.absolute()
 PROJECT_ROOT = INFRA_DIR.parent
 
-PULUMI_CONFIG_PASSPHRASE = os.getenv("PULUMI_CONFIG_PASSPHRASE")
-cosmosdb_endpoint = get_pulumi_output('cosmosdb_endpoint')
-cosmosdb_key = os.getenv('COSMOSDB_KEY')
-cosmosdb_database_name = 'urlshortener'
+cosmosdb_endpoint = get_pulumi_output('cosmosdb_endpoint') or os.getenv(f"COSMOSDB_ENDPOINT_{ENVIRONMENT.upper()}")
+cosmosdb_database_name = f'urlshortener-{ENVIRONMENT.lower()}'
 
 if not all([cosmosdb_endpoint, cosmosdb_key, cosmosdb_database_name]):
     print("Error: Missing required CosmosDB configuration")
+    print(f"  PULUMI_CONFIG_PASSPHRASE: {PULUMI_CONFIG_PASSPHRASE}")
     print(f"  cosmosdb_endpoint: {cosmosdb_endpoint}")
     print(f"  cosmosdb_key: {cosmosdb_key}")
     print(f"  cosmosdb_database_name: {cosmosdb_database_name}")
