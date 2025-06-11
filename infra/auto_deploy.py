@@ -2,7 +2,7 @@ import pulumi.automation as auto
 
 def pulumi_program():
     # You can import your __main__.py logic here or inline it
-    import infra.__main__
+    pass
 
 # Create or select a stack
 stack = auto.create_or_select_stack(

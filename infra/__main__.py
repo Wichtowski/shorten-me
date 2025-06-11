@@ -3,9 +3,6 @@
 import pulumi
 import pulumi_azure_native as azure_native
 import random
-import pulumi.asset as asset
-from datetime import datetime, timedelta, UTC
-import base64
 
 # Configurable values
 location = "northeurope"

@@ -66,14 +66,14 @@ except subprocess.CalledProcessError as e:
     sys.exit(1)
 
 frontend_image_name = f"{registry_login_server}/shortenme-frontend:latest"
-print(f"Building frontend container...")
+print("Building frontend container...")
 try:
     subprocess.run(
         ["docker", "build", "-t", frontend_image_name, "-f", "../frontend/Dockerfile", "../frontend"],
         check=True,
         cwd=INFRA_DIR
     )
-    print(f"Pushing frontend container...")
+    print("Pushing frontend container...")
     subprocess.run(
         ["docker", "push", frontend_image_name],
         check=True,
