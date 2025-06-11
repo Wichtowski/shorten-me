@@ -24,9 +24,6 @@ on:
 env:
   infra_dir: ./infra
 
-permissions:
-  contents: write
-
 jobs:
   deploy-frontend:
     runs-on: ubuntu-latest
