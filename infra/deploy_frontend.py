@@ -116,7 +116,7 @@ try:
         f"COSMOSDB_ENDPOINT={cosmosdb_endpoint}",
         f"COSMOSDB_KEY={cosmosdb_key}",
         f"COSMOSDB_DATABASE_NAME={cosmosdb_database_name}",
-        "NODE_ENV=production"
+        f"NODE_ENV={ENVIRONMENT.lower()}"
     ], check=True, cwd=PROJECT_ROOT)
     print(f"Restarting {app_name}...")
     subprocess.run([

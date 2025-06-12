@@ -17,30 +17,35 @@ export default function RedirectPage({ params }: { params: Promise<PageParams> }
   useEffect(() => {
     const fetchUrl = async () => {
       if (!slug) {
+        console.error('No slug provided');
         setError('Invalid URL');
         setIsLoading(false);
         return;
       }
 
       try {
-        console.log('slug', slug);
+        console.log('Fetching URL for slug:', slug);
         const response = await fetch(`/api/v1/urls/${slug}`);
+        console.log('Response status:', response.status);
         const data = await response.json();
-        console.log('data', data);
+        console.log('Response data:', data);
 
         if (!response.ok) {
+          console.error('Error response:', data);
           throw new Error(data.error || 'URL not found');
         }
 
         if (!data.original_url) {
+          console.error('No original_url in response:', data);
           throw new Error('Invalid URL data');
         }
 
+        console.log('Redirecting to:', data.original_url);
         window.location.href = data.original_url;
       } catch (error) {
         console.error('Error fetching URL:', error);
         setError(error instanceof Error ? error.message : 'URL not found or invalid');
-        setTimeout(() => router.push('/'), 3000);
+        // setTimeout(() => router.push('/'), 3000);
       } finally {
         setIsLoading(false);
       }
