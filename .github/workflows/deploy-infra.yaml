@@ -45,7 +45,6 @@ on:
 env:
   infra_dir: ./infra
   pulumi_version: 3.170.0
-  pulumi_backend_url: azblob://pulumi?storage_account=pulumism
 
 permissions: write-all
 
@@ -83,6 +82,7 @@ jobs:
           azcliversion: latest
           inlineScript: |
             az account show
+      - uses: pietrobolcato/install-azure-cli-action@main
 
       - name: Deploy Infrastructure
         working-directory: ${{ env.infra_dir }}
@@ -94,6 +94,7 @@ jobs:
           ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         run: |
+          az account show
           pulumi login
           pulumi stack select ${{ inputs.environment }}
           pulumi up --yes
