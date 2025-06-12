@@ -20,6 +20,8 @@ on:
         required: true
       AZURE_SUBSCRIPTION_ID:
         required: true
+      AZURE_CLIENT_SECRET:
+        required: true
       PULUMI_CONFIG_PASSPHRASE:
         required: true
 
@@ -42,8 +44,8 @@ on:
 
 env:
   infra_dir: ./infra
-  # pulumi_version: 3.170.0
-  # pulumi_backend_url: https://app.pulumi.com/Wichtowski
+  pulumi_version: 3.170.0
+  pulumi_backend_url: azblob://pulumi?storage_account=pulumism
 
 permissions: write-all
 
@@ -68,10 +70,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-
-      - name: Install Pulumi
-        uses: pulumi/setup-pulumi@v2
-
       - name: Azure Login
         uses: azure/login@v2
         with:
@@ -79,7 +77,7 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Test Azure CLI
+      - name: Azure CLI
         uses: azure/cli@v2
         with:
           azcliversion: latest
@@ -87,7 +85,7 @@ jobs:
             az account show
 
       - name: Deploy Infrastructure
-        uses: azure/cli@v2
+        working-directory: ${{ env.infra_dir }}
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }}
@@ -95,16 +93,7 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-        with:
-          azcliversion: latest
-          inlineScript: |
-            az account show
-            cd ${{ env.infra_dir }}
-            
-            # Install Pulumi
-            curl -fsSL https://get.pulumi.com | sh
-            export PATH=$PATH:$HOME/.pulumi/bin
-            
-            pulumi login
-            pulumi stack select ${{ inputs.environment }}
-            pulumi up --yes
+        run: |
+          pulumi login
+          pulumi stack select ${{ inputs.environment }}
+          pulumi up --yes
