@@ -42,8 +42,8 @@ on:
 
 env:
   infra_dir: ./infra
-  pulumi_version: 3.170.0
-  pulumi_backend_url: https://app.pulumi.com/Wichtowski
+  # pulumi_version: 3.170.0
+  # pulumi_backend_url: https://app.pulumi.com/Wichtowski
 
 permissions: write-all
 
@@ -79,18 +79,27 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Azure CLI
+      - name: Test Azure CLI
         uses: azure/cli@v2
         with:
-          azcli-version: latest
+          azcliversion: latest
           inlineScript: |
             az account show
 
-      - name: "Deploy Pulumi"
-        uses: pulumi/actions@v6
+      - name: Deploy Infrastructure
+        uses: azure/cli@v2
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }}
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         with:
-          pulumi-version: ${{ env.pulumi_version }}
-          command: up
-          cloud-url: ${{ env.pulumi_backend_url }}
-          stack-name: "organization/infra/${{ inputs.environment }}"
-          work-dir: "./${{ env.infra_dir }}"
+          azcliversion: latest
+          inlineScript: |
+            az account show
+            cd ${{ env.infra_dir }}
+            pulumi login
+            pulumi stack select ${{ inputs.environment }}
+            pulumi up --yes
