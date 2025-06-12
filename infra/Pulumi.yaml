@@ -1,5 +1,10 @@
 name: infra
 description: A minimal Azure Native Python Pulumi program
+
+
+backend:
+  url: https://app.pulumi.com/Wichtowski
+
 runtime:
   name: python
   options:

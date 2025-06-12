@@ -77,7 +77,6 @@ jobs:
           azcli-version: latest
           inlineScript: |
             az account show
-
       - name: Run deployment script
         working-directory: ${{ env.infra_dir }}
         env:
