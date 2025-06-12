@@ -13,6 +13,15 @@ on:
         required: true
         type: string
         default: "main"
+    secrets:
+      AZURE_CLIENT_ID:
+        required: true
+      AZURE_TENANT_ID:
+        required: true
+      AZURE_SUBSCRIPTION_ID:
+        required: true
+      PULUMI_CONFIG_PASSPHRASE:
+        required: true
 
   workflow_dispatch:
     inputs:
