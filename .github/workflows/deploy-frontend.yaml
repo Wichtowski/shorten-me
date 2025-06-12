@@ -82,7 +82,9 @@ jobs:
         working-directory: ${{ env.infra_dir }}
         env:
           PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_CONFIG_PASSPHRASE }}
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           COSMOSDB_KEY: ${{ secrets.COSMOSDB_KEY }}
         run: |
+          pulumi login
           pulumi stack select ${{ inputs.environment }}
           python deploy_frontend.py ${{ inputs.environment }}
