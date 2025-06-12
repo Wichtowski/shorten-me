@@ -17,12 +17,10 @@ on:
 jobs:
   deploy-infra:
     name: Deploy Infrastructure
-    runs-on: ubuntu-latest
-    environment: ${{ inputs.environment || 'production' }}
     uses: ./.github/workflows/deploy-infra.yaml
     with:
-      environment: ${{ inputs.environment || 'production' }}
-      source-name: ${{ inputs.source-name || 'main' }}
+      environment: ${{ inputs.environment }}
+      source-name: ${{ inputs.source-name }}
     secrets: inherit
 
   deploy-frontend:
@@ -30,6 +28,6 @@ jobs:
     needs: deploy-infra
     uses: ./.github/workflows/deploy-frontend.yaml
     with:
-      environment: ${{ inputs.environment || 'production' }}
-      source-name: ${{ inputs.source-name || 'main' }}
+      environment: ${{ inputs.environment }}
+      source-name: ${{ inputs.source-name }}
     secrets: inherit
