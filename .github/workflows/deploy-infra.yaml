@@ -46,7 +46,9 @@ env:
   infra_dir: ./infra
   pulumi_version: 3.170.0
 
-permissions: write-all
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   build-infrastructure:
@@ -82,7 +84,6 @@ jobs:
           azcliversion: latest
           inlineScript: |
             az account show
-      - uses: pietrobolcato/install-azure-cli-action@main
 
       - name: Deploy Infrastructure
         working-directory: ${{ env.infra_dir }}
