@@ -87,11 +87,41 @@ export class UrlService {
     }
 
     static async incrementClicks(urlDoc: UrlDocument): Promise<void> {
-        const container = urlDoc.user_id === 'anonymous'
-            ? await getAnonymousContainer()
-            : await getUrlsContainer();
+        try {
+            console.log('UrlService: Incrementing clicks for URL:', {
+                id: urlDoc.id,
+                user_id: urlDoc.user_id,
+                short_url: urlDoc.short_url
+            });
 
-        urlDoc.clicks = (urlDoc.clicks || 0) + 1;
-        await container.item(urlDoc.id, urlDoc.user_id).replace(urlDoc);
+            const container = urlDoc.user_id === 'anonymous'
+                ? await getAnonymousContainer()
+                : await getUrlsContainer();
+
+            // First verify the document exists
+            const query = {
+                query: 'SELECT * FROM c WHERE c.id = @id AND c.user_id = @user_id',
+                parameters: [
+                    { name: '@id', value: urlDoc.id },
+                    { name: '@user_id', value: urlDoc.user_id }
+                ]
+            };
+
+            const { resources } = await container.items.query(query).fetchAll();
+            if (resources.length === 0) {
+                console.error('UrlService: Document not found for update:', {
+                    id: urlDoc.id,
+                    user_id: urlDoc.user_id
+                });
+                return; // Silently fail if document not found
+            }
+
+            urlDoc.clicks = (urlDoc.clicks || 0) + 1;
+            await container.item(urlDoc.id, urlDoc.user_id).replace(urlDoc);
+            console.log('UrlService: Successfully incremented clicks for URL:', urlDoc.short_url);
+        } catch (error) {
+            console.error('UrlService: Error incrementing clicks:', error);
+            // Don't throw the error - we don't want to break the redirect if click tracking fails
+        }
     }
 } 
