@@ -46,6 +46,7 @@ jobs:
 
   deploy-on-dev:
     name: Deploy on Dev
+    needs: release-new-version
     uses: ./.github/workflows/deploy-on-env.yaml
     with:
         environment: 'development'
