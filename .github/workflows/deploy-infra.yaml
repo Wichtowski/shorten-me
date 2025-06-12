@@ -66,6 +66,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+
+      - name: Install Pulumi
+        uses: pulumi/setup-pulumi@v2
+
       - name: Azure Login
         uses: azure/login@v2
         with:
