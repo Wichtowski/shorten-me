@@ -94,12 +94,11 @@ const UrlShortener = () => {
         }
         generatedShortUrl = data.url.short_url;
         setShortUrl(generatedShortUrl);
+        // Add to recent shortenings immediately after shortening
+        addShorten(url, generatedShortUrl);
         incrementShortenCount();
         showNotification('URL shortened successfully!', 'success');
       }
-
-      // Add to recent shortenings
-      addShorten(url, generatedShortUrl);
     } catch (error) {
       console.error('Error shortening URL:', error);
       setError(error instanceof Error ? error.message : 'Failed to shorten URL');

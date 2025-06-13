@@ -33,6 +33,20 @@ const LoginPage = () => {
             email: data.user.email,
             username: data.user.username,
           });
+
+          // MIGRATE ANONYMOUS SHORTENS
+          const recentShortens = JSON.parse(localStorage.getItem('recent_shortens') || '[]');
+          if (recentShortens.length > 0) {
+            await fetch('/api/v1/shorten/migrate', {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${data.user.token}`,
+              },
+              body: JSON.stringify({ shortens: recentShortens }),
+            });
+            localStorage.removeItem('recent_shortens');
+          }
         }
         window.location.href = '/';
       }

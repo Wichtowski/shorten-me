@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNotification } from '@/components/context/NotificationContext';
+import CopyButton from '@/components/common/CopyButton';
 
 interface UrlParametersProps {
   shortUrl: string;
@@ -44,12 +45,6 @@ const UrlParameters = ({ shortUrl }: UrlParametersProps) => {
       shortUrl
     );
     return searchParams ? `${shortUrl}?${searchParams.toString()}` : shortUrl;
-  };
-
-  const copyUrlWithParams = () => {
-    const urlWithParams = generateUrlWithParams();
-    navigator.clipboard.writeText(urlWithParams);
-    showNotification('URL with parameters copied to clipboard!', 'success');
   };
 
   return (
@@ -97,12 +92,11 @@ const UrlParameters = ({ shortUrl }: UrlParametersProps) => {
             readOnly
             className="flex-1 px-3 py-2 rounded-lg bg-primary-darkest/50 border border-primary-light/30 text-white"
           />
-          <button
-            onClick={copyUrlWithParams}
+          <CopyButton
+            value={generateUrlWithParams()}
+            onCopied={() => showNotification('URL with parameters copied to clipboard!', 'success')}
             className="bg-primary-light hover:bg-primary-lightest text-white px-4 py-2 rounded-lg transition-all duration-200"
-          >
-            Copy
-          </button>
+          />
         </div>
       </div>
     </div>

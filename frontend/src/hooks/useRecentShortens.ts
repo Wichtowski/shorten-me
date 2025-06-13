@@ -26,7 +26,7 @@ export const useRecentShortens = () => {
             timestamp: Date.now(),
         };
 
-        setRecentShortens((prev) => {
+        setRecentShortens((prev: ShortenedUrl[]) => {
             const updated = [newShorten, ...prev].slice(0, MAX_RECENT_SHORTENS);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
             return updated;
@@ -35,12 +35,23 @@ export const useRecentShortens = () => {
 
     const clearRecentShortens = () => {
         localStorage.removeItem(STORAGE_KEY);
-        setRecentShortens([]);
+        setRecentShortens([] as ShortenedUrl[]);
+    };
+
+    const updateShorten = (index: number, updates: Partial<ShortenedUrl>) => {
+        setRecentShortens((prev: ShortenedUrl[]) => {
+            const updated = prev.map((item: ShortenedUrl, i: number) =>
+                i === index ? { ...item, ...updates, timestamp: Date.now() } : item
+            );
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+            return updated;
+        });
     };
 
     return {
         recentShortens,
         addShorten,
         clearRecentShortens,
+        updateShorten,
     };
 }; 
