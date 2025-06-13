@@ -24,6 +24,8 @@ on:
         required: true
       COSMOSDB_KEY:
         required: true
+      COSMOSDB_ENDPOINT:
+        required: true
 
   workflow_dispatch:
     inputs:
@@ -87,6 +89,7 @@ jobs:
           ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
           COSMOSDB_KEY: ${{ secrets.COSMOSDB_KEY }}
+          COSMOSDB_ENDPOINT: ${{ secrets.COSMOSDB_ENDPOINT }}
         run: |
           pulumi login
           pulumi stack select ${{ inputs.environment }}
