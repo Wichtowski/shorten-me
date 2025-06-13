@@ -13,6 +13,12 @@ import { UrlTable } from '@/components/account/UrlTable';
 import { useDeleteAccount } from '@/hooks/useDeleteAccount';
 import { Url } from '@/types/url';
 
+interface ShortenedUrl {
+  originalUrl: string;
+  shortUrl: string;
+  timestamp: number;
+}
+
 export default function MyUrlsPage() {
   const { user, logout } = useUser();
   const router = useRouter();
@@ -78,7 +84,9 @@ export default function MyUrlsPage() {
 
         // MIGRATE IF RECENT SHORTENS ARE NOT IN THE SERVER
         if (recentShortens.length > 0) {
-          const missing = recentShortens.filter((r: any) => !serverUrls.some((u: any) => u.short_url === r.shortUrl));
+          const missing = recentShortens.filter(
+            (r: ShortenedUrl) => !serverUrls.some((u: Url) => u.short_url === r.shortUrl)
+          );
           if (missing.length > 0) {
             await fetch('/api/v1/shorten/migrate', {
               method: 'PUT',

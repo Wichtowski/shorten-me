@@ -47,12 +47,6 @@ const UrlParameters = ({ shortUrl }: UrlParametersProps) => {
     return searchParams ? `${shortUrl}?${searchParams.toString()}` : shortUrl;
   };
 
-  const copyUrlWithParams = () => {
-    const urlWithParams = generateUrlWithParams();
-    navigator.clipboard.writeText(urlWithParams);
-    showNotification('URL with parameters copied to clipboard!', 'success');
-  };
-
   return (
     <div className="mt-8 p-6 bg-primary-darkest/30 rounded-lg border border-primary-light/20">
       <h3 className="text-primary-lightest text-lg mb-4">Add Parameters</h3>

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyJwt } from '@/app/api/v1/utils/jwt';
+import { UrlDocument } from '@/app/api/v1/types/url';
 
 // MIGRATION ENDPOINT
 export async function PUT(req: NextRequest) {
@@ -25,7 +26,8 @@ export async function PUT(req: NextRequest) {
         }
         const userContainer = await import('@/app/api/v1/utils/cosmos').then(m => m.getUrlsContainer());
         const anonContainer = await import('@/app/api/v1/utils/cosmos').then(m => m.getAnonymousContainer());
-        const migrated: any[] = [];
+        
+        const migrated: UrlDocument[] = [];
         for (const shorten of shortens) {
             // Find anonymous doc
             const query = {

@@ -10,11 +10,6 @@ interface UrlDetailsProps {
 const UrlDetails = ({ shortUrl, originalUrl }: UrlDetailsProps) => {
   const { showNotification } = useNotification();
 
-  const copyUrl = () => {
-    navigator.clipboard.writeText(shortUrl);
-    showNotification('URL copied to clipboard!', 'success');
-  };
-
   return (
     <div className="mt-8 p-6 bg-primary-darkest/30 rounded-lg border border-primary-light/20">
       <div className="space-y-4">
