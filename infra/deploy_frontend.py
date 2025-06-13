@@ -9,8 +9,8 @@ print(f"Deploying to {ENVIRONMENT} environment")
 
 dotenv.load_dotenv()
 
-PULUMI_CONFIG_PASSPHRASE = os.getenv(f"PULUMI_CONFIG_PASSPHRASE_{ENVIRONMENT.upper()}")
-cosmosdb_key = os.getenv(f"COSMOSDB_KEY_{ENVIRONMENT.upper()}")
+PULUMI_CONFIG_PASSPHRASE = os.getenv(f"PULUMI_CONFIG_PASSPHRASE_{ENVIRONMENT.upper()}") or os.getenv("PULUMI_CONFIG_PASSPHRASE")
+cosmosdb_key = os.getenv(f"COSMOSDB_KEY_{ENVIRONMENT.upper()}") or os.getenv("COSMOSDB_KEY")
 
 def get_pulumi_output(output_name):
     try:
@@ -35,7 +35,7 @@ def get_pulumi_output(output_name):
 INFRA_DIR = pathlib.Path(__file__).parent.absolute()
 PROJECT_ROOT = INFRA_DIR.parent
 
-cosmosdb_endpoint = get_pulumi_output('cosmosdb_endpoint') or os.getenv(f"COSMOSDB_ENDPOINT_{ENVIRONMENT.upper()}")
+cosmosdb_endpoint = get_pulumi_output('cosmosdb_endpoint') or os.getenv(f"COSMOSDB_ENDPOINT_{ENVIRONMENT.upper()}") or os.getenv("COSMOSDB_ENDPOINT")
 cosmosdb_database_name = f'urlshortener-{ENVIRONMENT.lower()}'
 
 if not all([cosmosdb_endpoint, cosmosdb_key, cosmosdb_database_name]):

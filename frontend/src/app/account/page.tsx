@@ -59,6 +59,7 @@ export default function MyUrlsPage() {
       if (!token) return;
 
       const storedUrls = JSON.parse(localStorage.getItem('urls') || '[]');
+      const recentShortens = JSON.parse(localStorage.getItem('recent_shortens') || '[]');
 
       try {
         const response = await fetch('/api/v1/urls', {
@@ -74,6 +75,35 @@ export default function MyUrlsPage() {
 
         const data = await response.json();
         const serverUrls = data.urls;
+
+        // MIGRATE IF RECENT SHORTENS ARE NOT IN THE SERVER
+        if (recentShortens.length > 0) {
+          const missing = recentShortens.filter((r: any) => !serverUrls.some((u: any) => u.short_url === r.shortUrl));
+          if (missing.length > 0) {
+            await fetch('/api/v1/shorten/migrate', {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ shortens: missing }),
+            });
+            localStorage.removeItem('recent_shortens');
+            // Odśwież dane po migracji
+            const refreshed = await fetch('/api/v1/urls', {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            if (refreshed.ok) {
+              const refreshedData = await refreshed.json();
+              localStorage.setItem('urls', JSON.stringify(refreshedData.urls));
+              setSyncedUrls(refreshedData.urls);
+              setShouldUseLocal(false);
+            }
+            setNotification({ message: 'Migrated anonymous shortens to your account.', type: 'success' });
+            setIsInitialLoad(false);
+            return;
+          }
+        }
 
         // Only update if there's a real difference in data
         const isDataMatching = storedUrls.length === serverUrls.length &&
