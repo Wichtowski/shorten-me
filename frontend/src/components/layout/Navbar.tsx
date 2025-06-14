@@ -18,11 +18,11 @@ const Navbar = () => {
   if (isRedirectPage) {
     return (
       <nav className="fixed top-0 left-0 right-0 z-50 bg-primary-dark/50 backdrop-blur-sm border-b border-primary-light/20">
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <HomeLink />
-      </div>
-    </nav>
-  );
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <HomeLink />
+        </div>
+      </nav>
+    );
   }
 
   return (

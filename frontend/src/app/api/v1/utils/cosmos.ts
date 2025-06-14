@@ -9,13 +9,13 @@ const databaseName = process.env.COSMOSDB_DATABASE_NAME || 'urlshortener';
 console.log('CosmosDB: Initializing with config:', {
   endpoint: endpoint ? 'Set' : 'Not set',
   key: key ? 'Set' : 'Not set',
-  databaseName
+  databaseName,
 });
 
 if (!endpoint || !key) {
   console.error('CosmosDB: Missing required environment variables:', {
     COSMOSDB_ENDPOINT: endpoint ? 'Set' : 'Not set',
-    COSMOSDB_KEY: key ? 'Set' : 'Not set'
+    COSMOSDB_KEY: key ? 'Set' : 'Not set',
   });
   throw new Error('Missing required environment variables: COSMOSDB_ENDPOINT and/or COSMOSDB_KEY');
 }

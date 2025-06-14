@@ -107,19 +107,25 @@ export default function MyUrlsPage() {
               setSyncedUrls(refreshedData.urls);
               setShouldUseLocal(false);
             }
-            setNotification({ message: 'Migrated anonymous shortens to your account.', type: 'success' });
+            setNotification({
+              message: 'Migrated anonymous shortens to your account.',
+              type: 'success',
+            });
             setIsInitialLoad(false);
             return;
           }
         }
 
         // Only update if there's a real difference in data
-        const isDataMatching = storedUrls.length === serverUrls.length &&
+        const isDataMatching =
+          storedUrls.length === serverUrls.length &&
           storedUrls.every((storedUrl: Url, index: number) => {
             const serverUrl = serverUrls[index];
-            return storedUrl.clicks === serverUrl.clicks &&
+            return (
+              storedUrl.clicks === serverUrl.clicks &&
               storedUrl.original_url === serverUrl.original_url &&
-              storedUrl.short_url === serverUrl.short_url;
+              storedUrl.short_url === serverUrl.short_url
+            );
           });
 
         if (!isDataMatching) {

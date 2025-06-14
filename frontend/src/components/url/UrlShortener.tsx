@@ -142,7 +142,7 @@ const UrlShortener = () => {
         {shortUrl && (
           <>
             <UrlDetails shortUrl={shortUrl} originalUrl={url} />
-            {user && <UrlParameters shortUrl={shortUrl} />}
+            {user && <UrlParameters originalUrl={url} />}
           </>
         )}
       </div>

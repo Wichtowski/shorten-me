@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNotification } from '@/components/context/NotificationContext';
 import CopyButton from '@/components/common/CopyButton';
 
 interface UrlParametersProps {
-  shortUrl: string;
+  originalUrl: string;
 }
 
 interface UrlParameter {
@@ -11,9 +11,24 @@ interface UrlParameter {
   value: string;
 }
 
-const UrlParameters = ({ shortUrl }: UrlParametersProps) => {
+const UrlParameters = ({ originalUrl }: UrlParametersProps) => {
   const [parameters, setParameters] = useState<UrlParameter[]>([{ key: '', value: '' }]);
   const { showNotification } = useNotification();
+
+  useEffect(() => {
+    try {
+      const url = new URL(originalUrl);
+      const existingParams: UrlParameter[] = [];
+      url.searchParams.forEach((value, key) => {
+        existingParams.push({ key, value });
+      });
+      if (existingParams.length > 0) {
+        setParameters(existingParams);
+      }
+    } catch (error) {
+      console.error('Error parsing URL parameters:', error);
+    }
+  }, [originalUrl]);
 
   const addParameter = () => {
     setParameters([...parameters, { key: '', value: '' }]);
@@ -30,26 +45,27 @@ const UrlParameters = ({ shortUrl }: UrlParametersProps) => {
   };
 
   const generateUrlWithParams = () => {
-    console.log('generateUrlWithParams called', parameters);
     const validParams = parameters.filter((p) => p.key && p.value);
-    if (validParams.length === 0) return shortUrl;
+    if (validParams.length === 0) return originalUrl;
 
-    const searchParams = new URLSearchParams();
-    validParams.forEach((param) => {
-      searchParams.append(param.key, param.value);
-    });
-    console.log(
-      'generateUrlWithParams',
-      searchParams,
-      `${shortUrl}?${searchParams.toString()}`,
-      shortUrl
-    );
-    return searchParams ? `${shortUrl}?${searchParams.toString()}` : shortUrl;
+    try {
+      const url = new URL(originalUrl);
+      // Clear existing parameters
+      url.search = '';
+      // Add new parameters
+      validParams.forEach((param) => {
+        url.searchParams.append(param.key, param.value);
+      });
+      return url.toString();
+    } catch (error) {
+      console.error('Error generating URL with parameters:', error);
+      return originalUrl;
+    }
   };
 
   return (
     <div className="mt-8 p-6 bg-primary-darkest/30 rounded-lg border border-primary-light/20">
-      <h3 className="text-primary-lightest text-lg mb-4">Add Parameters</h3>
+      <h3 className="text-primary-lightest text-lg mb-4">Add Parameters to Original URL</h3>
       <div className="space-y-3">
         {parameters.map((param, index) => (
           <div key={index} className="flex items-center space-x-2">
@@ -84,7 +100,7 @@ const UrlParameters = ({ shortUrl }: UrlParametersProps) => {
       </div>
 
       <div className="mt-4">
-        <h4 className="text-primary-lightest mb-2">URL with Parameters:</h4>
+        <h4 className="text-primary-lightest mb-2">Original URL with Parameters:</h4>
         <div className="flex items-center space-x-2">
           <input
             type="text"

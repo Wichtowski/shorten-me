@@ -56,11 +56,13 @@ All backend logic (authentication, URL shortening, etc.) is implemented in Next.
 ### Manual Deployment
 
 1. Build the Docker image:
+
 ```bash
 docker build -t shortenme-frontend -f Dockerfile .
 ```
 
 2. Push to Azure Container Registry:
+
 ```bash
 docker tag shortenme-frontend <registry>.azurecr.io/shortenme-frontend:latest
 docker push <registry>.azurecr.io/shortenme-frontend:latest

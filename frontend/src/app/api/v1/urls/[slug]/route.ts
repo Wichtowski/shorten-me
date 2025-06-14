@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     if (error instanceof Error) {
       console.error('API: Error details:', {
         message: error.message,
-        stack: error.stack
+        stack: error.stack,
       });
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

@@ -19,7 +19,7 @@ interface AccountState {
 const hasDataChanged = (localUrls: Url[], serverUrls: Url[]): boolean => {
   if (localUrls.length !== serverUrls.length) return true;
 
-  const localMap = new Map(localUrls.map(url => [url.id, url]));
+  const localMap = new Map(localUrls.map((url) => [url.id, url]));
 
   for (const serverUrl of serverUrls) {
     const localUrl = localMap.get(serverUrl.id);
