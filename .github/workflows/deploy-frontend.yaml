@@ -98,3 +98,15 @@ jobs:
           echo "COSMOSDB_ENDPOINT: $COSMOSDB_ENDPOINT" >> $GITHUB_STEP_SUMMARY
           echo "COSMOSDB_KEY: $COSMOSDB_KEY" >> $GITHUB_STEP_SUMMARY
           python deploy_frontend.py ${{ inputs.environment }}
+
+      - name: Display Deployment Summary
+        if: always()
+        working-directory: ${{ env.infra_dir }}
+        run: |
+          if [ -f "deployment_summary.txt" ]; then
+            for line in $(cat deployment_summary.txt); do
+              echo "$line" >> $GITHUB_STEP_SUMMARY
+            done
+          else
+            echo "❌ Deployment summary file not found" >> $GITHUB_STEP_SUMMARY
+          fi

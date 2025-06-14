@@ -3,6 +3,8 @@ import sys
 import subprocess
 import pathlib
 import dotenv
+import time
+import urllib.request
 # Get environment from command line argument or default to development
 ENVIRONMENT = sys.argv[1] if len(sys.argv) > 1 else "development"
 print(f"Deploying to {ENVIRONMENT} environment")
@@ -81,7 +83,12 @@ frontend_image_name = f"{registry_login_server}/shortenme-frontend:latest"
 print("Building frontend container...")
 try:
     subprocess.run(
-        ["docker", "build", "-t", frontend_image_name, "-f", "../frontend/Dockerfile", "../frontend"],
+        ["docker", "build", 
+         "--build-arg", f"COSMOSDB_ENDPOINT={cosmosdb_endpoint}",
+         "--build-arg", f"COSMOSDB_KEY={cosmosdb_key}",
+         "-t", frontend_image_name, 
+         "-f", "../frontend/Dockerfile", 
+         "../frontend"],
         check=True,
         cwd=INFRA_DIR
     )
@@ -129,21 +136,44 @@ try:
     ], check=True, cwd=PROJECT_ROOT)
     print(f"Frontend container deployed to {app_name}")
     print(f"Access at: https://{app_name}.azurewebsites.net/")
-    print("Waiting for app to start...")
-    import time
-    time.sleep(10)
-    import urllib.request
-    try:
-        with urllib.request.urlopen(f"https://{app_name}.azurewebsites.net/") as response:
-            print(f"App responded with status code: {response.status}")
-    except Exception as e:
-        print(f"Error checking app: {e}")
-    print("Tailing logs (press Ctrl+C to exit)...")
-    subprocess.run([
-        "az", "webapp", "log", "tail",
-        "--resource-group", resource_group,
-        "--name", app_name
-    ], cwd=PROJECT_ROOT)
+
+    if os.getenv("CI"):
+        print("CI")
+        summary = f"""
+        ╔════════════════════════════════════════════════════════════╗
+        ║                     Deployment Complete!                   ║
+        ║                                                            ║
+        ║  Your application has been successfully deployed to Azure. ║
+        ║  You can access it at the URL shown above.                 ║
+        ╚════════════════════════════════════════════════════════════╝
+        """
+        print(summary)
+        
+        # Write deployment summary to file
+        with open("deployment_summary.txt", "w") as f:
+            f.write(f"# Frontend Deployment Status\n")
+            f.write(f"## ✅ Deployment completed successfully\n")
+            f.write(f"Environment: {ENVIRONMENT.upper()}\n")
+            f.write(f"App URL: https://{app_name}.azurewebsites.net/\n")
+            f.write(f"Resource Group: {resource_group}\n")
+            f.write(f"Container Registry: {registry_login_server}\n")
+            f.write(f"Image: {frontend_image_name}\n")
+        
+        sys.exit(0)
+    else:
+        print("Waiting for app to start...")
+        time.sleep(10)
+        try:
+            with urllib.request.urlopen(f"https://{app_name}.azurewebsites.net/") as response:
+                print(f"App responded with status code: {response.status}")
+        except Exception as e:
+            print(f"Error checking app: {e}")
+        print("Tailing logs (press Ctrl+C to exit)...")
+        subprocess.run([
+            "az", "webapp", "log", "tail",
+            "--resource-group", resource_group,
+            "--name", app_name
+        ], cwd=PROJECT_ROOT)
 except Exception as e:
     print(f"Error configuring app service: {e}")
     sys.exit(1) 
