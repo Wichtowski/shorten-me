@@ -76,7 +76,7 @@ jobs:
       - name: Azure CLI
         uses: azure/cli@v2
         with:
-          azcli-version: latest
+          azcliversion: latest
           inlineScript: |
             az account show
       - name: Run deployment script

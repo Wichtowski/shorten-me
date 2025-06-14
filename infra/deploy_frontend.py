@@ -81,7 +81,12 @@ frontend_image_name = f"{registry_login_server}/shortenme-frontend:latest"
 print("Building frontend container...")
 try:
     subprocess.run(
-        ["docker", "build", "-t", frontend_image_name, "-f", "../frontend/Dockerfile", "../frontend"],
+        ["docker", "build", 
+         "--build-arg", f"COSMOSDB_ENDPOINT={cosmosdb_endpoint}",
+         "--build-arg", f"COSMOSDB_KEY={cosmosdb_key}",
+         "-t", frontend_image_name, 
+         "-f", "../frontend/Dockerfile", 
+         "../frontend"],
         check=True,
         cwd=INFRA_DIR
     )
