@@ -28,6 +28,7 @@ jobs:
   deploy-on-stage:
     name: Deploy on Staging
     uses: ./.github/workflows/deploy-on-env.yaml
+    needs: print-tag
     with:
       environment: 'staging'
       source-name: ${{ github.ref_name }}

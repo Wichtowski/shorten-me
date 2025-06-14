@@ -28,6 +28,7 @@ jobs:
   deploy-on-prod:
     name: Deploy on Production
     uses: ./.github/workflows/deploy-on-env.yaml
+    needs: print-tag
     with:
       environment: 'production'
       source-name: ${{ github.ref_name }}
