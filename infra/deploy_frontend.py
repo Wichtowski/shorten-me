@@ -151,13 +151,10 @@ try:
         
         # Write deployment summary to file
         with open("deployment_summary.txt", "w") as f:
-            f.write(f"# Frontend Deployment Status\n")
-            f.write(f"## ✅ Deployment completed successfully\n")
-            f.write(f"Environment: {ENVIRONMENT.upper()}\n")
-            f.write(f"App URL: https://{app_name}.azurewebsites.net/\n")
-            f.write(f"Resource Group: {resource_group}\n")
-            f.write(f"Container Registry: {registry_login_server}\n")
-            f.write(f"Image: {frontend_image_name}\n")
+            f.write("# Frontend Deployment Status\n\n")
+            f.write("## ✅ Deployment completed successfully\n\n")
+            f.write(f"**Environment:** {ENVIRONMENT.upper()}\n")
+            f.write(f"**App URL:** https://{app_name}.azurewebsites.net/\n")
         
         sys.exit(0)
     else:
