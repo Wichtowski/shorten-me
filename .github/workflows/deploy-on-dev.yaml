@@ -6,6 +6,8 @@ on:
       branch-name:
         description: 'Name of GitHub Source Branch or Tag'
         required: true
+        type: string
+        default: 'main'
       semantic-version:
         type: choice
         description: 'Semantic version'
