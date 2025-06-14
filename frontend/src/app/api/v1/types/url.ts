@@ -4,4 +4,4 @@ import { Url } from '@/types/url';
 export type UrlResponse = Omit<Url, 'user_id'>;
 
 // For database operations
-export type UrlDocument = Url; 
+export type UrlDocument = Url;

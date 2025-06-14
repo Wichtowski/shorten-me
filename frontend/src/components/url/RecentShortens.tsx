@@ -49,7 +49,7 @@ const RecentShortens = () => {
                   <input
                     type="text"
                     value={editValue}
-                    onChange={e => setEditValue(e.target.value)}
+                    onChange={(e) => setEditValue(e.target.value)}
                     className="px-2 py-1 rounded bg-primary-darkest border border-primary-light/30 text-white flex-1"
                   />
                   <button
@@ -95,4 +95,4 @@ const RecentShortens = () => {
   );
 };
 
-export default RecentShortens; 
+export default RecentShortens;

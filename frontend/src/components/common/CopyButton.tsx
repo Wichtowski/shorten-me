@@ -14,14 +14,10 @@ const CopyButton: React.FC<CopyButtonProps> = ({ value, onCopied, children, clas
   };
 
   return (
-    <button
-      type="button"
-      onClick={handleCopy}
-      className={className}
-    >
+    <button type="button" onClick={handleCopy} className={className}>
       {children || 'Copy'}
     </button>
   );
 };
 
-export default CopyButton; 
+export default CopyButton;
