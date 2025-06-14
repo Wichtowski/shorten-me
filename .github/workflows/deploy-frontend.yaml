@@ -76,7 +76,7 @@ jobs:
       - name: Azure CLI
         uses: azure/cli@v2
         with:
-          azcli-version: latest
+          azcliversion: latest
           inlineScript: |
             az account show
       - name: Run deployment script
@@ -93,8 +93,4 @@ jobs:
         run: |
           pulumi login
           pulumi stack select ${{ inputs.environment }}
-          export COSMOSDB_ENDPOINT=${{ secrets.COSMOSDB_ENDPOINT }}
-          export COSMOSDB_KEY=${{ secrets.COSMOSDB_KEY }}
-          echo "COSMOSDB_ENDPOINT: $COSMOSDB_ENDPOINT" >> $GITHUB_STEP_SUMMARY
-          echo "COSMOSDB_KEY: $COSMOSDB_KEY" >> $GITHUB_STEP_SUMMARY
           python deploy_frontend.py ${{ inputs.environment }}
