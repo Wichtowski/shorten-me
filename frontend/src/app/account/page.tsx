@@ -68,7 +68,7 @@ export default function MyUrlsPage() {
       const recentShortens = JSON.parse(localStorage.getItem('recent_shortens') || '[]');
 
       try {
-        const response = await fetch('/api/v1/urls', {
+        const response = await fetch('/api/v2/urls', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -88,7 +88,7 @@ export default function MyUrlsPage() {
             (r: ShortenedUrl) => !serverUrls.some((u: Url) => u.short_url === r.shortUrl)
           );
           if (missing.length > 0) {
-            await fetch('/api/v1/shorten/migrate', {
+            await fetch('/api/v2/shorten/migrate', {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json',
@@ -98,7 +98,7 @@ export default function MyUrlsPage() {
             });
             localStorage.removeItem('recent_shortens');
             // Odśwież dane po migracji
-            const refreshed = await fetch('/api/v1/urls', {
+            const refreshed = await fetch('/api/v2/urls', {
               headers: { Authorization: `Bearer ${token}` },
             });
             if (refreshed.ok) {

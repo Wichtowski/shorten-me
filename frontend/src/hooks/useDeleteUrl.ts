@@ -16,7 +16,7 @@ export function useDeleteUrl() {
         throw new Error('No token found');
       }
 
-      const response = await fetch('/api/v1/shorten', {
+      const response = await fetch('/api/v2/shorten', {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,

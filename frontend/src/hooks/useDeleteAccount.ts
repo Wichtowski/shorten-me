@@ -9,7 +9,7 @@ export function useDeleteAccount() {
     const token = localStorage.getItem('token');
     if (!token) throw new Error('No token found');
 
-    const response = await fetch('/api/v1/account', {
+    const response = await fetch('/api/v2/account', {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${token}`,

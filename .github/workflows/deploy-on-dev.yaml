@@ -25,10 +25,10 @@ on:
           - 'yes'
         default: 'no'
 
-  push:
-    branches:
-      - main
-      - tags
+  # push:
+  #   branches:
+  #     - main
+  #     - tags
 
 permissions: write-all
 

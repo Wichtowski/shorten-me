@@ -15,7 +15,7 @@ const LoginPage = () => {
     setError('');
     setLoading(true);
     try {
-      const response = await fetch('/api/v1/login', {
+      const response = await fetch('/api/v2/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -37,7 +37,7 @@ const LoginPage = () => {
           // MIGRATE ANONYMOUS SHORTENS
           const recentShortens = JSON.parse(localStorage.getItem('recent_shortens') || '[]');
           if (recentShortens.length > 0) {
-            await fetch('/api/v1/shorten/migrate', {
+            await fetch('/api/v2/shorten/migrate', {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json',

@@ -47,7 +47,7 @@ export const useUrlStore = create<UrlStore>()(
 
         try {
           set({ loading: true, error: null });
-          const response = await fetch('/api/v1/urls', {
+          const response = await fetch('/api/v2/urls', {
             headers: { Authorization: `Bearer ${token}` },
           });
 

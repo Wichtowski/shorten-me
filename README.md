@@ -1,28 +1,64 @@
 # Shorten-Me URL Shortening Service
 
-A full-stack URL shortening service deployed on Azure.
+A full-stack URL shortening service. Originally deployed on Azure as a student project, now migrated to MongoDB Atlas + Vercel for free tier hosting.
 
 ## Project Structure
 
 - **frontend/**: Next.js fullstack application (API + UI)
-- **infra/**: Pulumi infrastructure as code
+- **infra/**: Pulumi infrastructure as code (legacy Azure deployment)
 - **.github/**: GitHub Actions workflows for CI/CD
 
-## Setup from Fresh Machine
+## Current Version (MongoDB + Vercel)
 
 ### Prerequisites
-
 - Node.js 20+
-- Docker
-- Azure CLI
-- Pulumi CLI
+- MongoDB Atlas account (free tier)
+- Vercel account
 
-### Initial Setup
+### Setup
 
 1. Clone the repository
 ```bash
 git clone <repository-url>
 cd shorten-me
+```
+
+2. Install dependencies for frontend
+```bash
+cd frontend
+npm install
+cd ..
+```
+
+### Deployment
+
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Add the `MONGODB_URI` environment variable in Vercel's project settings
+4. Deploy!
+
+### Local Development
+
+```bash
+cd frontend
+npm run dev
+```
+
+## Azure Version (tag 1.3.0)
+
+### Prerequisites
+- Node.js 20+
+- Docker
+- Azure CLI
+- Pulumi CLI
+
+### Setup
+
+1. Clone the repository and checkout the Azure version
+```bash
+git clone <repository-url>
+cd shorten-me
+git checkout 1.3.0
 ```
 
 2. Install dependencies for frontend
@@ -42,9 +78,7 @@ pulumi stack select oskar  # Or create a new stack with: pulumi stack init <name
 cd ..
 ```
 
-## Deployment
-
-### Manual Deployment
+### Deployment
 
 1. Deploy infrastructure:
 ```bash
@@ -76,15 +110,7 @@ az ad sp create-for-rbac --name "shorten-me-sp" --role contributor --scopes /sub
 
 3. Push to main branch to trigger deployment
 
-## Local Development
-
-### Frontend (Next.js)
-```bash
-cd frontend
-npm run dev
-```
-
-## Docker Builds
+### Docker Builds
 
 Build frontend:
 ```bash

@@ -56,13 +56,13 @@ const RecentShortens = () => {
                     onClick={() => handleSave(index)}
                     className="text-primary-lightest bg-primary-light px-2 py-1 rounded hover:bg-primary-lightest hover:text-primary-darkest"
                   >
-                    Zapisz
+                    Save
                   </button>
                   <button
                     onClick={handleCancel}
                     className="text-primary-light px-2 py-1 rounded hover:text-primary-lightest"
                   >
-                    Anuluj
+                    Cancel
                   </button>
                 </div>
               ) : (
@@ -72,7 +72,7 @@ const RecentShortens = () => {
                     onClick={() => handleEdit(index, shorten.originalUrl)}
                     className="text-primary-light hover:text-primary-lightest text-xs border border-primary-light px-2 py-1 rounded"
                   >
-                    Edytuj
+                    Edit
                   </button>
                 </div>
               )}
