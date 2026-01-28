@@ -80,7 +80,7 @@ const UrlShortener = () => {
         };
         console.log('Request headers:', headers);
 
-        const response = await fetch(`/api/v1/shorten`, {
+        const response = await fetch(`/api/v2/shorten`, {
           method: 'POST',
           headers,
           body: JSON.stringify({ original_url: url }),
