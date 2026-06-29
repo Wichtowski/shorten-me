@@ -1,0 +1,11 @@
+{
+  "name": "shorten-me",
+  "compatibility_date": "2026-06-29",
+  "compatibility_flags": ["nodejs_compat"],
+  "kv_namespaces": [
+    {
+      "binding": "SHORTENME_KV",
+      "id": "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+    }
+  ]
+}

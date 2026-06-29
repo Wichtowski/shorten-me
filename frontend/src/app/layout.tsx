@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import { NotificationProvider } from '@/components/context/NotificationContext';
+import { NotificationProvider } from '@components/context/NotificationContext';
 import './globals.css';
-import Navbar from '@/components/layout/Navbar';
-import { UserProvider } from '@/components/context/UserContext';
+import Navbar from '@components/layout/Navbar';
+import { UserProvider } from '@components/context/UserContext';
+import { env } from 'cloudflare:workers';
+import { assertJwtConfigured } from '@lib/runtime-config';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -14,6 +16,8 @@ const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
 });
+
+assertJwtConfigured(env);
 
 export const metadata: Metadata = {
   title: 'Shoten Me!',
