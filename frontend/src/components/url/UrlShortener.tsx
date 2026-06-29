@@ -6,10 +6,11 @@ import {
   generateMockShortUrl,
   canShortenMore,
   incrementShortenCount,
-} from '@/utils/urlUtils';
-import { useNotification } from '@/components/context/NotificationContext';
-import { useUser } from '@/components/context/UserContext';
-import { useRecentShortens } from '@/hooks/useRecentShortens';
+} from '@utils/urlUtils';
+import { useNotification } from '@components/context/NotificationContext';
+import { useUser } from '@components/context/UserContext';
+import { useRecentShortens } from '@hooks/useRecentShortens';
+import { apiClient } from '@lib/api-client';
 import UrlDetails from './UrlDetails';
 import UrlParameters from './UrlParameters';
 import RecentShortens from './RecentShortens';
@@ -72,27 +73,13 @@ const UrlShortener = () => {
         showNotification('URL shortened successfully!', 'success');
       } else {
         const token = localStorage.getItem('token');
-        console.log('Token from localStorage:', token);
-
-        const headers = {
-          'Content-Type': 'application/json',
-          ...(token && { Authorization: `Bearer ${token}` }),
-        };
-        console.log('Request headers:', headers);
-
-        const response = await fetch(`/api/v2/shorten`, {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({ original_url: url }),
-        });
-
-        const data = await response.json();
-        console.log('Response data:', data);
-
-        if (!response.ok) {
-          throw new Error(data.error || 'Failed to shorten URL');
-        }
-        generatedShortUrl = data.url.short_url;
+        const response = await apiClient.shortenUrl(
+          {
+            originalUrl: url,
+          },
+          token || undefined
+        );
+        generatedShortUrl = response.url.short_url;
         setShortUrl(generatedShortUrl);
         // Add to recent shortenings immediately after shortening
         addShorten(url, generatedShortUrl);

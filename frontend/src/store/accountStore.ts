@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { Url } from '@/types/url';
+import { Url } from '@shared/url';
+import { apiClient } from '@lib/api-client';
 
 interface AccountState {
   urls: Url[];
@@ -59,17 +60,7 @@ export const useAccountStore = create<AccountState>((set, get) => ({
 
     try {
       set({ loading: true, error: null });
-      const response = await fetch('/api/v2/urls', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch URLs');
-      }
-
-      const data = await response.json();
+      const data = await apiClient.getUrls(token);
 
       // Check if data has changed
       if (hasDataChanged(get().urls, data.urls)) {

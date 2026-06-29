@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useRecentShortens } from '@/hooks/useRecentShortens';
+import { useRecentShortens } from '@hooks/useRecentShortens';
 
 const RecentShortens = () => {
   const { recentShortens, clearRecentShortens, updateShorten } = useRecentShortens();

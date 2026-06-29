@@ -1,5 +1,6 @@
-import { useUser } from '@/components/context/UserContext';
+import { useUser } from '@components/context/UserContext';
 import { useRouter } from 'next/navigation';
+import { apiClient } from '@lib/api-client';
 
 export function useDeleteAccount() {
   const { logout } = useUser();
@@ -9,17 +10,7 @@ export function useDeleteAccount() {
     const token = localStorage.getItem('token');
     if (!token) throw new Error('No token found');
 
-    const response = await fetch('/api/v2/account', {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      const data = await response.json();
-      throw new Error(data.error || 'Failed to delete account');
-    }
+    await apiClient.deleteAccount(token);
 
     logout();
     router.push('/');

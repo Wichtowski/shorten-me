@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import Notification from '@/components/common/Notification';
+import Notification from '@components/common/Notification';
 
 interface NotificationContextType {
   showNotification: (message: string, type?: 'error' | 'success' | 'info') => void;

@@ -1,4 +1,4 @@
-import { Url } from '@/types/url';
+import { Url } from '@shared/url';
 
 interface UrlTableProps {
   urls: Url[];

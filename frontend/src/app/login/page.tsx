@@ -1,7 +1,8 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { useUser } from '@/components/context/UserContext';
+import { useUser } from '@components/context/UserContext';
+import { apiClient } from '@lib/api-client';
 
 const LoginPage = () => {
   const { setUser } = useUser();
@@ -15,44 +16,24 @@ const LoginPage = () => {
     setError('');
     setLoading(true);
     try {
-      const response = await fetch('/api/v2/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+      const data = await apiClient.login({ email, password });
 
-      const data = await response.json();
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('token', String(data.token));
+        setUser(data.user);
 
-      if (!response.ok) {
-        setError(data.error || 'Login failed');
-      } else {
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('token', String(data.user.token));
-          setUser({
-            id: data.user.id,
-            email: data.user.email,
-            username: data.user.username,
-          });
-
-          // MIGRATE ANONYMOUS SHORTENS
-          const recentShortens = JSON.parse(localStorage.getItem('recent_shortens') || '[]');
-          if (recentShortens.length > 0) {
-            await fetch('/api/v2/shorten/migrate', {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${data.user.token}`,
-              },
-              body: JSON.stringify({ shortens: recentShortens }),
-            });
-            localStorage.removeItem('recent_shortens');
-          }
+        // MIGRATE ANONYMOUS SHORTENS
+        const recentShortens = JSON.parse(localStorage.getItem('recent_shortens') || '[]');
+        if (recentShortens.length > 0) {
+          await apiClient.migrateShortens(recentShortens, data.token);
+          localStorage.removeItem('recent_shortens');
         }
-        window.location.href = '/';
       }
+
+      window.location.href = '/';
     } catch (err) {
       console.error('Login error:', err);
-      setError('Login failed');
+      setError(err instanceof Error ? err.message : 'Login failed');
     }
     setLoading(false);
   };

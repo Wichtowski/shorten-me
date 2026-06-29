@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Url } from '@/types/url';
+import { Url } from '@shared/url';
+import { apiClient } from '@lib/api-client';
 
 interface UrlStore {
   urls: Url[];
@@ -47,16 +48,7 @@ export const useUrlStore = create<UrlStore>()(
 
         try {
           set({ loading: true, error: null });
-          const response = await fetch('/api/v2/urls', {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-
-          if (!response.ok) {
-            throw new Error('Failed to fetch URLs');
-          }
-
-          const data = await response.json();
-          console.log('Fetched URLs data:', data);
+          const data = await apiClient.getUrls(token);
 
           const newUrls = Array.isArray(data.urls) ? data.urls : [];
           const currentUrls = get().urls;

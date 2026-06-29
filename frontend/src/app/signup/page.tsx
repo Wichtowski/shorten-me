@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { apiClient } from '@lib/api-client';
 
 const SignupPage = () => {
   const [email, setEmail] = useState('');
@@ -25,27 +26,16 @@ const SignupPage = () => {
     }
 
     try {
-      const response = await fetch('/api/v2/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          username,
-          password,
-        }),
+      await apiClient.signup({
+        email,
+        username,
+        password,
       });
-
-      const result = await response.json();
-
-      if (!response.ok || result.error) {
-        setError(result.error || 'Signup failed');
-        return;
-      }
 
       router.push('/');
     } catch (err) {
       console.error(err);
-      setError('Signup failed. Please try again.');
+      setError(err instanceof Error ? err.message : 'Signup failed. Please try again.');
     }
   };
 

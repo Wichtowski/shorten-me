@@ -8,7 +8,6 @@ Pulumi-based infrastructure setup for deploying the URL shortening service to Az
 - `Pulumi.yaml` - Project configuration file
 - `Pulumi.oskar.yaml` - Stack-specific configuration
 - `requirements.txt` - Python dependencies for Pulumi
-- `auto_deploy.py` - Helper script for automated deployments
 
 ## Prerequisites
 
@@ -80,7 +79,7 @@ This infrastructure code manages:
 - Storage Account
 - Container Registry
 - App Service Plan
-- Web App for the frontend (Next.js)
+- Web App for the frontend (Vinext)
 - CosmosDB
 - Application Insights
 

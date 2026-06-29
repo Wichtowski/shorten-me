@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useAccountStore } from '@/store/accountStore';
+import { useAccountStore } from '@store/accountStore';
+import { apiClient } from '@lib/api-client';
 
 export function useDeleteUrl() {
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
@@ -16,19 +17,7 @@ export function useDeleteUrl() {
         throw new Error('No token found');
       }
 
-      const response = await fetch('/api/v2/shorten', {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url_id: urlId }),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Failed to delete URL');
-      }
+      await apiClient.deleteUrl(urlId, token);
 
       removeUrl(urlId);
     } catch (err) {

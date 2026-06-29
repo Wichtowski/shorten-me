@@ -1,7 +1,7 @@
 'use client';
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { verifyJwt } from '@/app/api/v1/utils/jwt';
-import { User, UserContextType } from '@/common/interfaces/User';
+import { User, UserContextType } from '@common/interfaces/User';
+import { tokenToUser } from '@lib/auth';
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
@@ -12,7 +12,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     const checkToken = async () => {
       const token = localStorage.getItem('token');
       if (token) {
-        const decoded = await verifyJwt(token);
+        const decoded = tokenToUser(token);
         setUser(decoded);
       }
     };

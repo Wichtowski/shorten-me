@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useNotification } from '@/components/context/NotificationContext';
-import CopyButton from '@/components/common/CopyButton';
+import React, { useState } from 'react';
+import { useNotification } from '@components/context/NotificationContext';
+import CopyButton from '@components/common/CopyButton';
 
 interface UrlParametersProps {
   originalUrl: string;
@@ -11,24 +11,25 @@ interface UrlParameter {
   value: string;
 }
 
-const UrlParameters = ({ originalUrl }: UrlParametersProps) => {
-  const [parameters, setParameters] = useState<UrlParameter[]>([{ key: '', value: '' }]);
-  const { showNotification } = useNotification();
+const parseParameters = (originalUrl: string): UrlParameter[] => {
+  try {
+    const url = new URL(originalUrl);
+    const existingParams: UrlParameter[] = [];
 
-  useEffect(() => {
-    try {
-      const url = new URL(originalUrl);
-      const existingParams: UrlParameter[] = [];
-      url.searchParams.forEach((value, key) => {
-        existingParams.push({ key, value });
-      });
-      if (existingParams.length > 0) {
-        setParameters(existingParams);
-      }
-    } catch (error) {
-      console.error('Error parsing URL parameters:', error);
-    }
-  }, [originalUrl]);
+    url.searchParams.forEach((value, key) => {
+      existingParams.push({ key, value });
+    });
+
+    return existingParams.length > 0 ? existingParams : [{ key: '', value: '' }];
+  } catch (error) {
+    console.error('Error parsing URL parameters:', error);
+    return [{ key: '', value: '' }];
+  }
+};
+
+const UrlParameters = ({ originalUrl }: UrlParametersProps) => {
+  const [parameters, setParameters] = useState<UrlParameter[]>(() => parseParameters(originalUrl));
+  const { showNotification } = useNotification();
 
   const addParameter = () => {
     setParameters([...parameters, { key: '', value: '' }]);

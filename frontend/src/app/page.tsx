@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import UrlShortener from '@/components/url/UrlShortener';
+import UrlShortener from '@components/url/UrlShortener';
 
 export default function HomePage() {
   return (

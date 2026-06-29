@@ -1,17 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useUser } from '@/components/context/UserContext';
+import { useUser } from '@components/context/UserContext';
 import { useRouter } from 'next/navigation';
-import Notification from '@/components/common/Notification';
-import ConfirmationOverlay from '@/components/common/ConfirmationOverlay';
-import Spinner from '@/components/common/Spinner';
-import { verifyJwt } from '../api/v1/utils/jwt';
-import { useUrls } from '@/hooks/useUrls';
-import { useDeleteUrl } from '@/hooks/useDeleteUrl';
-import { UrlTable } from '@/components/account/UrlTable';
-import { useDeleteAccount } from '@/hooks/useDeleteAccount';
-import { Url } from '@/types/url';
+import Notification from '@components/common/Notification';
+import ConfirmationOverlay from '@components/common/ConfirmationOverlay';
+import Spinner from '@components/common/Spinner';
+import { useUrls } from '@hooks/useUrls';
+import { useDeleteUrl } from '@hooks/useDeleteUrl';
+import { UrlTable } from '@components/account/UrlTable';
+import { useDeleteAccount } from '@hooks/useDeleteAccount';
+import { Url } from '@shared/url';
+import { apiClient } from '@lib/api-client';
+import { tokenToUser } from '@lib/auth';
 
 interface ShortenedUrl {
   originalUrl: string;
@@ -49,7 +50,7 @@ export default function MyUrlsPage() {
         return;
       }
 
-      const decoded = await verifyJwt(token);
+      const decoded = tokenToUser(token);
       if (!decoded) {
         router.push('/login');
         return;
@@ -68,18 +69,7 @@ export default function MyUrlsPage() {
       const recentShortens = JSON.parse(localStorage.getItem('recent_shortens') || '[]');
 
       try {
-        const response = await fetch('/api/v2/urls', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          setNotification({ message: 'Failed to fetch URLs', type: 'error' });
-          return;
-        }
-
-        const data = await response.json();
+        const data = await apiClient.getUrls(token);
         const serverUrls = data.urls;
 
         // MIGRATE IF RECENT SHORTENS ARE NOT IN THE SERVER
@@ -88,25 +78,13 @@ export default function MyUrlsPage() {
             (r: ShortenedUrl) => !serverUrls.some((u: Url) => u.short_url === r.shortUrl)
           );
           if (missing.length > 0) {
-            await fetch('/api/v2/shorten/migrate', {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({ shortens: missing }),
-            });
+            await apiClient.migrateShortens(missing, token);
             localStorage.removeItem('recent_shortens');
             // Odśwież dane po migracji
-            const refreshed = await fetch('/api/v2/urls', {
-              headers: { Authorization: `Bearer ${token}` },
-            });
-            if (refreshed.ok) {
-              const refreshedData = await refreshed.json();
-              localStorage.setItem('urls', JSON.stringify(refreshedData.urls));
-              setSyncedUrls(refreshedData.urls);
-              setShouldUseLocal(false);
-            }
+            const refreshedData = await apiClient.getUrls(token);
+            localStorage.setItem('urls', JSON.stringify(refreshedData.urls));
+            setSyncedUrls(refreshedData.urls);
+            setShouldUseLocal(false);
             setNotification({
               message: 'Migrated anonymous shortens to your account.',
               type: 'success',

@@ -1,6 +1,6 @@
 import React from 'react';
-import { useNotification } from '@/components/context/NotificationContext';
-import CopyButton from '@/components/common/CopyButton';
+import { useNotification } from '@components/context/NotificationContext';
+import CopyButton from '@components/common/CopyButton';
 
 interface UrlDetailsProps {
   shortUrl: string;
