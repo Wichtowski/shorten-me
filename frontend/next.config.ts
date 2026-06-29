@@ -12,14 +12,6 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   compress: true,
   reactStrictMode: true,
-  webpack: (config, { isServer }) => {
-    // Exclude v1 routes from build
-    config.module.rules.push({
-      test: /\/api\/v1\/.*/,
-      use: 'ignore-loader'
-    });
-    return config;
-  },
   async headers() {
     return [
       {

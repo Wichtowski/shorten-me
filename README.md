@@ -4,7 +4,7 @@ A full-stack URL shortening service. Originally deployed on Azure as a student p
 
 ## Project Structure
 
-- **frontend/**: Next.js fullstack application (API + UI)
+- **frontend/**: Vinext fullstack application (API + UI)
 - **infra/**: Pulumi infrastructure as code (legacy Azure deployment)
 - **.github/**: GitHub Actions workflows for CI/CD
 
