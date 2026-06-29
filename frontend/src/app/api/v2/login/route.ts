@@ -1,10 +1,10 @@
 'use server';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyPassword } from '@/app/api/v2/utils/hash';
-import { signJwt } from '@/app/api/v2/utils/jwt';
-import { getMongoCluster } from '@/app/api/v2/utils/mongodb';
-import User from '@/app/api/v2/models/User';
+import { verifyPassword } from '@app/api/v2/utils/hash';
+import { signJwt } from '@app/api/v2/utils/jwt';
+import { getMongoCluster } from '@app/api/v2/utils/mongodb';
+import User from '@app/api/v2/models/User';
 
 export async function POST(req: NextRequest) {
   try {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyJwt } from '@/app/api/v2/utils/jwt';
-import { UrlService } from '@/app/api/v2/services/urlService';
+import { verifyJwt } from '@app/api/v2/utils/jwt';
+import { UrlService } from '@app/api/v2/services/urlService';
 
 export async function GET(req: NextRequest) {
   try {

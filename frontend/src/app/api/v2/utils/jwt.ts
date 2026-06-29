@@ -1,7 +1,7 @@
 'use server';
 
 import jwt, { SignOptions, Algorithm } from 'jsonwebtoken';
-import { User } from '@/common/interfaces/User';
+import { User } from '@common/interfaces/User';
 
 const SECRET_KEY = process.env.SECRET_KEY || 'default-secret-key';
 const ALGORITHM: Algorithm = (process.env.ALGORITHM as Algorithm) || 'HS256';

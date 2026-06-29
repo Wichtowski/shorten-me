@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
-import { randomSlug } from '@/app/api/v2/utils/url';
-import { UrlDocument } from '@/app/api/v2/types/url';
-import { getMongoCluster } from '@/app/api/v2/utils/mongodb';
-import Url from '@/app/api/v2/models/Url';
-import AnonymousUsage from '@/app/api/v2/models/AnonymousUsage';
+import { randomSlug } from '@app/api/v2/utils/url';
+import { UrlDocument } from '@app/api/v2/types/url';
+import { getMongoCluster } from '@app/api/v2/utils/mongodb';
+import Url from '@app/api/v2/models/Url';
+import AnonymousUsage from '@app/api/v2/models/AnonymousUsage';
 
 export class UrlService {
     static async createUrl(original_url: string, user_id: string, custom_slug?: string): Promise<UrlDocument> {

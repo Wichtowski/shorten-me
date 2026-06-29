@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyJwt } from '@/app/api/v2/utils/jwt';
-import { UrlDocument } from '@/app/api/v2/types/url';
-import { getMongoCluster } from '@/app/api/v2/utils/mongodb';
-import Url from '@/app/api/v2/models/Url';
-import AnonymousUsage from '@/app/api/v2/models/AnonymousUsage';
+import { verifyJwt } from '@app/api/v2/utils/jwt';
+import { UrlDocument } from '@app/api/v2/types/url';
+import { getMongoCluster } from '@app/api/v2/utils/mongodb';
+import Url from '@app/api/v2/models/Url';
+import AnonymousUsage from '@app/api/v2/models/AnonymousUsage';
 
 // MIGRATION ENDPOINT
 export async function PUT(req: NextRequest) {

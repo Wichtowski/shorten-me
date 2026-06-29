@@ -1,9 +1,9 @@
 'use server';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getMongoCluster } from '@/app/api/v2/utils/mongodb';
-import Url from '@/app/api/v2/models/Url';
-import AnonymousUsage from '@/app/api/v2/models/AnonymousUsage';
+import { getMongoCluster } from '@app/api/v2/utils/mongodb';
+import Url from '@app/api/v2/models/Url';
+import AnonymousUsage from '@app/api/v2/models/AnonymousUsage';
 
 export async function GET(
   request: NextRequest

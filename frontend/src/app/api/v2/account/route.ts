@@ -1,10 +1,10 @@
 'use server';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyJwt } from '@/app/api/v2/utils/jwt';
-import { getMongoCluster } from '@/app/api/v2/utils/mongodb';
-import User from '@/app/api/v2/models/User';
-import Url from '@/app/api/v2/models/Url';
+import { verifyJwt } from '@app/api/v2/utils/jwt';
+import { getMongoCluster } from '@app/api/v2/utils/mongodb';
+import User from '@app/api/v2/models/User';
+import Url from '@app/api/v2/models/Url';
 
 export async function DELETE(req: NextRequest) {
   try {

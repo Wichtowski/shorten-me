@@ -1,7 +1,7 @@
 'use server';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { UrlService } from '@/app/api/v2/services/urlService';
+import { UrlService } from '@app/api/v2/services/urlService';
 
 export async function GET(request: NextRequest) {
   try {
