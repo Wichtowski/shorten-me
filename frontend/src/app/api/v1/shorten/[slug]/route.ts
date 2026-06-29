@@ -1,7 +1,7 @@
 'use server';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getUrlsContainer, getAnonymousContainer } from '@/app/api/v1/utils/cosmos';
+import { getUrlsContainer, getAnonymousContainer } from '@app/api/v1/utils/cosmos';
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const slug = request.nextUrl.pathname.split('/').pop();

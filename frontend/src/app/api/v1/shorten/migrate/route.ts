@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyJwt } from '@/app/api/v1/utils/jwt';
-import { UrlDocument } from '@/app/api/v1/types/url';
+import { verifyJwt } from '@app/api/v1/utils/jwt';
+import { UrlDocument } from '@app/api/v1/types/url';
 
 // MIGRATION ENDPOINT
 export async function PUT(req: NextRequest) {
@@ -24,10 +24,10 @@ export async function PUT(req: NextRequest) {
     if (!Array.isArray(shortens) || shortens.length === 0) {
       return NextResponse.json({ error: 'No shortens to migrate' }, { status: 400 });
     }
-    const userContainer = await import('@/app/api/v1/utils/cosmos').then((m) =>
+    const userContainer = await import('@app/api/v1/utils/cosmos').then((m) =>
       m.getUrlsContainer()
     );
-    const anonContainer = await import('@/app/api/v1/utils/cosmos').then((m) =>
+    const anonContainer = await import('@app/api/v1/utils/cosmos').then((m) =>
       m.getAnonymousContainer()
     );
 

@@ -1,7 +1,7 @@
-import { getUrlsContainer, getAnonymousContainer } from '@/app/api/v1/utils/cosmos';
+import { getUrlsContainer, getAnonymousContainer } from '@app/api/v1/utils/cosmos';
 import { v4 as uuidv4 } from 'uuid';
-import { randomSlug } from '@/app/api/v1/utils/url';
-import { UrlDocument } from '@/app/api/v1/types/url';
+import { randomSlug } from '@app/api/v1/utils/url';
+import { UrlDocument } from '@app/api/v1/types/url';
 
 export class UrlService {
   static async createUrl(

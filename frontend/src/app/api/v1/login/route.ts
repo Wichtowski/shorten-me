@@ -1,9 +1,9 @@
 'use server';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getUsersContainer } from '@/app/api/v1/utils/cosmos';
-import { verifyPassword } from '@/app/api/v1/utils/hash';
-import { signJwt } from '@/app/api/v1/utils/jwt';
+import { getUsersContainer } from '@app/api/v1/utils/cosmos';
+import { verifyPassword } from '@app/api/v1/utils/hash';
+import { signJwt } from '@app/api/v1/utils/jwt';
 
 export async function POST(req: NextRequest) {
   try {

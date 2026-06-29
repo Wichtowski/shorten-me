@@ -1,8 +1,8 @@
 'use server';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getUsersContainer, getUrlsContainer } from '@/app/api/v1/utils/cosmos';
-import { verifyJwt } from '@/app/api/v1/utils/jwt';
+import { getUsersContainer, getUrlsContainer } from '@app/api/v1/utils/cosmos';
+import { verifyJwt } from '@app/api/v1/utils/jwt';
 import { SqlParameter } from '@azure/cosmos';
 
 export async function DELETE(req: NextRequest) {
