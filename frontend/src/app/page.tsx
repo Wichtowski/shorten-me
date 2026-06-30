@@ -20,7 +20,7 @@ export default function HomePage() {
         <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
           <div className="space-y-3">
             <span className="display-font text-2xl font-bold text-slate-100">
-              Shorten Me
+              Shorten
             </span>
             <p className="max-w-xl text-sm leading-6 text-[#bac9cc]">
               Simplified link management for creators and teams who want the interface to stay

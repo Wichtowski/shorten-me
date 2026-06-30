@@ -25,9 +25,9 @@ const displayFont = Hanken_Grotesk({
 assertJwtConfigured(env);
 
 export const metadata: Metadata = {
-  title: "Shorten Me",
+  title: "Shorten",
   description:
-    "Shorten Me is a URL shortener that helps you create clean links, track clicks, and manage your shortcuts.",
+    "Shorten is a URL shortener that helps you create clean links, track clicks, and manage your shortcuts.",
   icons: {
     icon: "/favicon.ico"
   }

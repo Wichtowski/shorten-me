@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 const HomeLink = () => (
   <Link href="/" className="group flex items-center gap-2">
     <span className="display-font text-2xl font-bold text-cyan-100 transition group-hover:text-cyan-300">
-      Shorten Me
+      Shorten
     </span>
   </Link>
 );
