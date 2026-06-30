@@ -46,13 +46,6 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Configure Cloudflare KV namespace
-        env:
-          CLOUDFLARE_KV_NAMESPACE_ID: ${{ secrets.CLOUDFLARE_KV_NAMESPACE_ID }}
-        run: |
-          test -n "$CLOUDFLARE_KV_NAMESPACE_ID"
-          sed -i "s/REPLACE_WITH_YOUR_KV_NAMESPACE_ID/$CLOUDFLARE_KV_NAMESPACE_ID/g" wrangler.jsonc
-
       - name: Lint
         run: bun run lint
 
@@ -65,6 +58,7 @@ jobs:
       - name: Apply Cloudflare environment
         env:
           DEPLOY_ENVIRONMENT: ${{ inputs.environment }}
+          CLOUDFLARE_KV_NAMESPACE_ID: ${{ secrets.CLOUDFLARE_KV_NAMESPACE_ID }}
         run: bun run apply-cloudflare-environment
 
       - name: Deploy with Wrangler
