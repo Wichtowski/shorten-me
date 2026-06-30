@@ -1,4 +1,4 @@
-import type { User } from '@common/interfaces/User';
+import type { User } from "@common/interfaces/User";
 
 export interface JwtUserPayload {
   user_id: string;
@@ -9,16 +9,16 @@ export interface JwtUserPayload {
 }
 
 function base64UrlDecode(value: string): string {
-  const normalized = value.replace(/-/g, '+').replace(/_/g, '/');
+  const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
   const padding = normalized.length % 4;
-  const padded = padding ? `${normalized}${'='.repeat(4 - padding)}` : normalized;
+  const padded = padding ? `${normalized}${"=".repeat(4 - padding)}` : normalized;
   const binary = atob(padded);
   const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
   return new TextDecoder().decode(bytes);
 }
 
 export function decodeJwtPayload(token: string): JwtUserPayload | null {
-  const parts = token.split('.');
+  const parts = token.split(".");
   if (parts.length !== 3) {
     return null;
   }
@@ -43,6 +43,6 @@ export function tokenToUser(token: string): User | null {
   return {
     id: payload.user_id,
     email: payload.email,
-    username: payload.username,
+    username: payload.username
   };
 }

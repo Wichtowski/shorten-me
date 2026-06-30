@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useUser } from '@components/context/UserContext';
-import { useRouter } from 'next/navigation';
-import Notification from '@components/common/Notification';
-import ConfirmationOverlay from '@components/common/ConfirmationOverlay';
-import Spinner from '@components/common/Spinner';
-import { useUrls } from '@hooks/useUrls';
-import { useDeleteUrl } from '@hooks/useDeleteUrl';
-import { UrlTable } from '@components/account/UrlTable';
-import { useDeleteAccount } from '@hooks/useDeleteAccount';
-import { Url } from '@shared/url';
-import { apiClient } from '@lib/api-client';
-import { tokenToUser } from '@lib/auth';
-import { formatShortUrl } from '@utils/shortUrl';
+import { useEffect, useState } from "react";
+import { useUser } from "@components/context/UserContext";
+import { useRouter } from "next/navigation";
+import Notification from "@components/common/Notification";
+import ConfirmationOverlay from "@components/common/ConfirmationOverlay";
+import Spinner from "@components/common/Spinner";
+import { useUrls } from "@hooks/useUrls";
+import { useDeleteUrl } from "@hooks/useDeleteUrl";
+import { UrlTable } from "@components/account/UrlTable";
+import { useDeleteAccount } from "@hooks/useDeleteAccount";
+import { Url } from "@shared/url";
+import { apiClient } from "@lib/api-client";
+import { tokenToUser } from "@lib/auth";
+import { formatShortUrl } from "@utils/shortUrl";
 
 interface ShortenedUrl {
   originalUrl: string;
@@ -28,14 +28,14 @@ export default function MyUrlsPage() {
   const { deleteUrl, deleteLoading } = useDeleteUrl();
   const [notification, setNotification] = useState<{
     message: string;
-    type: 'success' | 'error' | 'info';
+    type: "success" | "error" | "info";
   } | null>(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState<{
     isOpen: boolean;
     urlId: string | null;
   }>({
     isOpen: false,
-    urlId: null,
+    urlId: null
   });
   const [deleteAccountConfirmation, setDeleteAccountConfirmation] = useState<boolean>(false);
   const { deleteAccount } = useDeleteAccount();
@@ -45,15 +45,15 @@ export default function MyUrlsPage() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
-        router.push('/login');
+        router.push("/login");
         return;
       }
 
       const decoded = tokenToUser(token);
       if (!decoded) {
-        router.push('/login');
+        router.push("/login");
         return;
       }
     };
@@ -63,11 +63,11 @@ export default function MyUrlsPage() {
 
   useEffect(() => {
     const syncData = async () => {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) return;
 
-      const storedUrls = JSON.parse(localStorage.getItem('urls') || '[]');
-      const recentShortens = JSON.parse(localStorage.getItem('recent_shortens') || '[]');
+      const storedUrls = JSON.parse(localStorage.getItem("urls") || "[]");
+      const recentShortens = JSON.parse(localStorage.getItem("recent_shortens") || "[]");
 
       try {
         const data = await apiClient.getUrls(token);
@@ -80,15 +80,15 @@ export default function MyUrlsPage() {
           );
           if (missing.length > 0) {
             await apiClient.migrateShortens(missing, token);
-            localStorage.removeItem('recent_shortens');
+            localStorage.removeItem("recent_shortens");
             // Odśwież dane po migracji
             const refreshedData = await apiClient.getUrls(token);
-            localStorage.setItem('urls', JSON.stringify(refreshedData.urls));
+            localStorage.setItem("urls", JSON.stringify(refreshedData.urls));
             setSyncedUrls(refreshedData.urls);
             setShouldUseLocal(false);
             setNotification({
-              message: 'Migrated anonymous shortens to your account.',
-              type: 'success',
+              message: "Migrated anonymous shortens to your account.",
+              type: "success"
             });
             setIsInitialLoad(false);
             return;
@@ -108,13 +108,13 @@ export default function MyUrlsPage() {
           });
 
         if (!isDataMatching) {
-          localStorage.setItem('urls', JSON.stringify(serverUrls));
+          localStorage.setItem("urls", JSON.stringify(serverUrls));
           setSyncedUrls(serverUrls);
           setShouldUseLocal(false);
         }
       } catch (err) {
-        console.error('Error syncing URLs:', err);
-        setNotification({ message: 'Failed to fetch URLs', type: 'error' });
+        console.error("Error syncing URLs:", err);
+        setNotification({ message: "Failed to fetch URLs", type: "error" });
       } finally {
         setIsInitialLoad(false);
       }
@@ -125,12 +125,12 @@ export default function MyUrlsPage() {
 
   const handleCopyOriginalUrl = (url: string) => {
     navigator.clipboard.writeText(url);
-    setNotification({ message: 'Original URL copied to clipboard!', type: 'success' });
+    setNotification({ message: "Original URL copied to clipboard!", type: "success" });
   };
 
   const handleCopyShortUrl = (slug: string) => {
     navigator.clipboard.writeText(formatShortUrl(slug));
-    setNotification({ message: 'URL copied to clipboard!', type: 'success' });
+    setNotification({ message: "URL copied to clipboard!", type: "success" });
   };
 
   const handleDeleteClick = (urlId: string) => {
@@ -143,11 +143,11 @@ export default function MyUrlsPage() {
     try {
       await deleteUrl(deleteConfirmation.urlId);
       setSyncedUrls((urls) => urls.filter((url) => url.id !== deleteConfirmation.urlId));
-      setNotification({ message: 'URL deleted successfully', type: 'success' });
+      setNotification({ message: "URL deleted successfully", type: "success" });
     } catch (err) {
       setNotification({
-        message: err instanceof Error ? err.message : 'Failed to delete URL',
-        type: 'error',
+        message: err instanceof Error ? err.message : "Failed to delete URL",
+        type: "error"
       });
     } finally {
       setDeleteConfirmation({ isOpen: false, urlId: null });
@@ -161,19 +161,19 @@ export default function MyUrlsPage() {
   const handleDeleteAccountConfirm = async () => {
     try {
       await deleteAccount();
-      setNotification({ message: 'Account deleted successfully', type: 'success' });
+      setNotification({ message: "Account deleted successfully", type: "success" });
     } catch (err) {
-      console.error('Error deleting account:', err);
+      console.error("Error deleting account:", err);
       setNotification({
-        message: err instanceof Error ? err.message : 'Failed to delete account',
-        type: 'error',
+        message: err instanceof Error ? err.message : "Failed to delete account",
+        type: "error"
       });
     }
   };
 
   const handleLogout = () => {
     logout();
-    router.push('/');
+    router.push("/");
   };
 
   if (!user) return null;
@@ -219,7 +219,7 @@ export default function MyUrlsPage() {
             </tr>
           </thead>
           <tbody>
-            {isInitialLoad && !localStorage.getItem('urls') ? (
+            {isInitialLoad && !localStorage.getItem("urls") ? (
               <tr>
                 <td colSpan={5} className="px-6 py-8">
                   <div className="flex justify-center">

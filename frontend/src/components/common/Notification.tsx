@@ -1,9 +1,9 @@
-'use client';
-import React, { useEffect, useState } from 'react';
+"use client";
+import React, { useEffect, useState } from "react";
 
 interface NotificationProps {
   message: string;
-  type?: 'error' | 'success' | 'info';
+  type?: "error" | "success" | "info";
   onClose: () => void;
   duration?: number;
 }
@@ -11,7 +11,7 @@ interface NotificationProps {
 const ANIMATION_DURATION = 400;
 const NOTIFICATION_HEIGHT = 64; // px
 
-const Notification = ({ message, type = 'info', onClose, duration = 3000 }: NotificationProps) => {
+const Notification = ({ message, type = "info", onClose, duration = 3000 }: NotificationProps) => {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -31,9 +31,9 @@ const Notification = ({ message, type = 'info', onClose, duration = 3000 }: Noti
   }, [visible, onClose]);
 
   const bgColor = {
-    error: 'bg-red-500',
-    success: 'bg-green-500',
-    info: 'bg-primary-light',
+    error: "bg-red-500",
+    success: "bg-green-500",
+    info: "bg-primary-light"
   }[type];
 
   return (
@@ -44,13 +44,13 @@ const Notification = ({ message, type = 'info', onClose, duration = 3000 }: Noti
       <div
         className={
           ` ${bgColor} text-white px-8 py-4 rounded-b-lg shadow-lg flex items-center space-x-3 relative pointer-events-auto transition-all duration-400 ease-in-out ` +
-          (visible ? 'notification-in' : 'notification-out')
+          (visible ? "notification-in" : "notification-out")
         }
         style={{
           minWidth: 320,
           maxWidth: 480,
           height: NOTIFICATION_HEIGHT,
-          opacity: visible ? 1 : 0,
+          opacity: visible ? 1 : 0
         }}
       >
         <span className="text-lg flex-1">{message}</span>

@@ -1,7 +1,7 @@
-import React from 'react';
-import { useNotification } from '@components/context/NotificationContext';
-import CopyButton from '@components/common/CopyButton';
-import { formatShortUrl } from '@utils/shortUrl';
+import React from "react";
+import { useNotification } from "@components/context/NotificationContext";
+import CopyButton from "@components/common/CopyButton";
+import { formatShortUrl } from "@utils/shortUrl";
 
 interface UrlDetailsProps {
   shortUrl: string;
@@ -19,8 +19,8 @@ const UrlDetails = ({ shortUrl, originalUrl }: UrlDetailsProps) => {
           <h3 className="text-primary-lightest text-lg mb-2">URL Details</h3>
           <div className="space-y-2">
             <p className="text-primary-light">
-              <span className="text-primary-lightest">Original URL:</span>{' '}
-              <span style={{ wordBreak: 'break-all' }}>{originalUrl}</span>
+              <span className="text-primary-lightest">Original URL:</span>{" "}
+              <span style={{ wordBreak: "break-all" }}>{originalUrl}</span>
             </p>
             <p className="text-primary-light">
               <span className="text-primary-lightest">Short URL:</span> {fullShortUrl}
@@ -37,7 +37,7 @@ const UrlDetails = ({ shortUrl, originalUrl }: UrlDetailsProps) => {
           />
           <CopyButton
             value={fullShortUrl}
-            onCopied={() => showNotification('URL copied to clipboard!', 'success')}
+            onCopied={() => showNotification("URL copied to clipboard!", "success")}
             className="bg-primary-light hover:bg-primary-lightest text-white px-4 py-2 rounded-lg transition-all duration-200"
           />
         </div>

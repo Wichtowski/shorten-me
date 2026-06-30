@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useAccountStore } from '@store/accountStore';
-import { apiClient } from '@lib/api-client';
+import { useState } from "react";
+import { useAccountStore } from "@store/accountStore";
+import { apiClient } from "@lib/api-client";
 
 export function useDeleteUrl() {
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
@@ -12,16 +12,16 @@ export function useDeleteUrl() {
     setDeleteError(null);
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
-        throw new Error('No token found');
+        throw new Error("No token found");
       }
 
       await apiClient.deleteUrl(urlId, token);
 
       removeUrl(urlId);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to delete URL';
+      const errorMessage = err instanceof Error ? err.message : "Failed to delete URL";
       setDeleteError(errorMessage);
       throw err;
     } finally {

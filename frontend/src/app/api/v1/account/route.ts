@@ -1,19 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getUsersContainer, getUrlsContainer } from '@app/api/v1/utils/cosmos';
-import { verifyJwt } from '@app/api/v1/utils/jwt';
-import { SqlParameter } from '@azure/cosmos';
+import { NextRequest, NextResponse } from "next/server";
+import { getUsersContainer, getUrlsContainer } from "@app/api/v1/utils/cosmos";
+import { verifyJwt } from "@app/api/v1/utils/jwt";
+import { SqlParameter } from "@azure/cosmos";
 
 export async function DELETE(req: NextRequest) {
   try {
-    const authHeader = req.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const token = authHeader.split(' ')[1];
+    const token = authHeader.split(" ")[1];
     const decoded = await verifyJwt(token);
 
-    if (typeof decoded === 'object' && 'user_id' in decoded) {
+    if (typeof decoded === "object" && "user_id" in decoded) {
       const user_id = decoded.user_id as string;
 
       // Get containers
@@ -22,8 +22,8 @@ export async function DELETE(req: NextRequest) {
 
       // Delete all user's URLs
       const query = {
-        query: 'SELECT * FROM c WHERE c.user_id = @user_id',
-        parameters: [{ name: '@user_id', value: user_id }] as SqlParameter[],
+        query: "SELECT * FROM c WHERE c.user_id = @user_id",
+        parameters: [{ name: "@user_id", value: user_id }] as SqlParameter[]
       };
 
       const { resources: urls } = await urlsContainer.items.query(query).fetchAll();
@@ -36,32 +36,32 @@ export async function DELETE(req: NextRequest) {
       // Delete user account
       await usersContainer.item(user_id).delete();
 
-      return NextResponse.json({ message: 'Account and associated URLs deleted successfully' });
+      return NextResponse.json({ message: "Account and associated URLs deleted successfully" });
     }
 
-    return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
   } catch (error) {
-    console.error('Error deleting account:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error("Error deleting account:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
 export async function GET() {
-  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }
 
 export async function PUT() {
-  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }
 
 export async function PATCH() {
-  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }
 
 export async function OPTIONS() {
-  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }
 
 export async function POST() {
-  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }

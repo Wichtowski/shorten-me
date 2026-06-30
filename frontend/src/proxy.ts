@@ -7,14 +7,14 @@ function unauthorized(): NextResponse {
   return new NextResponse("Authentication required", {
     status: 401,
     headers: {
-      "WWW-Authenticate": `Basic realm="${BASIC_AUTH_REALM}", charset="UTF-8"`,
-    },
+      "WWW-Authenticate": `Basic realm="${BASIC_AUTH_REALM}", charset="UTF-8"`
+    }
   });
 }
 
 function forbidden(): NextResponse {
   return new NextResponse("Development basic auth is not configured", {
-    status: 503,
+    status: 503
   });
 }
 
@@ -35,7 +35,7 @@ function decodeBasicCredentials(
 
     return {
       username: decoded.slice(0, separatorIndex),
-      password: decoded.slice(separatorIndex + 1),
+      password: decoded.slice(separatorIndex + 1)
     };
   } catch {
     return null;
@@ -81,5 +81,5 @@ export function proxy(request: NextRequest): NextResponse {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"]
 };

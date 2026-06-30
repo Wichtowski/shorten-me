@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { Url } from '@shared/url';
-import { apiClient } from '@lib/api-client';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { Url } from "@shared/url";
+import { apiClient } from "@lib/api-client";
 
 interface UrlStore {
   urls: Url[];
@@ -28,7 +28,7 @@ export const useUrlStore = create<UrlStore>()(
       error: null,
       lastFetched: null,
       setUrls: (urls) => {
-        console.log('Setting URLs:', urls);
+        console.log("Setting URLs:", urls);
         set({ urls: Array.isArray(urls) ? urls : [] });
       },
       setLoading: (loading) => set({ loading }),
@@ -39,11 +39,11 @@ export const useUrlStore = create<UrlStore>()(
 
         // If we have cached data and it's not expired, don't fetch
         if (lastFetched && urls.length > 0 && now - lastFetched < CACHE_DURATION) {
-          console.log('Using cached URLs data');
+          console.log("Using cached URLs data");
           return;
         }
 
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         if (!token) return;
 
         try {
@@ -55,18 +55,18 @@ export const useUrlStore = create<UrlStore>()(
 
           // Only update if the data has changed
           if (JSON.stringify(newUrls) !== JSON.stringify(currentUrls)) {
-            console.log('URLs data has changed, updating store');
+            console.log("URLs data has changed, updating store");
             set({
               urls: newUrls,
-              lastFetched: now,
+              lastFetched: now
             });
           } else {
-            console.log('URLs data unchanged, keeping current state');
+            console.log("URLs data unchanged, keeping current state");
             set({ lastFetched: now }); // Update timestamp even if data hasn't changed
           }
         } catch (err) {
-          console.error('Error fetching URLs:', err);
-          set({ error: err instanceof Error ? err.message : 'Failed to fetch URLs' });
+          console.error("Error fetching URLs:", err);
+          set({ error: err instanceof Error ? err.message : "Failed to fetch URLs" });
         } finally {
           set({ loading: false });
         }
@@ -74,26 +74,26 @@ export const useUrlStore = create<UrlStore>()(
       addUrl: (url) =>
         set((state) => ({
           urls: [...state.urls, url],
-          lastFetched: Date.now(),
+          lastFetched: Date.now()
         })),
       removeUrl: (urlId) =>
         set((state) => ({
           urls: state.urls.filter((url) => url.id !== urlId),
-          lastFetched: Date.now(),
+          lastFetched: Date.now()
         })),
       clearUrls: () => set({ urls: [], lastFetched: null }),
       updateUrls: (newUrls) =>
         set((state) => ({
           urls: Array.isArray(newUrls) ? newUrls : state.urls,
-          lastFetched: Date.now(),
-        })),
+          lastFetched: Date.now()
+        }))
     }),
     {
-      name: 'url-storage',
+      name: "url-storage",
       partialize: (state) => ({
         urls: state.urls,
-        lastFetched: state.lastFetched,
-      }),
+        lastFetched: state.lastFetched
+      })
     }
   )
 );

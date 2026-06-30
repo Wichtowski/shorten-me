@@ -14,8 +14,8 @@ export default function ConfirmationOverlay({
   onConfirm,
   title,
   message,
-  confirmText = 'Confirm',
-  cancelText = 'Cancel',
+  confirmText = "Confirm",
+  cancelText = "Cancel"
 }: ConfirmationOverlayProps) {
   if (!isOpen) return null;
 

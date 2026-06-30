@@ -53,6 +53,8 @@ jobs:
         run: bunx tsc --noEmit --project tsconfig.json
 
       - name: Build
+        env:
+          CLOUDFLARE_ENV: ${{ inputs.environment }}
         run: bun run build
 
       - name: Apply Cloudflare environment

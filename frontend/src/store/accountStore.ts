@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { Url } from '@shared/url';
-import { apiClient } from '@lib/api-client';
+import { create } from "zustand";
+import { Url } from "@shared/url";
+import { apiClient } from "@lib/api-client";
 
 interface AccountState {
   urls: Url[];
@@ -52,10 +52,10 @@ export const useAccountStore = create<AccountState>((set, get) => ({
   removeUrl: (id) => set((state) => ({ urls: state.urls.filter((url) => url.id !== id) })),
   updateUrl: (id, updates) =>
     set((state) => ({
-      urls: state.urls.map((url) => (url.id === id ? { ...url, ...updates } : url)),
+      urls: state.urls.map((url) => (url.id === id ? { ...url, ...updates } : url))
     })),
   syncUrls: async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) return;
 
     try {
@@ -67,9 +67,9 @@ export const useAccountStore = create<AccountState>((set, get) => ({
         set({ urls: data.urls });
       }
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to sync URLs' });
+      set({ error: error instanceof Error ? error.message : "Failed to sync URLs" });
     } finally {
       set({ loading: false });
     }
-  },
+  }
 }));

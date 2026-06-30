@@ -1,6 +1,6 @@
-import { useEffect, useCallback } from 'react';
-import { useUser } from '@components/context/UserContext';
-import { useAccountStore } from '@store/accountStore';
+import { useEffect, useCallback } from "react";
+import { useUser } from "@components/context/UserContext";
+import { useAccountStore } from "@store/accountStore";
 
 export function useUrls() {
   const { user } = useUser();

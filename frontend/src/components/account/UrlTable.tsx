@@ -1,4 +1,4 @@
-import { Url } from '@shared/url';
+import { Url } from "@shared/url";
 
 interface UrlTableProps {
   urls: Url[];
@@ -13,7 +13,7 @@ export function UrlTable({
   onCopyOriginalUrl,
   onCopyShortUrl,
   onDeleteUrl,
-  deleteLoading,
+  deleteLoading
 }: UrlTableProps) {
   return (
     <>

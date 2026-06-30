@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import { CosmosClient } from '@azure/cosmos';
+import { NextResponse } from "next/server";
+import { CosmosClient } from "@azure/cosmos";
 
 type HealthStatus = {
   status: string;
@@ -20,20 +20,20 @@ type ErrorType = { message: string };
 export async function GET() {
   const endpoint = process.env.COSMOSDB_ENDPOINT;
   const key = process.env.COSMOSDB_KEY;
-  const databaseName = process.env.COSMOSDB_DATABASE_NAME || 'urlshortener';
+  const databaseName = process.env.COSMOSDB_DATABASE_NAME || "urlshortener";
 
   const health_status: HealthStatus = {
-    status: 'healthy',
+    status: "healthy",
     timestamp: new Date().toISOString(),
     services: {
-      cosmos_db: 'healthy',
-      database: 'healthy',
+      cosmos_db: "healthy",
+      database: "healthy",
       containers: {
-        users: 'healthy',
-        urls: 'healthy',
-        anonymous: 'healthy',
-      },
-    },
+        users: "healthy",
+        urls: "healthy",
+        anonymous: "healthy"
+      }
+    }
   };
 
   try {
@@ -43,61 +43,61 @@ export async function GET() {
   } catch (e) {
     const err = e as ErrorType;
     health_status.services.cosmos_db = `unhealthy: ${err.message}`;
-    health_status.status = 'unhealthy';
+    health_status.status = "unhealthy";
   }
 
   try {
     const client = new CosmosClient({ endpoint, key });
     const db = client.database(databaseName);
-    const users = db.container('users');
+    const users = db.container("users");
     await users.read();
   } catch (e) {
     const err = e as ErrorType;
     health_status.services.containers.users = `unhealthy: ${err.message}`;
-    health_status.status = 'unhealthy';
+    health_status.status = "unhealthy";
   }
 
   try {
     const client = new CosmosClient({ endpoint, key });
     const db = client.database(databaseName);
-    const urls = db.container('urls');
+    const urls = db.container("urls");
     await urls.read();
   } catch (e) {
     const err = e as ErrorType;
     health_status.services.containers.urls = `unhealthy: ${err.message}`;
-    health_status.status = 'unhealthy';
+    health_status.status = "unhealthy";
   }
 
   try {
     const client = new CosmosClient({ endpoint, key });
     const db = client.database(databaseName);
-    const anonymous = db.container('anonymous_usage');
+    const anonymous = db.container("anonymous_usage");
     await anonymous.read();
   } catch (e) {
     const err = e as ErrorType;
     health_status.services.containers.anonymous = `unhealthy: ${err.message}`;
-    health_status.status = 'unhealthy';
+    health_status.status = "unhealthy";
   }
 
   return NextResponse.json(health_status);
 }
 
 export async function POST() {
-  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }
 
 export async function PUT() {
-  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }
 
 export async function PATCH() {
-  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }
 
 export async function OPTIONS() {
-  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }
 
 export async function DELETE() {
-  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }

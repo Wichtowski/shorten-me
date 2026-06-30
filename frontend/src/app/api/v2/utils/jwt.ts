@@ -1,8 +1,8 @@
-import jwt, { SignOptions, Algorithm } from 'jsonwebtoken';
-import { User } from '@common/interfaces/User';
+import jwt, { SignOptions, Algorithm } from "jsonwebtoken";
+import { User } from "@common/interfaces/User";
 
-const SECRET_KEY = process.env.SECRET_KEY || 'default-secret-key';
-const ALGORITHM: Algorithm = (process.env.ALGORITHM as Algorithm) || 'HS256';
+const SECRET_KEY = process.env.SECRET_KEY || "default-secret-key";
+const ALGORITHM: Algorithm = (process.env.ALGORITHM as Algorithm) || "HS256";
 
 export async function signJwt(
   payload: object,

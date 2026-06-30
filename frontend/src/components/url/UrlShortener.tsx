@@ -1,25 +1,25 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   isMockMode,
   generateMockShortUrl,
   canShortenMore,
-  incrementShortenCount,
-} from '@utils/urlUtils';
-import { useNotification } from '@components/context/NotificationContext';
-import { useUser } from '@components/context/UserContext';
-import { useRecentShortens } from '@hooks/useRecentShortens';
-import { apiClient } from '@lib/api-client';
-import UrlDetails from './UrlDetails';
-import UrlParameters from './UrlParameters';
-import RecentShortens from './RecentShortens';
+  incrementShortenCount
+} from "@utils/urlUtils";
+import { useNotification } from "@components/context/NotificationContext";
+import { useUser } from "@components/context/UserContext";
+import { useRecentShortens } from "@hooks/useRecentShortens";
+import { apiClient } from "@lib/api-client";
+import UrlDetails from "./UrlDetails";
+import UrlParameters from "./UrlParameters";
+import RecentShortens from "./RecentShortens";
 
 const UrlShortener = () => {
-  const [url, setUrl] = useState('');
-  const [shortUrl, setShortUrl] = useState('');
+  const [url, setUrl] = useState("");
+  const [shortUrl, setShortUrl] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const { showNotification } = useNotification();
   const { user } = useUser();
   const { addShorten } = useRecentShortens();
@@ -27,15 +27,15 @@ const UrlShortener = () => {
   const validateUrl = async (urlString: string) => {
     try {
       const url = new URL(urlString);
-      if (url.protocol !== 'https:') {
-        throw new Error('Only HTTPS URLs are allowed');
+      if (url.protocol !== "https:") {
+        throw new Error("Only HTTPS URLs are allowed");
       }
       return true;
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError('Invalid URL');
+        setError("Invalid URL");
       }
       return false;
     }
@@ -43,13 +43,13 @@ const UrlShortener = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     if (!canShortenMore()) {
       showNotification(
-        'You have reached the maximum number of URL shortenings (3). Please sign up to continue.',
-        'info'
+        "You have reached the maximum number of URL shortenings (3). Please sign up to continue.",
+        "info"
       );
       setLoading(false);
       return;
@@ -61,21 +61,21 @@ const UrlShortener = () => {
     }
 
     try {
-      let generatedShortUrl = '';
+      let generatedShortUrl = "";
 
       if (isMockMode()) {
         await new Promise((resolve) => setTimeout(resolve, 500));
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
           generatedShortUrl = generateMockShortUrl();
           setShortUrl(generatedShortUrl);
         }
         incrementShortenCount();
-        showNotification('URL shortened successfully!', 'success');
+        showNotification("URL shortened successfully!", "success");
       } else {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         const response = await apiClient.shortenUrl(
           {
-            originalUrl: url,
+            originalUrl: url
           },
           token || undefined
         );
@@ -84,12 +84,12 @@ const UrlShortener = () => {
         // Add to recent shortenings immediately after shortening
         addShorten(url, generatedShortUrl);
         incrementShortenCount();
-        showNotification('URL shortened successfully!', 'success');
+        showNotification("URL shortened successfully!", "success");
       }
     } catch (error) {
-      console.error('Error shortening URL:', error);
-      setError(error instanceof Error ? error.message : 'Failed to shorten URL');
-      showNotification('Failed to shorten URL', 'error');
+      console.error("Error shortening URL:", error);
+      setError(error instanceof Error ? error.message : "Failed to shorten URL");
+      showNotification("Failed to shorten URL", "error");
     }
     setLoading(false);
   };
@@ -113,7 +113,7 @@ const UrlShortener = () => {
             />
             {error && <p className="mt-2 text-red-400 text-sm">{error}</p>}
             <p className="mt-2 text-primary-light text-sm">
-              {isMockMode() && 'Mock mode is active'}
+              {isMockMode() && "Mock mode is active"}
             </p>
           </div>
 
@@ -122,7 +122,7 @@ const UrlShortener = () => {
             disabled={loading}
             className="w-full bg-primary-light hover:bg-primary-lightest text-white font-bold py-3 px-4 rounded-lg transition-all duration-200 disabled:opacity-50 transform hover:scale-[1.02] active:scale-[0.98]"
           >
-            {loading ? 'Shortening...' : 'Shorten URL'}
+            {loading ? "Shortening..." : "Shorten URL"}
           </button>
         </form>
 

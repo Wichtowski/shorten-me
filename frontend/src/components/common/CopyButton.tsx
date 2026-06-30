@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface CopyButtonProps {
   value: string;
@@ -15,7 +15,7 @@ const CopyButton: React.FC<CopyButtonProps> = ({ value, onCopied, children, clas
 
   return (
     <button type="button" onClick={handleCopy} className={className}>
-      {children || 'Copy'}
+      {children || "Copy"}
     </button>
   );
 };

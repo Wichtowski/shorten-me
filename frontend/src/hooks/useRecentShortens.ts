@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 interface ShortenedUrl {
   originalUrl: string;
@@ -6,12 +6,12 @@ interface ShortenedUrl {
   timestamp: number;
 }
 
-const STORAGE_KEY = 'recent_shortens';
+const STORAGE_KEY = "recent_shortens";
 const MAX_RECENT_SHORTENS = 5;
 
 export const useRecentShortens = () => {
   const [recentShortens, setRecentShortens] = useState<ShortenedUrl[]>(() => {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return [];
     }
 
@@ -23,7 +23,7 @@ export const useRecentShortens = () => {
     const newShorten: ShortenedUrl = {
       originalUrl,
       shortUrl,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
 
     setRecentShortens((prev: ShortenedUrl[]) => {
@@ -52,6 +52,6 @@ export const useRecentShortens = () => {
     recentShortens,
     addShorten,
     clearRecentShortens,
-    updateShorten,
+    updateShorten
   };
 };

@@ -4,7 +4,7 @@ import ts from "typescript";
 const deployEnvironment = process.env.DEPLOY_ENVIRONMENT;
 const kvNamespaceId = process.env.CLOUDFLARE_KV_NAMESPACE_ID;
 const sourceConfigPath = "wrangler.jsonc";
-const generatedConfigPath = "dist/client/wrangler.json";
+const generatedConfigPath = "dist/server/wrangler.json";
 const kvNamespacePlaceholder = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID";
 const deployFields = [
   "name",
@@ -13,7 +13,9 @@ const deployFields = [
   "routes",
   "route",
   "kv_namespaces",
+  "images",
   "vars",
+  "observability"
 ];
 
 if (!deployEnvironment) {

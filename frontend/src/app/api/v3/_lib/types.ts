@@ -1,4 +1,4 @@
-import { Url } from '@shared/url';
+import { Url } from "@shared/url";
 
 export interface V3Env {
   SHORTENME_KV: {

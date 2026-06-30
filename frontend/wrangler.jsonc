@@ -1,55 +1,96 @@
 {
-	"name": "shorten-me",
-	"compatibility_date": "2026-06-29",
-	"compatibility_flags": [
-		"nodejs_compat"
-	],
-	"kv_namespaces": [
-		{
-			"binding": "SHORTENME_KV",
-			"id": "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
-		}
-	],
-	"env": {
-		"development": {
-			"name": "shorten-me-development",
-			"workers_dev": true,
-			"routes": [
-				{
-					"pattern": "shorten-dev.oskarwichtowski.com",
-					"zone_name": "oskarwichtowski.com",
-					"custom_domain": true
-				}
-			],
-			"vars": {
-				"DEPLOY_ENVIRONMENT": "development"
-			},
-			"kv_namespaces": [
-				{
-					"binding": "SHORTENME_KV",
-					"id": "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
-				},
-			],
-		},
-		"production": {
-			"name": "shorten-me",
-			"workers_dev": false,
-			"vars": {
-				"DEPLOY_ENVIRONMENT": "production"
-			},
-			"routes": [
-				{
-					"pattern": "shorten.oskarwichtowski.com",
-					"zone_name": "oskarwichtowski.com",
-					"custom_domain": true
-				}
-			],
-			"kv_namespaces": [
-				{
-					"binding": "SHORTENME_KV",
-					"id": "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
-				}
-			]
-		}
-	}
+  "name": "shorten-me",
+  "compatibility_date": "2026-06-29",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "./worker/index.ts",
+  "assets": {
+    "directory": "dist/client",
+    "not_found_handling": "none",
+    "binding": "ASSETS"
+  },
+  "images": {
+    "binding": "IMAGES"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "SHORTENME_KV",
+      "id": "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+    }
+  ],
+  "env": {
+    "development": {
+      "name": "shorten-me-development",
+      "workers_dev": true,
+      "routes": [
+        {
+          "pattern": "shorten-dev.oskarwichtowski.com",
+          "zone_name": "oskarwichtowski.com",
+          "custom_domain": true
+        }
+      ],
+      "vars": {
+        "DEPLOY_ENVIRONMENT": "development"
+      },
+      "images": {
+        "binding": "IMAGES"
+      },
+      "observability": {
+        "enabled": true,
+        "logs": {
+          "enabled": true,
+          "head_sampling_rate": 1,
+          "invocation_logs": true,
+          "persist": true
+        },
+        "traces": {
+          "enabled": true,
+          "head_sampling_rate": 1,
+          "persist": true
+        }
+      },
+      "kv_namespaces": [
+        {
+          "binding": "SHORTENME_KV",
+          "id": "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+        }
+      ]
+    },
+    "production": {
+      "name": "shorten-me",
+      "workers_dev": false,
+      "vars": {
+        "DEPLOY_ENVIRONMENT": "production"
+      },
+      "images": {
+        "binding": "IMAGES"
+      },
+      "observability": {
+        "enabled": true,
+        "logs": {
+          "enabled": true,
+          "head_sampling_rate": 1,
+          "invocation_logs": true,
+          "persist": true
+        },
+        "traces": {
+          "enabled": true,
+          "head_sampling_rate": 1,
+          "persist": true
+        }
+      },
+      "routes": [
+        {
+          "pattern": "shorten.oskarwichtowski.com",
+          "zone_name": "oskarwichtowski.com",
+          "custom_domain": true
+        }
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "SHORTENME_KV",
+          "id": "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+        }
+      ]
+    }
+  }
 }

@@ -1,7 +1,7 @@
-import { Url } from '@shared/url';
+import { Url } from "@shared/url";
 
 // For API responses where user_id might not be included
-export type UrlResponse = Omit<Url, 'user_id'>;
+export type UrlResponse = Omit<Url, "user_id">;
 
 // For database operations
-export type UrlDocument = Url; 
+export type UrlDocument = Url;

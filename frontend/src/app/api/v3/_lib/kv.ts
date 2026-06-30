@@ -1,12 +1,12 @@
-import { randomSlug, normalizeSlug, isValidCustomSlug } from './slug';
-import { AuthTokenPayload, StoredUrl, StoredUser, V3Env } from './types';
+import { randomSlug, normalizeSlug, isValidCustomSlug } from "./slug";
+import { AuthTokenPayload, StoredUrl, StoredUser, V3Env } from "./types";
 
-const URL_PREFIX = 'v3:url:';
-const SLUG_PREFIX = 'v3:slug:';
-const USER_PREFIX = 'v3:user:';
-const USER_EMAIL_PREFIX = 'v3:user-email:';
-const USERNAME_PREFIX = 'v3:username:';
-const USER_URLS_PREFIX = 'v3:user-urls:';
+const URL_PREFIX = "v3:url:";
+const SLUG_PREFIX = "v3:slug:";
+const USER_PREFIX = "v3:user:";
+const USER_EMAIL_PREFIX = "v3:user-email:";
+const USERNAME_PREFIX = "v3:username:";
+const USER_URLS_PREFIX = "v3:user-urls:";
 
 function userKey(userId: string): string {
   return `${USER_PREFIX}${userId}`;
@@ -83,17 +83,17 @@ export async function createUserRecord(
   const username = input.username.trim();
 
   if (!email || !username) {
-    throw new Error('Missing fields');
+    throw new Error("Missing fields");
   }
 
   const existingEmailUser = await getUserByEmail(env, email);
   if (existingEmailUser) {
-    throw new Error('Email already exists');
+    throw new Error("Email already exists");
   }
 
   const existingUsernameUser = await getUserByUsername(env, username);
   if (existingUsernameUser) {
-    throw new Error('Username already exists');
+    throw new Error("Username already exists");
   }
 
   const userId = crypto.randomUUID();
@@ -102,7 +102,7 @@ export async function createUserRecord(
     username,
     email,
     password_hash: input.passwordHash,
-    created_at: new Date().toISOString(),
+    created_at: new Date().toISOString()
   };
 
   await putJson(env, userKey(userId), user);
@@ -144,7 +144,7 @@ async function saveUrl(env: V3Env, url: StoredUrl): Promise<void> {
 }
 
 async function appendUrlToUser(env: V3Env, userId: string, urlId: string): Promise<void> {
-  if (userId === 'anonymous') {
+  if (userId === "anonymous") {
     return;
   }
 
@@ -166,7 +166,7 @@ function normalizeShortenDraft(draft: {
   return {
     original_url: draft.original_url || draft.originalUrl,
     short_url: draft.short_url || draft.shortUrl,
-    custom_slug: draft.custom_slug || draft.customSlug,
+    custom_slug: draft.custom_slug || draft.customSlug
   };
 }
 
@@ -188,23 +188,23 @@ export async function createUrlRecord(
 ): Promise<StoredUrl> {
   const originalUrl = input.originalUrl.trim();
   if (!originalUrl) {
-    throw new Error('Missing original_url');
+    throw new Error("Missing original_url");
   }
 
   const parsedUrl = new URL(originalUrl);
-  if (parsedUrl.protocol !== 'https:') {
-    throw new Error('Only HTTPS URLs are allowed');
+  if (parsedUrl.protocol !== "https:") {
+    throw new Error("Only HTTPS URLs are allowed");
   }
 
   const slugCandidate = input.customSlug?.trim() || randomSlug();
   if (input.customSlug && !isValidCustomSlug(input.customSlug.trim())) {
-    throw new Error('Invalid custom slug');
+    throw new Error("Invalid custom slug");
   }
 
   const normalizedSlug = normalizeSlug(slugCandidate);
   const existingId = await env.SHORTENME_KV.get(slugKey(normalizedSlug));
   if (existingId) {
-    throw new Error('custom_slug already exists');
+    throw new Error("custom_slug already exists");
   }
 
   const url: StoredUrl = {
@@ -213,7 +213,7 @@ export async function createUrlRecord(
     original_url: originalUrl,
     short_url: normalizedSlug,
     clicks: 0,
-    created_at: new Date().toISOString(),
+    created_at: new Date().toISOString()
   };
 
   await saveUrl(env, url);
@@ -238,7 +238,7 @@ export async function findUrlById(env: V3Env, urlId: string): Promise<StoredUrl 
 export async function incrementUrlClicks(env: V3Env, url: StoredUrl): Promise<StoredUrl> {
   const updated = {
     ...url,
-    clicks: url.clicks + 1,
+    clicks: url.clicks + 1
   };
 
   await saveUrl(env, updated);
@@ -248,7 +248,7 @@ export async function incrementUrlClicks(env: V3Env, url: StoredUrl): Promise<St
 export async function deleteUrlRecord(env: V3Env, urlId: string, userId: string): Promise<void> {
   const url = await loadUrl(env, urlId);
   if (!url || url.user_id !== userId) {
-    throw new Error('URL not found or unauthorized');
+    throw new Error("URL not found or unauthorized");
   }
 
   const ids = await getUserUrlIds(env, userId);
@@ -266,12 +266,12 @@ export async function resolveAuthToken(
   env: V3Env,
   authHeader: string | null
 ): Promise<AuthTokenPayload | null> {
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return null;
   }
 
-  const token = authHeader.slice('Bearer '.length);
-  const { verifyJwt } = await import('./jwt');
+  const token = authHeader.slice("Bearer ".length);
+  const { verifyJwt } = await import("./jwt");
 
   try {
     return await verifyJwt(token, env);
@@ -297,13 +297,13 @@ export async function migrateShortensToUser(
 
     const existing = await findUrlBySlug(env, shortUrl);
     if (existing) {
-      if (existing.user_id !== 'anonymous' && existing.user_id !== userId) {
-        throw new Error('custom_slug already exists');
+      if (existing.user_id !== "anonymous" && existing.user_id !== userId) {
+        throw new Error("custom_slug already exists");
       }
 
       const updated = {
         ...existing,
-        user_id: userId,
+        user_id: userId
       };
       await saveUrl(env, updated);
       await appendUrlToUser(env, userId, updated.id);
@@ -314,7 +314,7 @@ export async function migrateShortensToUser(
     const created = await createUrlRecord(env, {
       originalUrl,
       userId,
-      customSlug: shortUrl,
+      customSlug: shortUrl
     });
     migrated.push(created);
   }
@@ -322,15 +322,13 @@ export async function migrateShortensToUser(
   return migrated;
 }
 
-export function normalizeShortenDraftInput(
-  draft: {
-    original_url?: string;
-    originalUrl?: string;
-    short_url?: string;
-    shortUrl?: string;
-    custom_slug?: string;
-    customSlug?: string;
-  }
-): { original_url?: string; short_url?: string; custom_slug?: string } {
+export function normalizeShortenDraftInput(draft: {
+  original_url?: string;
+  originalUrl?: string;
+  short_url?: string;
+  shortUrl?: string;
+  custom_slug?: string;
+  customSlug?: string;
+}): { original_url?: string; short_url?: string; custom_slug?: string } {
   return normalizeShortenDraft(draft);
 }

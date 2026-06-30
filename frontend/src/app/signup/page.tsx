@@ -1,29 +1,29 @@
-'use client';
-import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { apiClient } from '@lib/api-client';
-import { useUser } from '@components/context/UserContext';
+"use client";
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { apiClient } from "@lib/api-client";
+import { useUser } from "@components/context/UserContext";
 
 const SignupPage = () => {
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
   const { setUser } = useUser();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
     if (!username) {
-      setError('Username is required');
+      setError("Username is required");
       return;
     }
 
@@ -31,15 +31,15 @@ const SignupPage = () => {
       const data = await apiClient.signup({
         email,
         username,
-        password,
+        password
       });
 
-      localStorage.setItem('token', data.token);
+      localStorage.setItem("token", data.token);
       setUser(data.user);
-      router.push('/');
+      router.push("/");
     } catch (err) {
       console.error(err);
-      setError(err instanceof Error ? err.message : 'Signup failed. Please try again.');
+      setError(err instanceof Error ? err.message : "Signup failed. Please try again.");
     }
   };
 
@@ -110,7 +110,7 @@ const SignupPage = () => {
             </button>
           </form>
           <p className="mt-6 text-center text-primary-light">
-            Already have an account?{' '}
+            Already have an account?{" "}
             <Link href="/login" className="text-primary-lightest hover:text-white">
               Login
             </Link>

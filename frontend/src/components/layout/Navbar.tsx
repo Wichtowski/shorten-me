@@ -1,8 +1,8 @@
-'use client';
-import React from 'react';
-import Link from 'next/link';
-import { useUser } from '../context/UserContext';
-import { usePathname } from 'next/navigation';
+"use client";
+import React from "react";
+import Link from "next/link";
+import { useUser } from "../context/UserContext";
+import { usePathname } from "next/navigation";
 
 const HomeLink = () => (
   <Link href="/" className="text-2xl font-bold text-primary-lightest">
@@ -13,7 +13,7 @@ const HomeLink = () => (
 const Navbar = () => {
   const { user } = useUser();
   const pathname = usePathname();
-  const isRedirectPage = pathname?.startsWith('/r/');
+  const isRedirectPage = pathname?.startsWith("/r/");
 
   if (isRedirectPage) {
     return (

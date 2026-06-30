@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useNotification } from '@components/context/NotificationContext';
-import CopyButton from '@components/common/CopyButton';
+import React, { useState } from "react";
+import { useNotification } from "@components/context/NotificationContext";
+import CopyButton from "@components/common/CopyButton";
 
 interface UrlParametersProps {
   originalUrl: string;
@@ -20,10 +20,10 @@ const parseParameters = (originalUrl: string): UrlParameter[] => {
       existingParams.push({ key, value });
     });
 
-    return existingParams.length > 0 ? existingParams : [{ key: '', value: '' }];
+    return existingParams.length > 0 ? existingParams : [{ key: "", value: "" }];
   } catch (error) {
-    console.error('Error parsing URL parameters:', error);
-    return [{ key: '', value: '' }];
+    console.error("Error parsing URL parameters:", error);
+    return [{ key: "", value: "" }];
   }
 };
 
@@ -32,10 +32,10 @@ const UrlParameters = ({ originalUrl }: UrlParametersProps) => {
   const { showNotification } = useNotification();
 
   const addParameter = () => {
-    setParameters([...parameters, { key: '', value: '' }]);
+    setParameters([...parameters, { key: "", value: "" }]);
   };
 
-  const updateParameter = (index: number, field: 'key' | 'value', value: string) => {
+  const updateParameter = (index: number, field: "key" | "value", value: string) => {
     const newParameters = [...parameters];
     newParameters[index][field] = value;
     setParameters(newParameters);
@@ -52,14 +52,14 @@ const UrlParameters = ({ originalUrl }: UrlParametersProps) => {
     try {
       const url = new URL(originalUrl);
       // Clear existing parameters
-      url.search = '';
+      url.search = "";
       // Add new parameters
       validParams.forEach((param) => {
         url.searchParams.append(param.key, param.value);
       });
       return url.toString();
     } catch (error) {
-      console.error('Error generating URL with parameters:', error);
+      console.error("Error generating URL with parameters:", error);
       return originalUrl;
     }
   };
@@ -73,14 +73,14 @@ const UrlParameters = ({ originalUrl }: UrlParametersProps) => {
             <input
               type="text"
               value={param.key}
-              onChange={(e) => updateParameter(index, 'key', e.target.value)}
+              onChange={(e) => updateParameter(index, "key", e.target.value)}
               placeholder="Parameter name"
               className="flex-1 px-3 py-2 rounded-lg bg-primary-darkest/50 border border-primary-light/30 text-white focus:outline-none focus:border-primary-lightest focus:ring-2 focus:ring-primary-lightest/20"
             />
             <input
               type="text"
               value={param.value}
-              onChange={(e) => updateParameter(index, 'value', e.target.value)}
+              onChange={(e) => updateParameter(index, "value", e.target.value)}
               placeholder="Value"
               className="flex-1 px-3 py-2 rounded-lg bg-primary-darkest/50 border border-primary-light/30 text-white focus:outline-none focus:border-primary-lightest focus:ring-2 focus:ring-primary-lightest/20"
             />
@@ -111,7 +111,7 @@ const UrlParameters = ({ originalUrl }: UrlParametersProps) => {
           />
           <CopyButton
             value={generateUrlWithParams()}
-            onCopied={() => showNotification('URL with parameters copied to clipboard!', 'success')}
+            onCopied={() => showNotification("URL with parameters copied to clipboard!", "success")}
             className="bg-primary-light hover:bg-primary-lightest text-white px-4 py-2 rounded-lg transition-all duration-200"
           />
         </div>

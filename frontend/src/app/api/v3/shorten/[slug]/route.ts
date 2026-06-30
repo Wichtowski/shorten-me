@@ -1,1 +1,1 @@
-export { GET } from '../../urls/[slug]/route';
+export { GET } from "../../urls/[slug]/route";

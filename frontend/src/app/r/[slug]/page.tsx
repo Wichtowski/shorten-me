@@ -1,8 +1,8 @@
-'use client';
-import { useEffect, useState } from 'react';
-import Spinner from '@components/common/Spinner';
-import { use } from 'react';
-import { apiClient } from '@lib/api-client';
+"use client";
+import { useEffect, useState } from "react";
+import Spinner from "@components/common/Spinner";
+import { use } from "react";
+import { apiClient } from "@lib/api-client";
 
 interface PageParams {
   slug: string;
@@ -16,8 +16,8 @@ export default function RedirectPage({ params }: { params: Promise<PageParams> }
   useEffect(() => {
     const fetchUrl = async () => {
       if (!slug) {
-        console.error('No slug provided');
-        setError('Invalid URL');
+        console.error("No slug provided");
+        setError("Invalid URL");
         setIsLoading(false);
         return;
       }
@@ -26,8 +26,8 @@ export default function RedirectPage({ params }: { params: Promise<PageParams> }
         const data = await apiClient.resolveShortUrl(slug);
         window.location.href = data.original_url || data.url.original_url;
       } catch (error) {
-        console.error('Error fetching URL:', error);
-        setError(error instanceof Error ? error.message : 'URL not found or invalid');
+        console.error("Error fetching URL:", error);
+        setError(error instanceof Error ? error.message : "URL not found or invalid");
         // setTimeout(() => router.push('/'), 3000);
       } finally {
         setIsLoading(false);

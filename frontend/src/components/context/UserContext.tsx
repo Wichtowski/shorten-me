@@ -1,7 +1,7 @@
-'use client';
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, UserContextType } from '@common/interfaces/User';
-import { tokenToUser } from '@lib/auth';
+"use client";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { User, UserContextType } from "@common/interfaces/User";
+import { tokenToUser } from "@lib/auth";
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
@@ -10,7 +10,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const checkToken = async () => {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (token) {
         const decoded = tokenToUser(token);
         setUser(decoded);
@@ -20,7 +20,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     setUser(null);
   };
 
@@ -30,7 +30,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 export function useUser() {
   const context = useContext(UserContext);
   if (context === undefined) {
-    throw new Error('useUser must be used within a UserProvider');
+    throw new Error("useUser must be used within a UserProvider");
   }
   return context;
 }

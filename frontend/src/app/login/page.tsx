@@ -1,39 +1,39 @@
-'use client';
-import { useState } from 'react';
-import Link from 'next/link';
-import { useUser } from '@components/context/UserContext';
-import { apiClient } from '@lib/api-client';
+"use client";
+import { useState } from "react";
+import Link from "next/link";
+import { useUser } from "@components/context/UserContext";
+import { apiClient } from "@lib/api-client";
 
 const LoginPage = () => {
   const { setUser } = useUser();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
     try {
       const data = await apiClient.login({ email, password });
 
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('token', String(data.token));
+      if (typeof window !== "undefined") {
+        localStorage.setItem("token", String(data.token));
         setUser(data.user);
 
         // MIGRATE ANONYMOUS SHORTENS
-        const recentShortens = JSON.parse(localStorage.getItem('recent_shortens') || '[]');
+        const recentShortens = JSON.parse(localStorage.getItem("recent_shortens") || "[]");
         if (recentShortens.length > 0) {
           await apiClient.migrateShortens(recentShortens, data.token);
-          localStorage.removeItem('recent_shortens');
+          localStorage.removeItem("recent_shortens");
         }
       }
 
-      window.location.href = '/';
+      window.location.href = "/";
     } catch (err) {
-      console.error('Login error:', err);
-      setError(err instanceof Error ? err.message : 'Login failed');
+      console.error("Login error:", err);
+      setError(err instanceof Error ? err.message : "Login failed");
     }
     setLoading(false);
   };
@@ -76,11 +76,11 @@ const LoginPage = () => {
               disabled={loading}
               className="w-full bg-primary-light hover:bg-primary-lightest text-white font-bold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? "Logging in..." : "Login"}
             </button>
           </form>
           <p className="mt-6 text-center text-primary-light">
-            Don&apos;t have an account?{' '}
+            Don&apos;t have an account?{" "}
             <Link href="/signup" className="text-primary-lightest hover:text-white">
               Sign up
             </Link>

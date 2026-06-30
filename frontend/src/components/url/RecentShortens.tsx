@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { useRecentShortens } from '@hooks/useRecentShortens';
+import React, { useState } from "react";
+import { useRecentShortens } from "@hooks/useRecentShortens";
 
 const RecentShortens = () => {
   const { recentShortens, clearRecentShortens, updateShorten } = useRecentShortens();
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [editValue, setEditValue] = useState('');
+  const [editValue, setEditValue] = useState("");
 
   if (recentShortens.length === 0) {
     return null;
@@ -18,12 +18,12 @@ const RecentShortens = () => {
   const handleSave = (index: number) => {
     updateShorten(index, { originalUrl: editValue });
     setEditIndex(null);
-    setEditValue('');
+    setEditValue("");
   };
 
   const handleCancel = () => {
     setEditIndex(null);
-    setEditValue('');
+    setEditValue("");
   };
 
   return (
