@@ -7,6 +7,19 @@ const USER_PREFIX = "v3:user:";
 const USER_EMAIL_PREFIX = "v3:user-email:";
 const USERNAME_PREFIX = "v3:username:";
 const USER_URLS_PREFIX = "v3:user-urls:";
+const MISSING_KV_BINDING_ERROR = "SHORTENME_KV binding is required";
+
+export function isMissingKvBindingError(error: unknown): boolean {
+  return error instanceof Error && error.message === MISSING_KV_BINDING_ERROR;
+}
+
+function getKv(env: V3Env): V3Env["SHORTENME_KV"] {
+  if (!env.SHORTENME_KV) {
+    throw new Error(MISSING_KV_BINDING_ERROR);
+  }
+
+  return env.SHORTENME_KV;
+}
 
 function userKey(userId: string): string {
   return `${USER_PREFIX}${userId}`;
@@ -33,16 +46,16 @@ function slugKey(slug: string): string {
 }
 
 async function getJson<T>(env: V3Env, key: string): Promise<T | null> {
-  const value = await env.SHORTENME_KV.get(key);
+  const value = await getKv(env).get(key);
   return value ? (JSON.parse(value) as T) : null;
 }
 
 async function putJson(env: V3Env, key: string, value: unknown): Promise<void> {
-  await env.SHORTENME_KV.put(key, JSON.stringify(value));
+  await getKv(env).put(key, JSON.stringify(value));
 }
 
 async function deleteKey(env: V3Env, key: string): Promise<void> {
-  await env.SHORTENME_KV.delete(key);
+  await getKv(env).delete(key);
 }
 
 async function getUserUrlIds(env: V3Env, userId: string): Promise<string[]> {
@@ -54,7 +67,7 @@ async function setUserUrlIds(env: V3Env, userId: string, ids: string[]): Promise
 }
 
 export async function getUserByEmail(env: V3Env, email: string): Promise<StoredUser | null> {
-  const userId = await env.SHORTENME_KV.get(emailKey(email));
+  const userId = await getKv(env).get(emailKey(email));
   if (!userId) {
     return null;
   }
@@ -67,7 +80,7 @@ export async function getUserById(env: V3Env, userId: string): Promise<StoredUse
 }
 
 export async function getUserByUsername(env: V3Env, username: string): Promise<StoredUser | null> {
-  const userId = await env.SHORTENME_KV.get(usernameKey(username));
+  const userId = await getKv(env).get(usernameKey(username));
   if (!userId) {
     return null;
   }
@@ -106,8 +119,8 @@ export async function createUserRecord(
   };
 
   await putJson(env, userKey(userId), user);
-  await env.SHORTENME_KV.put(emailKey(email), userId);
-  await env.SHORTENME_KV.put(usernameKey(username), userId);
+  await getKv(env).put(emailKey(email), userId);
+  await getKv(env).put(usernameKey(username), userId);
   return user;
 }
 
@@ -140,7 +153,7 @@ async function loadUrl(env: V3Env, id: string): Promise<StoredUrl | null> {
 
 async function saveUrl(env: V3Env, url: StoredUrl): Promise<void> {
   await putJson(env, urlKey(url.id), url);
-  await env.SHORTENME_KV.put(slugKey(url.short_url), url.id);
+  await getKv(env).put(slugKey(url.short_url), url.id);
 }
 
 async function appendUrlToUser(env: V3Env, userId: string, urlId: string): Promise<void> {
@@ -172,7 +185,7 @@ function normalizeShortenDraft(draft: {
 
 export async function listUrlsForUser(env: V3Env, userId: string): Promise<StoredUrl[]> {
   const ids = await getUserUrlIds(env, userId);
-  const urls = await Promise.all(ids.map(async (id) => loadUrl(env, id)));
+  const urls: Array<StoredUrl | null> = await Promise.all(ids.map(async (id) => loadUrl(env, id)));
   return urls
     .filter((url): url is StoredUrl => Boolean(url))
     .sort((left, right) => right.created_at.localeCompare(left.created_at));
@@ -202,7 +215,7 @@ export async function createUrlRecord(
   }
 
   const normalizedSlug = normalizeSlug(slugCandidate);
-  const existingId = await env.SHORTENME_KV.get(slugKey(normalizedSlug));
+  const existingId = await getKv(env).get(slugKey(normalizedSlug));
   if (existingId) {
     throw new Error("custom_slug already exists");
   }
@@ -223,7 +236,7 @@ export async function createUrlRecord(
 
 export async function findUrlBySlug(env: V3Env, slug: string): Promise<StoredUrl | null> {
   const normalizedSlug = normalizeSlug(slug);
-  const urlId = await env.SHORTENME_KV.get(slugKey(normalizedSlug));
+  const urlId = await getKv(env).get(slugKey(normalizedSlug));
   if (!urlId) {
     return null;
   }

@@ -1,4 +1,4 @@
-# Shorten-Me Frontend
+# Shorten Frontend
 
 This is a [Vinext](https://vinext.io/) fullstack project (API + UI) built on Cloudflare's Next.js-compatible tooling.
 
@@ -23,15 +23,26 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ### Local Development
 
-Create a `.env.local` file with the following variables:
+The active v3 API uses Cloudflare KV through the `SHORTENME_KV` Worker binding.
+There is no local Docker database image to start for the current app path.
+
+For local development, keep runtime values in `.env` or `.env.local`:
 
 ```env
-COSMOSDB_ENDPOINT=your_cosmosdb_endpoint
-COSMOSDB_KEY=your_cosmosdb_key
-COSMOSDB_DATABASE_NAME=shortenme
-SECRET_KEY=your_jwt_secret
-ALGORITHM=HS256
+DEPLOY_ENVIRONMENT=development
+CLOUDFLARE_ACCOUNT_ID=your-cloudflare-account-id
+CLOUDFLARE_API_TOKEN=your-cloudflare-api-token
+CLOUDFLARE_KV_NAMESPACE_ID=your-environment-kv-namespace-id
+JWT_SECRET=replace-with-a-long-random-secret
+BASIC_AUTH_USERNAME=dev-user
+BASIC_AUTH_PASSWORD=dev-password
 ```
+
+The `SHORTENME_KV` binding is declared in `wrangler.jsonc`.
+If login or signup returns `Local KV storage is not configured`, check the local Cloudflare KV binding before debugging the UI.
+
+Running `bun run dev` generates an ignored `wrangler.local.jsonc` file from `wrangler.jsonc` and your local env values.
+That generated config points `SHORTENME_KV` at the development namespace with `remote: true`, so local auth and short URLs reuse the development Cloudflare KV namespace.
 
 ### Legacy Azure Production Environment
 

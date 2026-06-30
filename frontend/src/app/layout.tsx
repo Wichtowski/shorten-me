@@ -1,28 +1,33 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import { NotificationProvider } from "@components/context/NotificationContext";
 import "./globals.css";
-import Navbar from "@components/layout/Navbar";
+import { Navbar } from "@components/layout/Navbar";
 import { UserProvider } from "@components/context/UserContext";
 import { env } from "cloudflare:workers";
 import { assertJwtConfigured } from "@lib/runtime-config";
 
-const geistSans = Geist({
+const hankenGrotesk = Hanken_Grotesk({
   variable: "--font-geist-sans",
   subsets: ["latin"]
 });
 
-const geistMono = Geist_Mono({
+const jetBrainsMono = JetBrains_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"]
+});
+
+const displayFont = Hanken_Grotesk({
+  variable: "--font-display",
   subsets: ["latin"]
 });
 
 assertJwtConfigured(env);
 
 export const metadata: Metadata = {
-  title: "Shoten Me!",
+  title: "Shorten",
   description:
-    "Shoten Me! is a URL shortener that allows you to shorten your URLs and track your clicks.",
+    "Shorten is a URL shortener that helps you create clean links, track clicks, and manage your shortcuts.",
   icons: {
     icon: "/favicon.ico"
   }
@@ -35,12 +40,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-gradient-to-b from-primary-darkest to-primary-dark pt-16`}
-      >
+      <body className={`${hankenGrotesk.variable} ${jetBrainsMono.variable} ${displayFont.variable} app-shell`}>
         <UserProvider>
           <Navbar />
-          <NotificationProvider>{children}</NotificationProvider>
+          <NotificationProvider>
+            <main className="relative pt-16">{children}</main>
+          </NotificationProvider>
         </UserProvider>
       </body>
     </html>

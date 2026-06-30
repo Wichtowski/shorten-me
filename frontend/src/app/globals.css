@@ -3,19 +3,171 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0b1015;
+  --foreground: #dee3ea;
+  --surface: #0f1419;
+  --surface-container-lowest: #0a0f14;
+  --surface-container-low: #171c21;
+  --surface-container: #1b2025;
+  --surface-container-high: #252a30;
+  --surface-container-highest: #30353b;
+  --surface-bright: #353a3f;
+  --surface-border: rgba(132, 147, 150, 0.18);
+  --outline: #849396;
+  --outline-variant: #3b494c;
+  --accent: #00e5ff;
+  --accent-soft: #c3f5ff;
+  --accent-on: #00363d;
+  --text-muted: #bac9cc;
+  --danger: #ffb4ab;
+  --danger-strong: #93000a;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html {
+  background: var(--background);
+}
+
+body {
+  min-height: 100vh;
+  color: var(--foreground);
+  background: transparent;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: rgba(125, 211, 252, 0.32);
+  color: #f8fafc;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display), var(--font-geist-sans), Arial, Helvetica, sans-serif;
+    letter-spacing: 0;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+}
+
+@layer components {
+  .app-shell {
+    position: relative;
+    isolation: isolate;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background:
+      radial-gradient(circle at 50% -10%, rgba(0, 229, 255, 0.08), transparent 36rem),
+      radial-gradient(circle at -10% 20%, rgba(0, 229, 255, 0.08), transparent 28rem),
+      radial-gradient(circle at 110% 70%, rgba(195, 245, 255, 0.05), transparent 30rem),
+      var(--background);
+  }
+
+  .surface {
+    @apply border backdrop-blur-2xl shadow-[0_24px_80px_-48px_rgba(0,0,0,0.9)];
+    background: rgba(26, 33, 45, 0.42);
+    border-color: var(--surface-border);
+  }
+
+  .surface-strong {
+    @apply border backdrop-blur-2xl shadow-[0_24px_80px_-48px_rgba(0,0,0,0.95)];
+    background: rgba(26, 33, 45, 0.72);
+    border-color: var(--surface-border);
+  }
+
+  .surface-soft {
+    @apply border backdrop-blur-xl;
+    background: var(--surface-container-low);
+    border-color: rgba(132, 147, 150, 0.12);
+  }
+
+  .display-font {
+    font-family: var(--font-display), var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-medium uppercase text-cyan-300;
+    font-family: var(--font-mono), var(--font-geist-mono), monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .hero-title {
+    @apply text-[2rem] font-bold leading-tight text-slate-100 md:text-5xl md:leading-[3.5rem];
+  }
+
+  .hero-copy {
+    @apply text-base leading-7 text-[#bac9cc];
+  }
+
+  .section-title {
+    @apply text-2xl font-semibold text-slate-100 md:text-[2rem] md:leading-10;
+  }
+
+  .section-copy {
+    @apply text-sm leading-6 text-[#bac9cc];
+  }
+
+  .field {
+    @apply w-full rounded-lg border px-4 py-3 text-slate-100 outline-none transition placeholder:text-[#849396]/70 focus:ring-2;
+    background: var(--surface-container-lowest);
+    border-color: rgba(59, 73, 76, 0.8);
+    --tw-ring-color: rgba(0, 229, 255, 0.18);
+  }
+
+  .field:focus {
+    border-color: rgba(0, 229, 255, 0.82);
+    box-shadow: 0 0 18px rgba(0, 229, 255, 0.12);
+  }
+
+  .field-label {
+    @apply mb-2 block text-xs font-medium uppercase text-[#bac9cc];
+    font-family: var(--font-mono), var(--font-geist-mono), monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .primary-button {
+    @apply inline-flex items-center justify-center rounded-lg bg-cyan-300 px-5 py-3 font-bold text-cyan-950 transition duration-150 hover:brightness-110 hover:shadow-[0_0_22px_rgba(0,229,255,0.28)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .secondary-button {
+    @apply inline-flex items-center justify-center rounded-lg border px-5 py-3 font-semibold text-slate-100 transition duration-150 hover:bg-white/[0.04] active:scale-[0.98];
+    border-color: rgba(132, 147, 150, 0.25);
+  }
+
+  .subtle-button {
+    @apply inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm font-medium text-[#bac9cc] transition hover:bg-white/[0.05] hover:text-cyan-200;
+    background: var(--surface-container-high);
+  }
+
+  .metric-card {
+    @apply rounded-xl border p-6 backdrop-blur-2xl;
+    background: rgba(26, 33, 45, 0.42);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .icon-box {
+    @apply flex h-12 w-12 shrink-0 items-center justify-center rounded-lg;
+    background: var(--surface-container-highest);
+    color: var(--text-muted);
+  }
+
+  .mono-label {
+    @apply text-xs font-medium uppercase;
+    color: var(--text-muted);
+    font-family: var(--font-mono), var(--font-geist-mono), monospace;
+    letter-spacing: 0.05em;
   }
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

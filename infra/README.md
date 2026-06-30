@@ -1,4 +1,4 @@
-# Infrastructure as Code for Shorten-Me
+# Infrastructure as Code for Shorten
 
 Pulumi-based infrastructure setup for deploying the URL shortening service to Azure.
 

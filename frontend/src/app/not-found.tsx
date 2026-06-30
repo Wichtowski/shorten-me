@@ -1,14 +1,11 @@
-import Link from "next/link";
+import { Spinner } from "@components/common/Spinner";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-primary-darkest to-primary-dark">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-primary-lightest mb-4">404</h1>
-        <p className="text-xl text-primary-light">Short URL not found</p>
-        <Link href="/" className="mt-4 inline-block text-primary-lightest hover:text-white">
-          Return to Home
-        </Link>
+    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 text-center">
+      <div className="flex flex-col items-center gap-4">
+        <Spinner />
+        <p className="text-sm leading-6 text-[#bac9cc]">Page not found</p>
       </div>
     </div>
   );

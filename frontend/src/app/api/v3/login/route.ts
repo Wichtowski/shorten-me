@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyPassword } from "../_lib/password";
 import { signJwt } from "../_lib/jwt";
-import { getUserByEmail } from "../_lib/kv";
+import { getUserByEmail, isMissingKvBindingError } from "../_lib/kv";
 import { V3Env } from "../_lib/types";
 import { env } from "cloudflare:workers";
 import { AuthResponse } from "../_lib/types";
@@ -46,6 +46,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(response);
   } catch (error) {
     console.error("Login error:", error);
+    if (isMissingKvBindingError(error)) {
+      return NextResponse.json(
+        { error: "Local KV storage is not configured. Check the SHORTENME_KV binding." },
+        { status: 503 }
+      );
+    }
+
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

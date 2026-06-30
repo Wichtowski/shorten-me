@@ -1,0 +1,49 @@
+name: Release Version
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Semantic version bump
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - prerelease
+        default: patch
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-version-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Create semantic version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Bump version and push tag
+        id: version
+        uses: anothrNick/github-tag-action@1.71.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: false
+          DEFAULT_BUMP: ${{ github.event.inputs.bump || 'patch' }}
+
+      - name: Add version to workflow summary
+        if: ${{ !cancelled() }}
+        run: |
+          echo "Created tag: ${{ steps.version.outputs.new_tag }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Deploy it from the Deploy Cloudflare workflow by selecting this tag in Use workflow from." >> "$GITHUB_STEP_SUMMARY"

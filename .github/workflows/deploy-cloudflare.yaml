@@ -11,11 +11,6 @@ on:
           - development
           - production
         default: development
-      ref:
-        description: Git ref to deploy
-        required: true
-        type: string
-        default: main
 
 permissions:
   contents: read
@@ -36,7 +31,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
         with:
-          ref: ${{ inputs.ref }}
+          ref: ${{ github.ref_name }}
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2

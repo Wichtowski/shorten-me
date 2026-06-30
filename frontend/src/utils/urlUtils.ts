@@ -1,12 +1,4 @@
-const MOCK_MODE = process.env.NEXT_PUBLIC_MOCK_MODE === "true";
 const MAX_FREE_SHORTENS = 3;
-
-export const isMockMode = () => MOCK_MODE;
-
-export const generateMockShortUrl = () => {
-  const mockId = Math.random().toString(36).substring(2, 8);
-  return `${window.location.origin}/s/${mockId}`;
-};
 
 export const canShortenMore = () => {
   const token = localStorage.getItem("token");

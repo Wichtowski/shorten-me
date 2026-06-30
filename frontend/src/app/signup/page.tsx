@@ -1,17 +1,17 @@
 "use client";
+
 import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { apiClient } from "@lib/api-client";
 import { useUser } from "@components/context/UserContext";
+import { AuthFrame } from "@components/auth/AuthFrame";
 
-const SignupPage = () => {
+export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const { setUser } = useUser();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -27,6 +27,8 @@ const SignupPage = () => {
       return;
     }
 
+    setLoading(true);
+
     try {
       const data = await apiClient.signup({
         email,
@@ -36,89 +38,100 @@ const SignupPage = () => {
 
       localStorage.setItem("token", data.token);
       setUser(data.user);
-      router.push("/");
+      window.location.assign("/");
     } catch (err) {
       console.error(err);
       setError(err instanceof Error ? err.message : "Signup failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      <div className="max-w-md mx-auto">
-        <div className="bg-primary-dark/50 backdrop-blur-sm rounded-xl p-8 shadow-2xl border border-primary-light/20">
-          <h2 className="text-3xl font-bold text-primary-lightest mb-6 text-center">Sign Up</h2>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="email" className="block text-primary-lightest mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg bg-primary-darkest/50 border border-primary-light/30 text-white focus:outline-none focus:border-primary-lightest focus:ring-2 focus:ring-primary-lightest/20"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="username" className="block text-primary-lightest mb-2">
-                Username
-              </label>
-              <input
-                type="text"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg bg-primary-darkest/50 border border-primary-light/30 text-white focus:outline-none focus:border-primary-lightest focus:ring-2 focus:ring-primary-lightest/20"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="block text-primary-lightest mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg bg-primary-darkest/50 border border-primary-light/30 text-white focus:outline-none focus:border-primary-lightest focus:ring-2 focus:ring-primary-lightest/20"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="confirm_password" className="block text-primary-lightest mb-2">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg bg-primary-darkest/50 border border-primary-light/30 text-white focus:outline-none focus:border-primary-lightest focus:ring-2 focus:ring-primary-lightest/20"
-                required
-              />
-            </div>
-            {error && <p className="text-red-400 text-sm">{error}</p>}
-            <button
-              type="submit"
-              className="w-full bg-primary-light hover:bg-primary-lightest text-white font-bold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
-            >
-              Sign Up
-            </button>
-          </form>
-          <p className="mt-6 text-center text-primary-light">
-            Already have an account?{" "}
-            <Link href="/login" className="text-primary-lightest hover:text-white">
-              Login
-            </Link>
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-};
+    <AuthFrame
+      title="Create your account"
+      footerQuestion="Already have an account?"
+      footerLinkHref="/login"
+      footerLinkText="Login"
+    >
+      <div className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label htmlFor="email" className="field-label uppercase tracking-[0.22em]">
+              Email address
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="field"
+              placeholder="name@company.com"
+              autoComplete="email"
+              suppressHydrationWarning
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="username" className="field-label uppercase tracking-[0.22em]">
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="field"
+              placeholder="your-handle"
+              autoComplete="username"
+              suppressHydrationWarning
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="field-label uppercase tracking-[0.22em]">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="field"
+              placeholder="••••••••"
+              autoComplete="new-password"
+              suppressHydrationWarning
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="confirmPassword" className="field-label uppercase tracking-[0.22em]">
+              Confirm password
+            </label>
+            <input
+              type="password"
+              id="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="field"
+              placeholder="••••••••"
+              autoComplete="new-password"
+              suppressHydrationWarning
+              required
+            />
+          </div>
 
-export default SignupPage;
+          {error && (
+            <p className="rounded-2xl border border-rose-300/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+              {error}
+            </p>
+          )}
+
+          <button type="submit" disabled={loading} className="primary-button w-full">
+            {loading ? "Creating account..." : "Create account"}
+          </button>
+        </form>
+      </div>
+    </AuthFrame>
+  );
+}

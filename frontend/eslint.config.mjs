@@ -5,7 +5,7 @@ const eslintConfig = [
   ...nextCoreWebVitals,
   ...nextTypescript,
   {
-    ignores: ["dist/**", ".next/**"]
+    ignores: ["dist/**", ".next/**", ".wrangler/**", ".vinext/**", "wrangler.local.jsonc"]
   },
   {
     rules: {
