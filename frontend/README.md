@@ -2,12 +2,14 @@
 
 This is a [Vinext](https://vinext.io/) fullstack project (API + UI) built on Cloudflare's Next.js-compatible tooling.
 
+> **Project status:** This frontend is not currently deployed to Azure, MongoDB Atlas, or Vercel. Azure/Cosmos DB deployment notes below are legacy documentation from the college class project, and MongoDB/Vercel references in the codebase are not part of an active deployment.
+
 ## Getting Started
 
 First, run the development server:
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 Open [http://localhost:3001](http://localhost:3001) with your browser to see the result.
@@ -15,7 +17,7 @@ Open [http://localhost:3001](http://localhost:3001) with your browser to see the
 You can start editing the page by modifying `src/app/page.tsx`.
 The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) compatibility to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) compatibility to automatically optimize and load Geist. This does not mean the project is deployed on Vercel.
 
 ## Environment Setup
 
@@ -31,9 +33,9 @@ SECRET_KEY=your_jwt_secret
 ALGORITHM=HS256
 ```
 
-### Production Environment
+### Legacy Azure Production Environment
 
-The following environment variables must be set in Azure App Service:
+The following environment variables were used by the legacy Azure App Service deployment:
 
 - `COSMOSDB_ENDPOINT`: CosmosDB endpoint
 - `COSMOSDB_KEY`: CosmosDB key
@@ -52,7 +54,9 @@ All backend logic (authentication, URL shortening, etc.) is implemented in Vinex
 - `GET /api/urls`: List all URLs for the authenticated user
 - `DELETE /api/urls/[id]`: Delete a URL
 
-## Deployment
+## Legacy Deployment
+
+These deployment notes are kept for reference only. The project is not currently deployed to Azure.
 
 ### Manual Deployment
 
@@ -71,7 +75,7 @@ docker push <registry>.azurecr.io/shortenme-frontend:latest
 
 ### GitHub Actions Deployment
 
-The frontend is automatically deployed via GitHub Actions when changes are pushed to the main branch. The workflow:
+The legacy Azure workflow deployed the frontend when changes were pushed to the main branch. That deployment is not currently active. The workflow:
 
 1. Builds the Docker image
 2. Pushes to Azure Container Registry

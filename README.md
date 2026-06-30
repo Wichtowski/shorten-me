@@ -1,74 +1,70 @@
 # Shorten-Me URL Shortening Service
 
-A full-stack URL shortening service. Originally deployed on Azure as a student project, now migrated to MongoDB Atlas + Vercel for free tier hosting.
+A full-stack URL shortening service created as a college class project. The Azure + Pulumi setup in this repository was built for that class requirement and is kept as historical/reference code.
+
+> **Project status:** Azure, MongoDB Atlas, and Vercel are not currently used for an active deployment of this project. Any Azure/Pulumi, MongoDB, or Vercel references in this repository should be treated as legacy/class-project documentation or experimental code unless they are explicitly re-enabled.
 
 ## Project Structure
 
 - **frontend/**: Vinext fullstack application (API + UI)
-- **infra/**: Pulumi infrastructure as code (legacy Azure deployment)
+- **infra/**: Pulumi infrastructure as code (legacy Azure class-project deployment)
 - **.github/**: GitHub Actions workflows for CI/CD
 
-## Current Version (MongoDB + Vercel)
+## Current Local Version
 
 ### Prerequisites
 - Node.js 20+
-- MongoDB Atlas account (free tier)
-- Vercel account
+- Bun
 
-### Setup
+### Frontend Setup
 
-1. Clone the repository
+1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/Wichtowski/shorten-me
 cd shorten-me
 ```
 
-2. Install dependencies for frontend
+2. Install frontend dependencies:
 ```bash
 cd frontend
-npm install
-cd ..
+bun install
 ```
 
-### Deployment
-
-1. Push your code to GitHub
-2. Connect your repository to Vercel
-3. Add the `MONGODB_URI` environment variable in Vercel's project settings
-4. Deploy!
-
-### Local Development
+## Local Development
 
 ```bash
 cd frontend
-npm run dev
+bun run dev
 ```
 
-## Azure Version (tag 1.3.0)
+## Legacy Azure + Pulumi Version (class project, not currently used)
+
+This section documents the original Azure deployment flow that was implemented to pass a college class. It is not the current hosting setup, and the project is not actively deployed on Azure.
 
 ### Prerequisites
 - Node.js 20+
+- Bun
 - Docker
 - Azure CLI
 - Pulumi CLI
+- Python 3.12+
 
-### Setup
+### Legacy Azure Setup
 
-1. Clone the repository and checkout the Azure version
+1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/Wichtowski/shorten-me
 cd shorten-me
-git checkout 1.3.0
 ```
 
-2. Install dependencies for frontend
+2. Install frontend dependencies:
 ```bash
 cd frontend
-npm install
+bun install
 cd ..
 ```
 
-3. Set up Pulumi
+3. Set up Pulumi:
 ```bash
 cd infra
 python -m venv venv
@@ -94,7 +90,7 @@ python deploy_frontend.py
 
 ### GitHub Actions Deployment
 
-The project uses GitHub Actions for automated deployments. To set up:
+The legacy Azure version used GitHub Actions for automated deployments. To set up that historical flow:
 
 1. Configure Azure Service Principal:
 ```bash

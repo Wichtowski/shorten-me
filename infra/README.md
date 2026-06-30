@@ -2,6 +2,8 @@
 
 Pulumi-based infrastructure setup for deploying the URL shortening service to Azure.
 
+> **Project status:** This Azure + Pulumi infrastructure was created for a college class project and is not currently used for an active deployment. Keep these files as historical/reference infrastructure unless you intentionally decide to redeploy the project on Azure.
+
 ## Structure
 
 - `__main__.py` - Main Pulumi program defining Azure resources
