@@ -1,5 +1,3 @@
-'use server';
-
 import { NextResponse } from 'next/server';
 import { getMongoCluster } from '@app/api/v2/utils/mongodb';
 

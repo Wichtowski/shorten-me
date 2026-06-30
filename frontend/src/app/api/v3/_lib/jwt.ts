@@ -1,5 +1,3 @@
-'use server';
-
 import { AuthTokenPayload, V3Env } from './types';
 
 const encoder = new TextEncoder();

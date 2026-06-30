@@ -2,12 +2,19 @@ import { Url } from '@shared/url';
 
 interface UrlTableProps {
   urls: Url[];
-  onCopyUrl: (url: string) => void;
+  onCopyOriginalUrl: (url: string) => void;
+  onCopyShortUrl: (slug: string) => void;
   onDeleteUrl: (urlId: string) => void;
   deleteLoading?: boolean;
 }
 
-export function UrlTable({ urls = [], onCopyUrl, onDeleteUrl, deleteLoading }: UrlTableProps) {
+export function UrlTable({
+  urls = [],
+  onCopyOriginalUrl,
+  onCopyShortUrl,
+  onDeleteUrl,
+  deleteLoading,
+}: UrlTableProps) {
   return (
     <>
       {urls.map((url) => (
@@ -16,7 +23,7 @@ export function UrlTable({ urls = [], onCopyUrl, onDeleteUrl, deleteLoading }: U
             <div className="flex items-center gap-2">
               <span className="truncate max-w-[300px]">{url.original_url}</span>
               <button
-                onClick={() => onCopyUrl(url.original_url)}
+                onClick={() => onCopyOriginalUrl(url.original_url)}
                 className="text-primary-light hover:text-primary-lightest transition-colors"
               >
                 <svg
@@ -35,7 +42,7 @@ export function UrlTable({ urls = [], onCopyUrl, onDeleteUrl, deleteLoading }: U
             <div className="flex items-center gap-2">
               <span className="truncate max-w-[200px]">{url.short_url}</span>
               <button
-                onClick={() => onCopyUrl(url.short_url)}
+                onClick={() => onCopyShortUrl(url.short_url)}
                 className="text-primary-light hover:text-primary-lightest transition-colors"
               >
                 <svg

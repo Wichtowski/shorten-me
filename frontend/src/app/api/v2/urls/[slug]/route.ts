@@ -1,5 +1,3 @@
-'use server';
-
 import { NextRequest, NextResponse } from 'next/server';
 import { UrlService } from '@app/api/v2/services/urlService';
 

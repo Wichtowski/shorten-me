@@ -13,6 +13,7 @@ import { useDeleteAccount } from '@hooks/useDeleteAccount';
 import { Url } from '@shared/url';
 import { apiClient } from '@lib/api-client';
 import { tokenToUser } from '@lib/auth';
+import { formatShortUrl } from '@utils/shortUrl';
 
 interface ShortenedUrl {
   originalUrl: string;
@@ -122,8 +123,13 @@ export default function MyUrlsPage() {
     syncData();
   }, []);
 
-  const handleCopyUrl = (url: string) => {
-    navigator.clipboard.writeText(`${window.location.origin}/r/${url}`);
+  const handleCopyOriginalUrl = (url: string) => {
+    navigator.clipboard.writeText(url);
+    setNotification({ message: 'Original URL copied to clipboard!', type: 'success' });
+  };
+
+  const handleCopyShortUrl = (slug: string) => {
+    navigator.clipboard.writeText(formatShortUrl(slug));
     setNotification({ message: 'URL copied to clipboard!', type: 'success' });
   };
 
@@ -136,6 +142,7 @@ export default function MyUrlsPage() {
 
     try {
       await deleteUrl(deleteConfirmation.urlId);
+      setSyncedUrls((urls) => urls.filter((url) => url.id !== deleteConfirmation.urlId));
       setNotification({ message: 'URL deleted successfully', type: 'success' });
     } catch (err) {
       setNotification({
@@ -147,9 +154,11 @@ export default function MyUrlsPage() {
     }
   };
 
-  const handleDeleteAccount = async () => {
+  const handleDeleteAccountClick = () => {
     setDeleteAccountConfirmation(true);
+  };
 
+  const handleDeleteAccountConfirm = async () => {
     try {
       await deleteAccount();
       setNotification({ message: 'Account deleted successfully', type: 'success' });
@@ -192,7 +201,7 @@ export default function MyUrlsPage() {
       <ConfirmationOverlay
         isOpen={deleteAccountConfirmation}
         onClose={() => setDeleteAccountConfirmation(false)}
-        onConfirm={handleDeleteAccount}
+        onConfirm={handleDeleteAccountConfirm}
         title="Delete Account"
         message="Are you sure you want to delete your account? This action cannot be undone."
         confirmText="Delete"
@@ -235,7 +244,8 @@ export default function MyUrlsPage() {
             ) : (
               <UrlTable
                 urls={displayUrls}
-                onCopyUrl={handleCopyUrl}
+                onCopyOriginalUrl={handleCopyOriginalUrl}
+                onCopyShortUrl={handleCopyShortUrl}
                 onDeleteUrl={handleDeleteClick}
                 deleteLoading={!!deleteLoading}
               />
@@ -258,7 +268,7 @@ export default function MyUrlsPage() {
               Logout
             </button>
             <button
-              onClick={handleDeleteAccount}
+              onClick={handleDeleteAccountClick}
               className="w-full bg-black text-white px-4 py-2 rounded-lg cursor-pointer"
             >
               Delete Account

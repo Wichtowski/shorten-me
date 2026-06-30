@@ -1,5 +1,3 @@
-'use server';
-
 import jwt, { SignOptions, Algorithm } from 'jsonwebtoken';
 import { User } from '@common/interfaces/User';
 

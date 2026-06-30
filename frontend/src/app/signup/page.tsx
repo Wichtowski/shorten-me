@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@lib/api-client';
+import { useUser } from '@components/context/UserContext';
 
 const SignupPage = () => {
   const [email, setEmail] = useState('');
@@ -11,6 +12,7 @@ const SignupPage = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const { setUser } = useUser();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,12 +28,14 @@ const SignupPage = () => {
     }
 
     try {
-      await apiClient.signup({
+      const data = await apiClient.signup({
         email,
         username,
         password,
       });
 
+      localStorage.setItem('token', data.token);
+      setUser(data.user);
       router.push('/');
     } catch (err) {
       console.error(err);

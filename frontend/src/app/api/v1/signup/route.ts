@@ -1,5 +1,3 @@
-'use server';
-
 import { NextRequest, NextResponse } from 'next/server';
 import { getUsersContainer } from '@app/api/v1/utils/cosmos';
 import { hashPassword } from '@app/api/v1/utils/hash';

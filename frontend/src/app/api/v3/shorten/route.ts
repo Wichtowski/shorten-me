@@ -1,5 +1,3 @@
-'use server';
-
 import { env } from 'cloudflare:workers';
 import { NextRequest, NextResponse } from 'next/server';
 import { createUrlRecord, deleteUrlRecord, resolveAuthToken } from '../_lib/kv';

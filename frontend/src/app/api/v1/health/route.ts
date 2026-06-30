@@ -1,5 +1,3 @@
-'use server';
-
 import { NextResponse } from 'next/server';
 import { CosmosClient } from '@azure/cosmos';
 

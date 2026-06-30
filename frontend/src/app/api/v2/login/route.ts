@@ -1,5 +1,3 @@
-'use server';
-
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyPassword } from '@app/api/v2/utils/hash';
 import { signJwt } from '@app/api/v2/utils/jwt';

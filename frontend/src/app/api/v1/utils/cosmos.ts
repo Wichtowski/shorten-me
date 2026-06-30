@@ -1,5 +1,3 @@
-'use server';
-
 import { CosmosClient, Container } from '@azure/cosmos';
 
 const endpoint = process.env.COSMOSDB_ENDPOINT;

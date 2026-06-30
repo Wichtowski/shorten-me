@@ -1,5 +1,3 @@
-'use server';
-
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyPassword } from '../_lib/password';
 import { signJwt } from '../_lib/jwt';

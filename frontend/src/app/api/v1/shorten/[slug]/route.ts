@@ -1,5 +1,3 @@
-'use server';
-
 import { NextRequest, NextResponse } from 'next/server';
 import { getUrlsContainer, getAnonymousContainer } from '@app/api/v1/utils/cosmos';
 
