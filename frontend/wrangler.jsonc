@@ -5,7 +5,41 @@
   "kv_namespaces": [
     {
       "binding": "SHORTENME_KV",
-      "id": "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
-    }
-  ]
+      "id": "REPLACE_WITH_YOUR_KV_NAMESPACE_ID",
+    },
+  ],
+  "env": {
+    "development": {
+      "name": "shorten-me-development",
+      "vars": {
+        "DEPLOY_ENVIRONMENT": "development",
+      },
+      "kv_namespaces": [
+        {
+          "binding": "SHORTENME_KV",
+          "id": "REPLACE_WITH_YOUR_KV_NAMESPACE_ID",
+        },
+      ],
+    },
+    "production": {
+      "name": "shorten-me",
+      "workers_dev": false,
+      "vars": {
+        "DEPLOY_ENVIRONMENT": "production",
+      },
+      "routes": [
+        {
+          "pattern": "shorten.oskarwichtowski.com",
+          "zone_name": "oskarwichtowski.com",
+          "custom_domain": true,
+        },
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "SHORTENME_KV",
+          "id": "REPLACE_WITH_YOUR_KV_NAMESPACE_ID",
+        },
+      ],
+    },
+  },
 }

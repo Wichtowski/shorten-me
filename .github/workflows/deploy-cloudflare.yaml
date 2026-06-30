@@ -1,0 +1,74 @@
+name: Deploy Cloudflare
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Cloudflare environment to deploy
+        required: true
+        type: choice
+        options:
+          - development
+          - production
+        default: development
+      ref:
+        description: Git ref to deploy
+        required: true
+        type: string
+        default: main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-cloudflare-${{ inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Configure Cloudflare KV namespace
+        env:
+          CLOUDFLARE_KV_NAMESPACE_ID: ${{ secrets.CLOUDFLARE_KV_NAMESPACE_ID }}
+        run: |
+          test -n "$CLOUDFLARE_KV_NAMESPACE_ID"
+          sed -i "s/REPLACE_WITH_YOUR_KV_NAMESPACE_ID/$CLOUDFLARE_KV_NAMESPACE_ID/g" wrangler.jsonc
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Type check
+        run: bunx tsc --noEmit --project tsconfig.json
+
+      - name: Build
+        run: bun run build
+
+      - name: Apply Cloudflare environment
+        env:
+          DEPLOY_ENVIRONMENT: ${{ inputs.environment }}
+        run: bun run apply-cloudflare-environment
+
+      - name: Deploy with Wrangler
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: bunx wrangler deploy
