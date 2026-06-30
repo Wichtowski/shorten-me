@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: Cloudflare environment to deployP
+        description: Cloudflare environment to deploy
         required: true
         type: choice
         options:
