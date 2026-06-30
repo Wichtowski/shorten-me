@@ -1,7 +1,7 @@
 import { env } from "cloudflare:workers";
 import { NextRequest, NextResponse } from "next/server";
 
-const BASIC_AUTH_REALM = "shorten-me development";
+const BASIC_AUTH_REALM = "shorten development";
 
 function unauthorized(): NextResponse {
   return new NextResponse("Authentication required", {

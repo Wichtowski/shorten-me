@@ -1,4 +1,4 @@
-# Shorten-Me URL Shortening Service
+# Shorten URL Shortening Service
 
 A full-stack URL shortening service created as a college class project. The Azure + Pulumi setup in this repository was built for that class requirement and is kept as historical/reference code.
 
@@ -22,8 +22,8 @@ A full-stack URL shortening service created as a college class project. The Azur
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/Wichtowski/shorten-me
-cd shorten-me
+git clone https://github.com/Wichtowski/shorten
+cd shorten
 ```
 
 2. Install frontend dependencies:
@@ -81,8 +81,8 @@ This section documents the original Azure deployment flow that was implemented t
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/Wichtowski/shorten-me
-cd shorten-me
+git clone https://github.com/Wichtowski/shorten
+cd shorten
 ```
 
 2. Install frontend dependencies:

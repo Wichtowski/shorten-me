@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useRecentShortens } from "@hooks/useRecentShortens";
 
-const RecentShortens = () => {
+export const RecentShortens = () => {
   const { recentShortens, clearRecentShortens, updateShorten } = useRecentShortens();
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editValue, setEditValue] = useState("");
@@ -27,50 +27,53 @@ const RecentShortens = () => {
   };
 
   return (
-    <div className="mt-8 bg-primary-dark/50 backdrop-blur-sm rounded-xl p-6 shadow-2xl border border-primary-light/20">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl font-semibold text-primary-lightest">Recent Shortenings</h3>
+    <div className="surface rounded-xl p-6 sm:p-8">
+      <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="eyebrow">Recent activity</p>
+          <h3 className="mt-3 text-xl font-semibold text-slate-100">Recent shortenings</h3>
+        </div>
         <button
           onClick={clearRecentShortens}
-          className="text-primary-light hover:text-primary-lightest text-sm"
+          className="subtle-button"
         >
           Clear History
         </button>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-3">
         {recentShortens.map((shorten, index) => (
           <div
             key={index}
-            className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 p-3 bg-primary-darkest/50 rounded-lg"
+            className="flex flex-col gap-4 rounded-lg border border-white/[0.05] bg-[#171c21] p-4 sm:flex-row sm:items-center sm:justify-between"
           >
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               {editIndex === index ? (
-                <div className="flex gap-2 items-center">
+                <div className="flex flex-col gap-2 md:flex-row md:items-center">
                   <input
                     type="text"
                     value={editValue}
                     onChange={(e) => setEditValue(e.target.value)}
-                    className="px-2 py-1 rounded bg-primary-darkest border border-primary-light/30 text-white flex-1"
+                    className="field flex-1 px-3 py-2"
                   />
                   <button
                     onClick={() => handleSave(index)}
-                    className="text-primary-lightest bg-primary-light px-2 py-1 rounded hover:bg-primary-lightest hover:text-primary-darkest"
+                    className="primary-button px-3 py-2 text-sm"
                   >
                     Save
                   </button>
                   <button
                     onClick={handleCancel}
-                    className="text-primary-light px-2 py-1 rounded hover:text-primary-lightest"
+                    className="subtle-button px-3 py-2 text-sm"
                   >
                     Cancel
                   </button>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <p className="text-primary-lightest truncate">{shorten.originalUrl}</p>
+                  <p className="truncate font-medium text-slate-100">{shorten.originalUrl}</p>
                   <button
                     onClick={() => handleEdit(index, shorten.originalUrl)}
-                    className="text-primary-light hover:text-primary-lightest text-xs border border-primary-light px-2 py-1 rounded"
+                    className="subtle-button px-2 py-1 text-xs"
                   >
                     Edit
                   </button>
@@ -80,12 +83,12 @@ const RecentShortens = () => {
                 href={`/r/${shorten.shortUrl}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary-light hover:text-primary-lightest text-sm truncate block"
+                className="mt-1 block truncate text-sm text-cyan-300 transition hover:text-cyan-100"
               >
                 {shorten.shortUrl}
               </a>
             </div>
-            <span className="text-primary-light/60 text-sm whitespace-nowrap">
+            <span className="whitespace-nowrap text-sm text-[#bac9cc]">
               {new Date(shorten.timestamp).toLocaleDateString()}
             </span>
           </div>
@@ -94,5 +97,3 @@ const RecentShortens = () => {
     </div>
   );
 };
-
-export default RecentShortens;

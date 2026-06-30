@@ -7,7 +7,7 @@ interface CopyButtonProps {
   className?: string;
 }
 
-const CopyButton: React.FC<CopyButtonProps> = ({ value, onCopied, children, className }) => {
+export const CopyButton: React.FC<CopyButtonProps> = ({ value, onCopied, children, className }) => {
   const handleCopy = () => {
     navigator.clipboard.writeText(value);
     if (onCopied) onCopied();
@@ -19,5 +19,3 @@ const CopyButton: React.FC<CopyButtonProps> = ({ value, onCopied, children, clas
     </button>
   );
 };
-
-export default CopyButton;

@@ -1,10 +1,11 @@
 "use client";
+
 import { useState } from "react";
-import Link from "next/link";
 import { useUser } from "@components/context/UserContext";
 import { apiClient } from "@lib/api-client";
+import { AuthFrame } from "@components/auth/AuthFrame";
 
-const LoginPage = () => {
+export default function LoginPage() {
   const { setUser } = useUser();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,6 +16,7 @@ const LoginPage = () => {
     e.preventDefault();
     setError("");
     setLoading(true);
+
     try {
       const data = await apiClient.login({ email, password });
 
@@ -22,7 +24,6 @@ const LoginPage = () => {
         localStorage.setItem("token", String(data.token));
         setUser(data.user);
 
-        // MIGRATE ANONYMOUS SHORTENS
         const recentShortens = JSON.parse(localStorage.getItem("recent_shortens") || "[]");
         if (recentShortens.length > 0) {
           await apiClient.migrateShortens(recentShortens, data.token);
@@ -30,65 +31,82 @@ const LoginPage = () => {
         }
       }
 
-      window.location.href = "/";
+      window.location.assign("/");
     } catch (err) {
       console.error("Login error:", err);
       setError(err instanceof Error ? err.message : "Login failed");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      <div className="max-w-md mx-auto">
-        <div className="bg-primary-dark/50 backdrop-blur-sm rounded-xl p-8 shadow-2xl border border-primary-light/20">
-          <h2 className="text-3xl font-bold text-primary-lightest mb-6 text-center">Login</h2>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="email" className="block text-primary-lightest mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg bg-primary-darkest/50 border border-primary-light/30 text-white focus:outline-none focus:border-primary-lightest focus:ring-2 focus:ring-primary-lightest/20"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="block text-primary-lightest mb-2">
+    <AuthFrame
+      title="Welcome back"
+      footerQuestion="Need an account?"
+      footerLinkHref="/signup"
+      footerLinkText="Sign up"
+    >
+      <div className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label htmlFor="email" className="field-label uppercase tracking-[0.22em]">
+              Email address
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="field"
+              placeholder="name@company.com"
+              autoComplete="email"
+              suppressHydrationWarning
+              required
+            />
+          </div>
+          <div>
+            <div className="mb-2 flex items-center justify-between gap-4">
+              <label htmlFor="password" className="field-label mb-0 uppercase tracking-[0.22em]">
                 Password
               </label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg bg-primary-darkest/50 border border-primary-light/30 text-white focus:outline-none focus:border-primary-lightest focus:ring-2 focus:ring-primary-lightest/20"
-                required
-              />
             </div>
-            {error && <p className="text-red-400 text-sm">{error}</p>}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-primary-light hover:bg-primary-lightest text-white font-bold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? "Logging in..." : "Login"}
-            </button>
-          </form>
-          <p className="mt-6 text-center text-primary-light">
-            Don&apos;t have an account?{" "}
-            <Link href="/signup" className="text-primary-lightest hover:text-white">
-              Sign up
-            </Link>
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-};
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="field"
+              placeholder="••••••••"
+              autoComplete="current-password"
+              suppressHydrationWarning
+              required
+            />
+          </div>
 
-export default LoginPage;
+          <div className="flex items-center justify-between gap-4">
+            <label className="flex items-center gap-3 text-sm text-slate-300">
+              <input
+                type="checkbox"
+                className="h-4 w-4 rounded border-white/15 bg-slate-950/70 text-cyan-400 focus:ring-cyan-300/30"
+                autoComplete="on"
+                suppressHydrationWarning
+              />
+              Remember this device
+            </label>
+          </div>
+
+          {error && (
+            <p className="rounded-2xl border border-rose-300/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+              {error}
+            </p>
+          )}
+
+          <button type="submit" disabled={loading} className="primary-button w-full">
+            {loading ? "Logging in..." : "Sign in"}
+          </button>
+        </form>
+      </div>
+    </AuthFrame>
+  );
+}

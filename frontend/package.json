@@ -1,12 +1,13 @@
 {
-  "name": "shorten-me",
+  "name": "shorten",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "vinext dev -p 3001",
+    "dev": "bun run prepare-local-cloudflare-config && vinext dev -p 3001",
     "build": "vinext build",
     "start": "vinext start -p 3001",
     "lint": "vinext lint",
+    "prepare-local-cloudflare-config": "node scripts/prepare-local-cloudflare-config.mjs",
     "apply-cloudflare-environment": "node scripts/apply-cloudflare-environment.mjs",
     "format": "prettier --write ."
   },
@@ -23,6 +24,7 @@
     "next": "16.2.9",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "react-icons": "^5.7.0",
     "react-server-dom-webpack": "19.2.7",
     "uuid": "^14.0.1",
     "vinext": "0.1.8",

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import Spinner from "@components/common/Spinner";
+import { Spinner } from "@components/common/Spinner";
 import { use } from "react";
 import { apiClient } from "@lib/api-client";
 
@@ -39,18 +39,20 @@ export default function RedirectPage({ params }: { params: Promise<PageParams> }
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-        <div className="text-red-500 text-xl font-medium">{error}</div>
-        <div className="text-gray-500">Redirecting to home page...</div>
+      <div className="flex min-h-[calc(100vh-6rem)] flex-col items-center justify-center gap-4 px-4 text-center">
+        <div className="rounded-full border border-rose-300/20 bg-rose-500/10 px-4 py-2 text-sm font-medium text-rose-200">
+          {error}
+        </div>
+        <div className="text-sm text-slate-300">Redirecting to home page...</div>
       </div>
     );
   }
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+      <div className="flex min-h-[calc(100vh-6rem)] flex-col items-center justify-center gap-4 px-4">
         <Spinner />
-        <div className="text-primary-light">Redirecting...</div>
+        <div className="text-sm text-slate-300">Redirecting...</div>
       </div>
     );
   }

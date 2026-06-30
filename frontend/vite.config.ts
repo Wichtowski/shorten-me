@@ -1,17 +1,28 @@
+import { existsSync } from "node:fs";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import { defineConfig } from "vite";
 import vinext from "vinext";
 
-export default defineConfig({
-  build: {
-    rolldownOptions: {
-      external: ["cloudflare:workers"]
-    }
-  },
-  plugins: [
-    vinext(),
-    cloudflare({
-      viteEnvironment: { name: "rsc", childEnvironments: ["ssr"] }
-    })
-  ]
+const localWranglerConfigPath = "wrangler.local.jsonc";
+
+export default defineConfig(({ command }) => {
+  const configPath =
+    command === "serve" && existsSync(localWranglerConfigPath)
+      ? localWranglerConfigPath
+      : undefined;
+
+  return {
+    build: {
+      rolldownOptions: {
+        external: ["cloudflare:workers"]
+      }
+    },
+    plugins: [
+      vinext(),
+      cloudflare({
+        configPath,
+        viteEnvironment: { name: "rsc", childEnvironments: ["ssr"] }
+      })
+    ]
+  };
 });

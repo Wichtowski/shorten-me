@@ -11,7 +11,12 @@ interface NotificationProps {
 const ANIMATION_DURATION = 400;
 const NOTIFICATION_HEIGHT = 64; // px
 
-const Notification = ({ message, type = "info", onClose, duration = 3000 }: NotificationProps) => {
+export const Notification = ({
+  message,
+  type = "info",
+  onClose,
+  duration = 3000
+}: NotificationProps) => {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -30,35 +35,35 @@ const Notification = ({ message, type = "info", onClose, duration = 3000 }: Noti
     }
   }, [visible, onClose]);
 
-  const bgColor = {
-    error: "bg-red-500",
-    success: "bg-green-500",
-    info: "bg-primary-light"
+  const styles = {
+    error: "border-rose-300/20 bg-rose-500/90 text-white shadow-[0_20px_50px_-24px_rgba(244,63,94,0.65)]",
+    success:
+      "border-emerald-300/20 bg-emerald-500/90 text-white shadow-[0_20px_50px_-24px_rgba(16,185,129,0.65)]",
+    info:
+      "border-cyan-300/20 bg-slate-950/90 text-slate-50 shadow-[0_20px_50px_-24px_rgba(14,165,233,0.55)]"
   }[type];
 
   return (
-    <div
-      className="fixed left-0 right-0 z-40 flex justify-center pointer-events-none"
-      style={{ top: 64, height: NOTIFICATION_HEIGHT }}
-    >
+    <div className="fixed left-0 right-0 top-24 z-40 flex justify-center pointer-events-none">
       <div
         className={
-          ` ${bgColor} text-white px-8 py-4 rounded-b-lg shadow-lg flex items-center space-x-3 relative pointer-events-auto transition-all duration-400 ease-in-out ` +
+          `surface pointer-events-auto flex items-center gap-3 rounded-2xl px-5 py-4 transition-all duration-300 ease-in-out ` +
+          styles +
           (visible ? "notification-in" : "notification-out")
         }
         style={{
           minWidth: 320,
-          maxWidth: 480,
-          height: NOTIFICATION_HEIGHT,
+          maxWidth: 560,
+          minHeight: NOTIFICATION_HEIGHT,
           opacity: visible ? 1 : 0
         }}
       >
-        <span className="text-lg flex-1">{message}</span>
+        <span className="flex-1 text-sm font-medium leading-6">{message}</span>
         <button
           onClick={() => setVisible(false)}
-          className="ml-2 hover:text-white/80 transition-colors text-xl"
+          className="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-lg leading-none text-white/80 transition hover:bg-white/10 hover:text-white"
         >
-          ×
+          x
         </button>
       </div>
       <style>{`
@@ -84,5 +89,3 @@ const Notification = ({ message, type = "info", onClose, duration = 3000 }: Noti
     </div>
   );
 };
-
-export default Notification;

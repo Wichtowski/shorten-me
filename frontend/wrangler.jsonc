@@ -1,5 +1,5 @@
 {
-  "name": "shorten-me",
+  "name": "shorten",
   "compatibility_date": "2026-06-29",
   "compatibility_flags": ["nodejs_compat"],
   "main": "./worker/index.ts",
@@ -19,7 +19,7 @@
   ],
   "env": {
     "development": {
-      "name": "shorten-me-development",
+      "name": "shorten-development",
       "workers_dev": true,
       "routes": [
         {
@@ -56,7 +56,7 @@
       ]
     },
     "production": {
-      "name": "shorten-me",
+      "name": "shorten",
       "workers_dev": false,
       "vars": {
         "DEPLOY_ENVIRONMENT": "production"
